@@ -254,30 +254,43 @@ export const appMachine = createMachine({
     },
     roundResult: {
       on: {
-        NEXT_ROUND: {
-          target: 'game',
-          actions: assign(({ context }) => {
-            const newRound = context.config.currentRound + 1;
-            if (newRound > context.config.numRounds) {
-              return context;
-            }
-            return {
+        NEXT_ROUND: [
+          {
+            target: 'finalResult',
+            guard: ({ context }) => context.config.currentRound >= context.config.numRounds,
+            actions: assign(({ context }) => ({
               ...context,
-              config: { ...context.config, currentRound: newRound },
-              gameState: generateGameState(),
-              selectedTiles: [],
-              foundEquations: [],
-              mainTimer: 180,
-              guessTimer: 10,
-              guessingPlayerId: null
-            };
-          })
-        }
+              config: { ...context.config, currentRound: context.config.currentRound }
+            }))
+          },
+          {
+            target: 'game',
+            actions: assign(({ context }) => {
+              const newRound = context.config.currentRound + 1;
+              return {
+                ...context,
+                config: { ...context.config, currentRound: newRound },
+                gameState: generateGameState(),
+                selectedTiles: [],
+                foundEquations: [],
+                mainTimer: 180,
+                guessTimer: 10,
+                guessingPlayerId: null
+              };
+            })
+          }
+        ]
       }
     },
     finalResult: {
       on: {
-        CONTINUE: 'config',
+        CONTINUE: {
+          target: 'config',
+          actions: assign(({ context }) => ({
+            ...context,
+            config: { ...context.config, currentRound: 0 }
+          }))
+        },
         EXIT: 'menu'
       }
     }
