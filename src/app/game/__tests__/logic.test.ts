@@ -1,6 +1,8 @@
 import { generateRandomTile, generateTiles, calculateEquation, generateAllEquations, generateGameState } from '../logic';
 import type { Tile } from '../types';
 
+const INVALID_RESULT = -1;
+
 describe('Game Logic', () => {
   describe('generateRandomTile', () => {
     it('should generate a tile with valid operator and number', () => {
@@ -67,7 +69,7 @@ describe('Game Logic', () => {
         { operator: '-', number: 8 },
         { operator: '-', number: 4 }
       ];
-      expect(calculateEquation(tiles5)).toBe(-1);
+      expect(calculateEquation(tiles5)).toBe(INVALID_RESULT);
 
       // Test case 6: Start with a subtraction, subtraction is omitted
       const tiles6: [Tile, Tile, Tile] = [
@@ -101,7 +103,7 @@ describe('Game Logic', () => {
         { operator: '/', number: 3 },
         { operator: '+', number: 2 }
       ];
-      expect(calculateEquation(tiles3)).toBe(-1);
+      expect(calculateEquation(tiles3)).toBe(INVALID_RESULT);
 
       // Test case 4: Division by larger number (result < 1)
       const tiles4: [Tile, Tile, Tile] = [
@@ -109,7 +111,7 @@ describe('Game Logic', () => {
         { operator: '/', number: 10 },
         { operator: '+', number: 2 }
       ];
-      expect(calculateEquation(tiles4)).toBe(-1);
+      expect(calculateEquation(tiles4)).toBe(INVALID_RESULT);
 
       // Test case 5: Multiple divisions with non-integer intermediate result
       const tiles5: [Tile, Tile, Tile] = [
@@ -117,7 +119,7 @@ describe('Game Logic', () => {
         { operator: '/', number: 2 },
         { operator: '/', number: 3 }
       ];
-      expect(calculateEquation(tiles5)).toBe(-1);
+      expect(calculateEquation(tiles5)).toBe(INVALID_RESULT);
     });
 
     it('should handle operator precedence', () => {
@@ -143,7 +145,7 @@ describe('Game Logic', () => {
         { operator: '/', number: 2 },
         { operator: '*', number: 3 }
       ];
-      expect(calculateEquation(tiles3)).toBe(-1);
+      expect(calculateEquation(tiles3)).toBe(INVALID_RESULT);
     });
 
     it('should return -1 if the result is not an integer', () => {
@@ -152,7 +154,7 @@ describe('Game Logic', () => {
         { operator: '/', number: 3 },
         { operator: '+', number: 2 }
       ];
-      expect(calculateEquation(tiles)).toBe(-1);
+      expect(calculateEquation(tiles)).toBe(INVALID_RESULT);
     });
   });
 

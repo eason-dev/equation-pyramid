@@ -1,6 +1,7 @@
 import type { Tile, Equation, Operator, GameState } from './types';
 
 const OPERATORS: Operator[] = ['+', '-', '*', '/'];
+const INVALID_RESULT = -1;
 
 export function generateRandomTile(): Tile {
   const operator = OPERATORS[Math.floor(Math.random() * OPERATORS.length)]; // +, -, *, /
@@ -24,7 +25,7 @@ export function calculateEquation(tiles: [Tile, Tile, Tile]): number {
       case '*': result *= second.number; break;
       case '/': {
         // Check if division results in integer
-        if (result % second.number !== 0) return -1;
+        if (result % second.number !== 0) return INVALID_RESULT;
         result = result / second.number;
         break;
       }
@@ -37,7 +38,7 @@ export function calculateEquation(tiles: [Tile, Tile, Tile]): number {
       case '*': result *= third.number; break;
       case '/': {
         // Check if division results in integer
-        if (result % third.number !== 0) return -1;
+        if (result % third.number !== 0) return INVALID_RESULT;
         result = result / third.number;
         break;
       }
@@ -51,7 +52,7 @@ export function calculateEquation(tiles: [Tile, Tile, Tile]): number {
         case '*': tempResult *= third.number; break;
         case '/': {
           // Check if division results in integer
-          if (tempResult % third.number !== 0) return -1;
+          if (tempResult % third.number !== 0) return INVALID_RESULT;
           tempResult = tempResult / third.number;
           break;
         }
@@ -78,7 +79,7 @@ export function calculateEquation(tiles: [Tile, Tile, Tile]): number {
   
   // Check if final result is valid
   if (result <= 0 || !Number.isInteger(result)) {
-    return -1;
+    return INVALID_RESULT;
   }
   
   return result;
