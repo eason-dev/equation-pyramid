@@ -29,39 +29,130 @@ describe('Game Logic', () => {
 
   describe('calculateEquation', () => {
     it('should handle addition and subtraction', () => {
-      const tiles: [Tile, Tile, Tile] = [
+      // Test case 1: All additions
+      const tiles1: [Tile, Tile, Tile] = [
         { operator: '+', number: 5 },
         { operator: '+', number: 3 },
         { operator: '+', number: 2 }
       ];
-      expect(calculateEquation(tiles)).toBe(10);
+      expect(calculateEquation(tiles1)).toBe(10);
+
+      // Test case 2: Mixed addition and subtraction
+      const tiles2: [Tile, Tile, Tile] = [
+        { operator: '+', number: 10 },
+        { operator: '-', number: 3 },
+        { operator: '+', number: 5 }
+      ];
+      expect(calculateEquation(tiles2)).toBe(12);
+
+      // Test case 3: All subtractions
+      const tiles3: [Tile, Tile, Tile] = [
+        { operator: '+', number: 20 },
+        { operator: '-', number: 8 },
+        { operator: '-', number: 4 }
+      ];
+      expect(calculateEquation(tiles3)).toBe(8);
+
+      // Test case 4: Large numbers
+      const tiles4: [Tile, Tile, Tile] = [
+        { operator: '+', number: 100 },
+        { operator: '-', number: 30 },
+        { operator: '+', number: 15 }
+      ];
+      expect(calculateEquation(tiles4)).toBe(85);
+
+      // Test case 5: Small numbers with negative result (should return -1)
+      const tiles5: [Tile, Tile, Tile] = [
+        { operator: '+', number: 5 },
+        { operator: '-', number: 8 },
+        { operator: '-', number: 4 }
+      ];
+      expect(calculateEquation(tiles5)).toBe(-1);
+
+      // Test case 6: Start with a subtraction, subtraction is omitted
+      const tiles6: [Tile, Tile, Tile] = [
+        { operator: '-', number: 5 },
+        { operator: '+', number: 3 },
+        { operator: '+', number: 2 }
+      ];
+      expect(calculateEquation(tiles6)).toBe(10);
     });
 
     it('should handle multiplication and division', () => {
-      const tiles: [Tile, Tile, Tile] = [
+      // Test case 1: Simple multiplication
+      const tiles1: [Tile, Tile, Tile] = [
         { operator: '+', number: 5 },
         { operator: '*', number: 3 },
-        { operator: '/', number: 2 }
+        { operator: '+', number: 2 }
       ];
-      expect(calculateEquation(tiles)).toBe(7); // 5 + (3 * 2) / 2 = 5 + 6/2 = 5 + 3 = 8
+      expect(calculateEquation(tiles1)).toBe(17);
+
+      // Test case 2: Valid division
+      const tiles2: [Tile, Tile, Tile] = [
+        { operator: '+', number: 10 },
+        { operator: '/', number: 2 },
+        { operator: '+', number: 3 }
+      ];
+      expect(calculateEquation(tiles2)).toBe(8);
+
+      // Test case 3: Invalid division (non-integer result)
+      const tiles3: [Tile, Tile, Tile] = [
+        { operator: '+', number: 10 },
+        { operator: '/', number: 3 },
+        { operator: '+', number: 2 }
+      ];
+      expect(calculateEquation(tiles3)).toBe(-1);
+
+      // Test case 4: Division by larger number (result < 1)
+      const tiles4: [Tile, Tile, Tile] = [
+        { operator: '+', number: 5 },
+        { operator: '/', number: 10 },
+        { operator: '+', number: 2 }
+      ];
+      expect(calculateEquation(tiles4)).toBe(-1);
+
+      // Test case 5: Multiple divisions with non-integer intermediate result
+      const tiles5: [Tile, Tile, Tile] = [
+        { operator: '+', number: 20 },
+        { operator: '/', number: 2 },
+        { operator: '/', number: 3 }
+      ];
+      expect(calculateEquation(tiles5)).toBe(-1);
     });
 
-    it('should follow operator precedence', () => {
-      const tiles: [Tile, Tile, Tile] = [
+    it('should handle operator precedence', () => {
+      // Test case 1: Multiplication before addition
+      const tiles1: [Tile, Tile, Tile] = [
         { operator: '+', number: 5 },
         { operator: '+', number: 3 },
         { operator: '*', number: 2 }
       ];
-      expect(calculateEquation(tiles)).toBe(11); // 5 + (3 * 2) = 5 + 6 = 11
+      expect(calculateEquation(tiles1)).toBe(11);
+
+      // Test case 2: Division before subtraction
+      const tiles2: [Tile, Tile, Tile] = [
+        { operator: '+', number: 20 },
+        { operator: '/', number: 4 },
+        { operator: '-', number: 2 }
+      ];
+      expect(calculateEquation(tiles2)).toBe(3);
+
+      // Test case 3: Complex precedence with invalid division
+      const tiles3: [Tile, Tile, Tile] = [
+        { operator: '+', number: 15 },
+        { operator: '/', number: 2 },
+        { operator: '*', number: 3 }
+      ];
+      expect(calculateEquation(tiles3)).toBe(-1);
     });
 
-    it('should handle division with floor rounding', () => {
+    it('should return -1 if the result is not an integer', () => {
       const tiles: [Tile, Tile, Tile] = [
         { operator: '+', number: 10 },
         { operator: '/', number: 3 },
         { operator: '+', number: 2 }
       ];
-      expect(calculateEquation(tiles)).toBe(5); // 10 + (3/2) = 10 + 1 = 11
+      expect(calculateEquation(tiles)).toBe(-1);
     });
   });
 

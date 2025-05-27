@@ -22,7 +22,12 @@ export function calculateEquation(tiles: [Tile, Tile, Tile]): number {
   if (second.operator === '*' || second.operator === '/') {
     switch (second.operator) {
       case '*': result *= second.number; break;
-      case '/': result = Math.floor(result / second.number); break;
+      case '/': {
+        // Check if division results in integer
+        if (result % second.number !== 0) return -1;
+        result = result / second.number;
+        break;
+      }
     }
     
     // Then handle the third operator
@@ -30,7 +35,12 @@ export function calculateEquation(tiles: [Tile, Tile, Tile]): number {
       case '+': result += third.number; break;
       case '-': result -= third.number; break;
       case '*': result *= third.number; break;
-      case '/': result = Math.floor(result / third.number); break;
+      case '/': {
+        // Check if division results in integer
+        if (result % third.number !== 0) return -1;
+        result = result / third.number;
+        break;
+      }
     }
   } else {
     // If second operator is + or -, we need to check third operator first
@@ -39,7 +49,12 @@ export function calculateEquation(tiles: [Tile, Tile, Tile]): number {
       let tempResult = second.number;
       switch (third.operator) {
         case '*': tempResult *= third.number; break;
-        case '/': tempResult = Math.floor(tempResult / third.number); break;
+        case '/': {
+          // Check if division results in integer
+          if (tempResult % third.number !== 0) return -1;
+          tempResult = tempResult / third.number;
+          break;
+        }
       }
       
       // Then apply second operation
@@ -59,6 +74,11 @@ export function calculateEquation(tiles: [Tile, Tile, Tile]): number {
         case '-': result -= third.number; break;
       }
     }
+  }
+  
+  // Check if final result is valid
+  if (result <= 0 || !Number.isInteger(result)) {
+    return -1;
   }
   
   return result;
