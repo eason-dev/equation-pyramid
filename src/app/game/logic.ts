@@ -113,16 +113,25 @@ export function generateGameState(): GameState {
   const tiles = generateTiles(10);
   const equations = generateAllEquations(tiles);
   
+  // Filter out invalid equations
+  const validEquations = equations.filter(eq => eq.result !== INVALID_RESULT);
+  
+  // Ensure we have at least one valid equation
+  if (validEquations.length === 0) {
+    // If no valid equations found, generate new tiles and try again
+    return generateGameState();
+  }
+  
   // Pick a random equation's result as the target
-  const targetEquation = equations[Math.floor(Math.random() * equations.length)];
+  const targetEquation = validEquations[Math.floor(Math.random() * validEquations.length)];
   const targetNumber = targetEquation.result;
   
   // Find all equations that result in the target number
-  const validEquations = equations.filter(eq => eq.result === targetNumber);
+  const targetEquations = validEquations.filter(eq => eq.result === targetNumber);
   
   return {
     tiles,
     targetNumber,
-    validEquations
+    validEquations: targetEquations
   };
 } 
