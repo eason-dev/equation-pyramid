@@ -35,7 +35,9 @@ type GameEvent =
   | { type: 'CHECK_EQUATION' }
   | { type: 'NEXT_ROUND' }
   | { type: 'CONTINUE' }
-  | { type: 'EXIT' };
+  | { type: 'EXIT' }
+  | { type: 'UPDATE_TIMER' }
+  | { type: 'UPDATE_GUESS_TIMER' };
 
 type GameStateType = {
   value: 'menu' | 'config' | 'game' | 'guessing' | 'roundResult' | 'finalResult';
@@ -111,6 +113,12 @@ export const appMachine = createMachine({
             guessTimer: 10
           }))
         },
+        UPDATE_TIMER: {
+          actions: assign(({ context }) => ({
+            ...context,
+            mainTimer: Math.max(0, context.mainTimer - 1)
+          }))
+        },
         SELECT_TILE: {
           actions: assign(({ context, event }) => {
             if (event.type !== 'SELECT_TILE' || context.selectedTiles.length >= 3) {
@@ -183,6 +191,12 @@ export const appMachine = createMachine({
           actions: assign(({ context, event }) => ({
             ...context,
             guessingPlayerId: event.type === 'SELECT_PLAYER' ? event.playerId : null
+          }))
+        },
+        UPDATE_GUESS_TIMER: {
+          actions: assign(({ context }) => ({
+            ...context,
+            guessTimer: Math.max(0, context.guessTimer - 1)
           }))
         },
         SELECT_TILE: {
