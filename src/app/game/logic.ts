@@ -113,8 +113,12 @@ export function generateGameState(): GameState {
   const tiles = generateTiles(10);
   const equations = generateAllEquations(tiles);
   
-  // Filter out invalid equations
-  const validEquations = equations.filter(eq => eq.result !== INVALID_RESULT);
+  // Filter out invalid equations and those with results outside 1-20 range
+  const validEquations = equations.filter(eq => 
+    eq.result !== INVALID_RESULT && 
+    eq.result >= 1 && 
+    eq.result <= 20
+  );
   
   // Ensure we have at least one valid equation
   if (validEquations.length === 0) {

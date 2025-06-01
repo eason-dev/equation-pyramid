@@ -190,5 +190,20 @@ describe('Game Logic', () => {
         expect(equation.result).toBe(gameState.targetNumber);
       }
     });
+
+    it('should generate a target number between 1 and 20', () => {
+      // Generate multiple game states to ensure the constraint is consistently met
+      for (let i = 0; i < 10; i++) {
+        const gameState = generateGameState();
+        expect(gameState.targetNumber).toBeGreaterThanOrEqual(1);
+        expect(gameState.targetNumber).toBeLessThanOrEqual(20);
+        
+        // Also verify that all valid equations result in numbers between 1 and 20
+        for (const equation of gameState.validEquations) {
+          expect(equation.result).toBeGreaterThanOrEqual(1);
+          expect(equation.result).toBeLessThanOrEqual(20);
+        }
+      }
+    });
   });
 }); 
