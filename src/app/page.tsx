@@ -21,8 +21,10 @@ function TileComponent({
     <button
       type="button"
       onClick={onClick}
-      className={`p-4 rounded-lg border-2 ${
-        isSelected ? "border-blue-500 bg-blue-50" : "border-gray-200"
+      className={`p-4 rounded-lg border-2 transition-colors ${
+        isSelected
+          ? "border-blue-500 bg-blue-50"
+          : "border-gray-200 hover:border-gray-300"
       }`}
     >
       <div className="text-xl font-bold">{tile.number}</div>
@@ -47,10 +49,10 @@ function PlayerList({
           type="button"
           key={player.id}
           onClick={() => onSelectPlayer(player.id)}
-          className={`w-full p-3 rounded-lg border-2 ${
+          className={`w-full p-3 rounded-lg border-2 transition-colors ${
             selectedPlayerId === player.id
               ? "border-green-500 bg-green-50"
-              : "border-gray-200"
+              : "border-gray-200 hover:border-gray-300"
           }`}
         >
           <div className="flex justify-between items-center">
@@ -67,7 +69,7 @@ function Timer({ seconds }: { seconds: number }) {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   return (
-    <div className="text-2xl font-bold">
+    <div className="text-2xl font-bold text-gray-900">
       {minutes}:{remainingSeconds.toString().padStart(2, "0")}
     </div>
   );
@@ -104,10 +106,12 @@ export default function Home() {
   }, [state.value, guessTimer, send]);
 
   return (
-    <div className="min-h-screen p-8 bg-gray-50">
-      <main className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-white">
+      <main className="max-w-4xl mx-auto p-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">Equation Pyramid</h1>
+          <h1 className="text-3xl font-bold mb-4 text-gray-900">
+            Equation Pyramid
+          </h1>
 
           {/* Menu State */}
           {state.value === "menu" && (
@@ -124,7 +128,10 @@ export default function Home() {
           {state.value === "config" && (
             <div className="space-y-6">
               <div className="flex gap-4 items-center">
-                <label htmlFor="numPlayers" className="font-medium">
+                <label
+                  htmlFor="numPlayers"
+                  className="font-medium text-gray-900"
+                >
                   Number of Players:
                 </label>
                 <select
@@ -136,7 +143,7 @@ export default function Home() {
                       config: { numPlayers: Number.parseInt(e.target.value) },
                     })
                   }
-                  className="p-2 border rounded"
+                  className="p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {[1, 2, 3, 4].map((n) => (
                     <option key={n} value={n}>
@@ -146,7 +153,10 @@ export default function Home() {
                 </select>
               </div>
               <div className="flex gap-4 items-center">
-                <label htmlFor="numRounds" className="font-medium">
+                <label
+                  htmlFor="numRounds"
+                  className="font-medium text-gray-900"
+                >
                   Number of Rounds:
                 </label>
                 <select
@@ -158,7 +168,7 @@ export default function Home() {
                       config: { numRounds: Number.parseInt(e.target.value) },
                     })
                   }
-                  className="p-2 border rounded"
+                  className="p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {[1, 2, 3, 4, 5].map((n) => (
                     <option key={n} value={n}>
@@ -181,13 +191,13 @@ export default function Home() {
           {state.value === "game" && gameState && (
             <div className="space-y-8">
               <div className="flex justify-between items-center">
-                <div className="text-2xl font-bold">
+                <div className="text-2xl font-bold text-gray-900">
                   Round {config.currentRound} of {config.numRounds}
                 </div>
                 <Timer seconds={mainTimer} />
               </div>
 
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-gray-900">
                 Target Number: {gameState.targetNumber}
               </div>
 
@@ -223,7 +233,9 @@ export default function Home() {
               </div>
 
               <div>
-                <h2 className="text-xl font-bold mb-2">Found Equations:</h2>
+                <h2 className="text-xl font-bold mb-2 text-gray-900">
+                  Found Equations:
+                </h2>
                 <div className="space-y-2">
                   {state.context.foundEquations.map((key) => {
                     const [i, j, k] = key.split(",").map(Number);
@@ -233,7 +245,10 @@ export default function Home() {
                       gameState.tiles[k],
                     ];
                     return (
-                      <div key={key} className="p-2 bg-gray-100 rounded">
+                      <div
+                        key={key}
+                        className="p-2 bg-gray-50 rounded-lg border border-gray-200"
+                      >
                         {tiles[0].number} {tiles[1].operator} {tiles[2].number}{" "}
                         = {gameState.targetNumber}
                       </div>
@@ -248,11 +263,13 @@ export default function Home() {
           {state.value === "guessing" && gameState && (
             <div className="space-y-8">
               <div className="flex justify-between items-center">
-                <div className="text-2xl font-bold">Guessing Time!</div>
+                <div className="text-2xl font-bold text-gray-900">
+                  Guessing Time!
+                </div>
                 <Timer seconds={guessTimer} />
               </div>
 
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-gray-900">
                 Target Number: {gameState.targetNumber}
               </div>
 
@@ -285,7 +302,7 @@ export default function Home() {
                   className={`px-6 py-3 rounded-lg transition-colors ${
                     selectedTiles.length === 3 && guessingPlayerId
                       ? "bg-green-500 text-white hover:bg-green-600"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-gray-200 text-gray-500 cursor-not-allowed"
                   }`}
                 >
                   Check Equation
@@ -297,18 +314,20 @@ export default function Home() {
           {/* Round Result State */}
           {state.value === "roundResult" && (
             <div className="space-y-8">
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-2xl font-bold text-gray-900">
                 Round {config.currentRound} Complete!
               </h2>
               <div className="space-y-4">
                 {config.players.map((player) => (
                   <div
                     key={player.id}
-                    className="p-4 bg-white rounded-lg shadow"
+                    className="p-4 bg-white rounded-lg shadow-sm border border-gray-200"
                   >
                     <div className="flex justify-between items-center">
-                      <span className="font-medium">{player.name}</span>
-                      <span className="text-lg font-bold">
+                      <span className="font-medium text-gray-900">
+                        {player.name}
+                      </span>
+                      <span className="text-lg font-bold text-gray-900">
                         Score: {player.score}
                       </span>
                     </div>
@@ -330,23 +349,27 @@ export default function Home() {
           {/* Final Result State */}
           {state.value === "finalResult" && (
             <div className="space-y-8">
-              <h2 className="text-2xl font-bold">Game Complete!</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Game Complete!
+              </h2>
               <div className="space-y-4">
                 {config.players
                   .sort((a, b) => b.score - a.score)
                   .map((player, index) => (
                     <div
                       key={player.id}
-                      className="p-4 bg-white rounded-lg shadow"
+                      className="p-4 bg-white rounded-lg shadow-sm border border-gray-200"
                     >
                       <div className="flex justify-between items-center">
                         <div className="flex items-center gap-2">
-                          <span className="text-xl font-bold">
+                          <span className="text-xl font-bold text-gray-900">
                             #{index + 1}
                           </span>
-                          <span className="font-medium">{player.name}</span>
+                          <span className="font-medium text-gray-900">
+                            {player.name}
+                          </span>
                         </div>
-                        <span className="text-lg font-bold">
+                        <span className="text-lg font-bold text-gray-900">
                           Score: {player.score}
                         </span>
                       </div>
