@@ -8,18 +8,23 @@ import { GameOver } from "@/components/game-states/GameOver";
 import { useGameState } from "@/logic/state/useGameState";
 
 export default function Home() {
-  const { state, send, context } = useGameState();
+  const {
+    state,
+    send,
+    context: {
+      config: { players, numRounds, currentRound },
+      gameState,
+      selectedTiles,
+      guessingPlayerId,
+      mainTimer,
+    },
+  } = useGameState();
 
-  // Extract from context
-  const players = context.config.players;
-  const numRounds = context.config.numRounds;
-  const currentRound = context.config.currentRound;
-  const tiles = context.gameState?.tiles ?? [];
-  const selectedTiles = context.selectedTiles;
+  const tiles = gameState?.tiles ?? [];
   const selectedTileIndex =
     selectedTiles.length > 0 ? selectedTiles[selectedTiles.length - 1] : null;
-  const selectedPlayerId = context.guessingPlayerId;
-  const timeRemaining = context.mainTimer;
+  const selectedPlayerId = guessingPlayerId;
+  const timeRemaining = mainTimer;
 
   const handleConfigUpdate = (config: {
     numPlayers?: number;
