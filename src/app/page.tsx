@@ -3,77 +3,11 @@
 import { useMachine } from "@xstate/react";
 import { useEffect } from "react";
 
-import type { Tile } from "@/logic/game/types";
+import type { Tile as TileType } from "@/logic/game/types";
 import { appMachine } from "@/logic/state/machine";
-
-function TileComponent({
-  tile,
-  index,
-  isSelected,
-  onClick,
-}: {
-  tile: Tile;
-  index: number;
-  isSelected: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`p-4 rounded-lg border-2 transition-colors ${
-        isSelected
-          ? "border-blue-500 bg-blue-50"
-          : "border-gray-200 hover:border-gray-300"
-      }`}
-    >
-      <div className="text-xl font-bold">{tile.number}</div>
-      <div className="text-lg">{tile.operator}</div>
-    </button>
-  );
-}
-
-function PlayerList({
-  players,
-  onSelectPlayer,
-  selectedPlayerId,
-}: {
-  players: { id: number; name: string; score: number }[];
-  onSelectPlayer: (id: number) => void;
-  selectedPlayerId: number | null;
-}) {
-  return (
-    <div className="space-y-2">
-      {players.map((player) => (
-        <button
-          type="button"
-          key={player.id}
-          onClick={() => onSelectPlayer(player.id)}
-          className={`w-full p-3 rounded-lg border-2 transition-colors ${
-            selectedPlayerId === player.id
-              ? "border-green-500 bg-green-50"
-              : "border-gray-200 hover:border-gray-300"
-          }`}
-        >
-          <div className="flex justify-between items-center">
-            <span className="font-medium">{player.name}</span>
-            <span className="text-lg font-bold">Score: {player.score}</span>
-          </div>
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function Timer({ seconds }: { seconds: number }) {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return (
-    <div className="text-2xl font-bold text-gray-900">
-      {minutes}:{remainingSeconds.toString().padStart(2, "0")}
-    </div>
-  );
-}
+import { PlayerList } from "@/components/PlayerList";
+import { Tile } from "@/components/Tile";
+import { Timer } from "@/components/Timer";
 
 export default function Home() {
   const [state, send] = useMachine(appMachine);
@@ -203,7 +137,7 @@ export default function Home() {
 
               <div className="grid grid-cols-5 gap-4">
                 {gameState.tiles.map((tile, index) => (
-                  <TileComponent
+                  <Tile
                     key={`tile-${index}-${tile.number}-${tile.operator}`}
                     tile={tile}
                     index={index}
@@ -275,7 +209,7 @@ export default function Home() {
 
               <div className="grid grid-cols-5 gap-4">
                 {gameState.tiles.map((tile, index) => (
-                  <TileComponent
+                  <Tile
                     key={`tile-${index}-${tile.number}-${tile.operator}`}
                     tile={tile}
                     index={index}
