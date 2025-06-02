@@ -1,4 +1,4 @@
-import type { Tile, Equation, Operator, GameState } from './types';
+import type { Tile, Equation, Operator, GameState } from '@/logic/game/types';
 
 const OPERATORS: Operator[] = ['+', '-', '*', '/'];
 const INVALID_RESULT = -1;

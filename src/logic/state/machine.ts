@@ -1,6 +1,7 @@
 import { createMachine, assign } from 'xstate';
-import type { GameState } from '../game/types';
-import { generateGameState, calculateEquation } from '../game/logic';
+
+import type { GameState } from '@/logic/game/types';
+import { generateGameState, calculateEquation } from '@/logic/game/logic';
 
 interface Player {
   id: number;

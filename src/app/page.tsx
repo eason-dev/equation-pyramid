@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { useMachine } from "@xstate/react";
-import { appMachine } from "./state/machine";
-import type { Tile } from "./game/types";
 import { useEffect } from "react";
+
+import type { Tile } from "@/logic/game/types";
+import { appMachine } from "@/logic/state/machine";
 
 function TileComponent({
   tile,

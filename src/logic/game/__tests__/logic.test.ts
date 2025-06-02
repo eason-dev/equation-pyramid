@@ -1,5 +1,6 @@
+import type { Tile } from '@/logic/game/types';
+
 import { generateRandomTile, generateTiles, calculateEquation, generateAllEquations, generateGameState } from '../logic';
-import type { Tile } from '../types';
 
 const INVALID_RESULT = -1;
 

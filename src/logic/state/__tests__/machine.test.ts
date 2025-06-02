@@ -1,6 +1,6 @@
 import { createActor } from 'xstate';
+
 import { appMachine } from '../machine';
-import { generateGameState } from '../../game/logic';
 
 // Mock the game logic functions
 jest.mock('../../game/logic', () => ({
