@@ -124,8 +124,8 @@ describe('Game State Machine', () => {
     expect(actor.getSnapshot().context.guessTimer).toBe(10);
 
     // Select player
-    actor.send({ type: 'SELECT_PLAYER', playerId: 1 });
-    expect(actor.getSnapshot().context.guessingPlayerId).toBe(1);
+    actor.send({ type: 'SELECT_PLAYER', playerId: '1' });
+    expect(actor.getSnapshot().context.guessingPlayerId).toBe('1');
   });
 
   it('should handle correct equation guess', () => {
@@ -141,7 +141,7 @@ describe('Game State Machine', () => {
 
     // Start guessing
     actor.send({ type: 'GUESS' });
-    actor.send({ type: 'SELECT_PLAYER', playerId: 1 });
+    actor.send({ type: 'SELECT_PLAYER', playerId: '1' });
 
     // Select tiles and check equation
     actor.send({ type: 'SELECT_TILE', tileIndex: 0 });
@@ -172,7 +172,7 @@ describe('Game State Machine', () => {
 
     // Start guessing
     actor.send({ type: 'GUESS' });
-    actor.send({ type: 'SELECT_PLAYER', playerId: 1 });
+    actor.send({ type: 'SELECT_PLAYER', playerId: '1' });
 
     // Select tiles and check equation
     actor.send({ type: 'SELECT_TILE', tileIndex: 0 });

@@ -8,28 +8,24 @@ import { GameOver } from "@/components/game-states/GameOver";
 import { useGameState } from "@/logic/state/useGameState";
 
 export default function Home() {
-  const {
-    state,
-    send,
-    context: {
-      players,
-      tiles,
-      selectedTileIndex,
-      selectedPlayerId,
-      timeRemaining,
-    },
-  } = useGameState();
+  const { state, send, context } = useGameState();
+
+  // Extract from context
+  const players = context.config.players;
+  const numRounds = context.config.numRounds;
+  const currentRound = context.config.currentRound;
+  const tiles = context.gameState?.tiles ?? [];
+  const selectedTiles = context.selectedTiles;
+  const selectedTileIndex =
+    selectedTiles.length > 0 ? selectedTiles[selectedTiles.length - 1] : null;
+  const selectedPlayerId = context.guessingPlayerId;
+  const timeRemaining = context.mainTimer;
 
   const handleConfigUpdate = (config: {
     numPlayers?: number;
     numRounds?: number;
   }) => {
-    if (config.numPlayers !== undefined) {
-      send({ type: "UPDATE_PLAYERS", numPlayers: config.numPlayers });
-    }
-    if (config.numRounds !== undefined) {
-      send({ type: "UPDATE_ROUNDS", numRounds: config.numRounds });
-    }
+    send({ type: "CONFIG_UPDATE", config });
   };
 
   return (
@@ -40,26 +36,28 @@ export default function Home() {
         </h1>
         <div className="bg-white rounded-xl shadow-lg p-8">
           {state.matches("menu") && (
-            <Menu onStart={() => send({ type: "START_CONFIG" })} />
+            <Menu onStart={() => send({ type: "START" })} />
           )}
 
           {state.matches("config") && (
             <Config
               numPlayers={players.length}
-              numRounds={state.context.numRounds}
+              numRounds={numRounds}
               onConfigUpdate={handleConfigUpdate}
               onStartGame={() => send({ type: "START_GAME" })}
             />
           )}
 
-          {state.matches("playing") && (
+          {state.matches("game") && (
             <Playing
               tiles={tiles}
               players={players}
               selectedTileIndex={selectedTileIndex}
               selectedPlayerId={selectedPlayerId}
               timeRemaining={timeRemaining}
-              onTileClick={(index) => send({ type: "SELECT_TILE", index })}
+              onTileClick={(tileIndex) =>
+                send({ type: "SELECT_TILE", tileIndex })
+              }
               onPlayerSelect={(playerId) =>
                 send({ type: "SELECT_PLAYER", playerId })
               }
@@ -69,7 +67,7 @@ export default function Home() {
           {state.matches("roundOver") && (
             <RoundOver
               players={players}
-              currentRound={state.context.currentRound}
+              currentRound={currentRound}
               onNextRound={() => send({ type: "NEXT_ROUND" })}
             />
           )}
@@ -77,7 +75,7 @@ export default function Home() {
           {state.matches("gameOver") && (
             <GameOver
               players={players}
-              onNewGame={() => send({ type: "NEW_GAME" })}
+              onNewGame={() => send({ type: "CONTINUE" })}
             />
           )}
         </div>

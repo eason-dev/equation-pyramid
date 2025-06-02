@@ -25,7 +25,7 @@ type GameEvent =
   | { type: 'CONFIG_UPDATE'; config: Partial<GameConfig> }
   | { type: 'START_GAME' }
   | { type: 'GUESS' }
-  | { type: 'SELECT_PLAYER'; playerId: number }
+  | { type: 'SELECT_PLAYER'; playerId: string }
   | { type: 'SELECT_TILE'; tileIndex: number }
   | { type: 'CHECK_EQUATION' }
   | { type: 'NEXT_ROUND' }
