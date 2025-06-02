@@ -1,15 +1,11 @@
 "use client";
 
-interface Player {
-  id: number;
-  name: string;
-  score: number;
-}
+import type { Player } from "@/logic/game/types";
 
 interface PlayerListProps {
   players: Player[];
-  onSelectPlayer: (id: number) => void;
-  selectedPlayerId: number | null;
+  onSelectPlayer: (id: string) => void;
+  selectedPlayerId: string | null;
 }
 
 export function PlayerList({

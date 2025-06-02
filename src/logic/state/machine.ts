@@ -1,13 +1,7 @@
 import { createMachine, assign } from 'xstate';
 
-import type { GameState } from '@/logic/game/types';
+import type { GameState, Player } from '@/logic/game/types';
 import { generateGameState, calculateEquation } from '@/logic/game/logic';
-
-interface Player {
-  id: number;
-  name: string;
-  score: number;
-}
 
 interface GameConfig {
   numPlayers: number;
@@ -23,7 +17,7 @@ interface GameContext {
   config: GameConfig;
   mainTimer: number;
   guessTimer: number;
-  guessingPlayerId: number | null;
+  guessingPlayerId: string | null;
 }
 
 type GameEvent =
@@ -82,7 +76,7 @@ export const appMachine = createMachine({
             // Initialize players if not already done
             if (newConfig.players.length === 0) {
               newConfig.players = Array.from({ length: newConfig.numPlayers }, (_, i) => ({
-                id: i + 1,
+                id: `player-${i + 1}`,
                 name: `Player ${i + 1}`,
                 score: 0
               }));
@@ -191,7 +185,7 @@ export const appMachine = createMachine({
         SELECT_PLAYER: {
           actions: assign(({ context, event }) => ({
             ...context,
-            guessingPlayerId: event.type === 'SELECT_PLAYER' ? event.playerId : null
+            guessingPlayerId: event.type === 'SELECT_PLAYER' ? event.playerId.toString() : null
           }))
         },
         UPDATE_GUESS_TIMER: {

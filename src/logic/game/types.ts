@@ -1,8 +1,14 @@
 export type Operator = '+' | '-' | '*' | '/';
 
+export interface Player {
+  id: string;
+  name: string;
+  score: number;
+}
+
 export interface Tile {
-  operator: Operator;
   number: number;
+  operator: string;
 }
 
 export interface Equation {
