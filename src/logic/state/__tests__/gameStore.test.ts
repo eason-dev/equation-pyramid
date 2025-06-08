@@ -5,9 +5,9 @@ import { useGameStore } from "../gameStore";
 jest.mock("../../game/logic", () => ({
   generateGameState: jest.fn().mockReturnValue({
     tiles: [
-      { operator: "+", number: 5 },
-      { operator: "+", number: 3 },
-      { operator: "+", number: 2 },
+      { operator: "+", number: 5, label: "A" },
+      { operator: "+", number: 3, label: "B" },
+      { operator: "+", number: 2, label: "C" },
     ],
     targetNumber: 10,
     validEquations: [],
@@ -54,6 +54,12 @@ describe("Game Store", () => {
 
     expect(result.current.config.numPlayers).toBe(2);
     expect(result.current.config.numRounds).toBe(2);
+
+    // Players are only created when startGame is called
+    act(() => {
+      result.current.startGame();
+    });
+
     expect(result.current.players).toHaveLength(2);
     expect(result.current.players[0].name).toBe("Player 1");
     expect(result.current.players[1].name).toBe("Player 2");
@@ -106,17 +112,24 @@ describe("Game Store", () => {
       result.current.start();
       result.current.updateConfig({ numPlayers: 2, numRounds: 1 });
       result.current.startGame();
-      result.current.startGuessing();
+      result.current.startGuessing("player-1");
     });
 
-    // Select tiles
+    // Select first two tiles
     act(() => {
       result.current.selectTile(0);
       result.current.selectTile(1);
+    });
+
+    expect(result.current.selectedTiles).toEqual([0, 1]);
+
+    // Select third tile - this should automatically submit the equation and clear selectedTiles
+    act(() => {
       result.current.selectTile(2);
     });
 
-    expect(result.current.selectedTiles).toEqual([0, 1, 2]);
+    expect(result.current.selectedTiles).toEqual([]); // Tiles are cleared after equation submission
+    expect(result.current.currentState).toBe("game"); // Back to game state
   });
 
   it("should transition to guessing state", () => {
@@ -129,7 +142,7 @@ describe("Game Store", () => {
     });
 
     act(() => {
-      result.current.startGuessing();
+      result.current.startGuessing("player-1");
     });
 
     expect(result.current.currentState).toBe("guessing");
@@ -143,11 +156,7 @@ describe("Game Store", () => {
       result.current.start();
       result.current.updateConfig({ numPlayers: 2, numRounds: 1 });
       result.current.startGame();
-      result.current.startGuessing();
-    });
-
-    act(() => {
-      result.current.selectPlayer("player-1");
+      result.current.startGuessing("player-1");
     });
 
     expect(result.current.guessingPlayerId).toBe("player-1");
@@ -160,8 +169,7 @@ describe("Game Store", () => {
       result.current.start();
       result.current.updateConfig({ numPlayers: 2, numRounds: 1 });
       result.current.startGame();
-      result.current.startGuessing();
-      result.current.selectPlayer("player-1");
+      result.current.startGuessing("player-1");
     });
 
     // Select tiles and check equation
@@ -189,8 +197,7 @@ describe("Game Store", () => {
       result.current.start();
       result.current.updateConfig({ numPlayers: 2, numRounds: 1 });
       result.current.startGame();
-      result.current.startGuessing();
-      result.current.selectPlayer("player-1");
+      result.current.startGuessing("player-1");
     });
 
     // Select tiles and check equation
@@ -295,7 +302,7 @@ describe("Game Store", () => {
       result.current.start();
       result.current.updateConfig({ numPlayers: 2, numRounds: 1 });
       result.current.startGame();
-      result.current.startGuessing();
+      result.current.startGuessing("player-1");
     });
 
     expect(result.current.currentState).toBe("guessing");

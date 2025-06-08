@@ -1,4 +1,4 @@
-export type Operator = '+' | '-' | '*' | '/';
+export type Operator = "+" | "-" | "*" | "/";
 
 export interface Player {
   id: string;
@@ -9,6 +9,7 @@ export interface Player {
 export interface Tile {
   number: number;
   operator: string;
+  label: string;
 }
 
 export interface Equation {
@@ -20,4 +21,4 @@ export interface GameState {
   tiles: Tile[];
   targetNumber: number;
   validEquations: Equation[];
-} 
+}
