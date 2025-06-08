@@ -20,7 +20,7 @@ export function PlayerList({ players, selectedPlayerId }: PlayerListProps) {
               : "border-gray-200 hover:border-gray-300"
           }`}
         >
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2">
             <span className="font-medium">{player.name}</span>
             <span className="text-lg font-bold">Score: {player.score}</span>
           </div>

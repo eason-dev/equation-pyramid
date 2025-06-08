@@ -21,8 +21,14 @@ export function Playing({
   timeRemaining,
   onTileClick,
 }: PlayingProps) {
-  const { currentState, selectedTiles, gameState, guessTimer, startGuessing } =
-    useGameStore();
+  const {
+    currentState,
+    selectedTiles,
+    gameState,
+    guessTimer,
+    startGuessing,
+    foundEquations,
+  } = useGameStore();
 
   const isGuessing = currentState === "guessing";
   const canStartGuessing =
@@ -97,6 +103,41 @@ export function Playing({
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Equations Progress */}
+      {gameState && (
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="font-medium text-gray-900 mb-2">Equations Progress</h3>
+          <p className="text-gray-600 mb-2">
+            Found {foundEquations.length} of {gameState.validEquations.length}{" "}
+            valid equations
+          </p>
+          {foundEquations.length > 0 && (
+            <div className="mt-2">
+              <h4 className="text-sm font-medium text-gray-700 mb-1">
+                Found Equations:
+              </h4>
+              <div className="space-y-1">
+                {foundEquations.map((equationKey, index) => {
+                  const [i, j, k] = equationKey.split(",").map(Number);
+                  const equation = gameState.validEquations.find(
+                    (eq) =>
+                      eq.tiles[0].number === tiles[i].number &&
+                      eq.tiles[1].number === tiles[j].number &&
+                      eq.tiles[2].number === tiles[k].number,
+                  );
+                  return (
+                    <div key={index} className="text-sm text-gray-600">
+                      {equation?.tiles.map((t) => t.label).join(" ")} ={" "}
+                      {equation?.result}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
