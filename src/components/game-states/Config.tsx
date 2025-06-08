@@ -27,7 +27,7 @@ export function Config({
           }
           className="p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {[1, 2, 3, 4].map((n) => (
+          {[1, 2].map((n) => (
             <option key={n} value={n}>
               {n}
             </option>

@@ -40,7 +40,6 @@ export function Playing({
             // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
             key={index}
             tile={tile}
-            index={index}
             isSelected={index === selectedTileIndex}
             onClick={() => onTileClick(index)}
           />

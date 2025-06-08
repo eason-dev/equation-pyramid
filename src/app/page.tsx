@@ -12,7 +12,8 @@ export default function Home() {
     state,
     send,
     context: {
-      config: { players, numRounds, currentRound },
+      config: { numRounds, currentRound },
+      players,
       gameState,
       selectedTiles,
       guessingPlayerId,

@@ -3,11 +3,20 @@ import { createMachine, assign } from 'xstate';
 import type { GameState, Player } from '@/logic/game/types';
 import { generateGameState, calculateEquation } from '@/logic/game/logic';
 
+const MAX_PLAYERS = 2;
+const MIN_PLAYERS = 1;
+const MAX_ROUNDS = 5;
+const MIN_ROUNDS = 1;
+const INITIAL_PLAYERS = 1;
+const INITIAL_ROUNDS = 3;
+const ROUND_DURATION = 180; // 3 minutes in seconds
+const GUESS_DURATION = 10; // 10 seconds in seconds
+const TILES_PER_EQUATION = 3;
+
 interface GameConfig {
   numPlayers: number;
   numRounds: number;
   currentRound: number;
-  players: Player[];
 }
 
 interface GameContext {
@@ -15,6 +24,7 @@ interface GameContext {
   selectedTiles: number[];
   foundEquations: string[];
   config: GameConfig;
+  players: Player[];
   mainTimer: number;
   guessTimer: number;
   guessingPlayerId: string | null;
@@ -52,13 +62,13 @@ export const appMachine = createMachine({
     selectedTiles: [],
     foundEquations: [],
     config: {
-      numPlayers: 1,
-      numRounds: 1,
+      numPlayers: INITIAL_PLAYERS,
+      numRounds: INITIAL_ROUNDS,
       currentRound: 0,
-      players: []
     },
-    mainTimer: 180, // 3 minutes in seconds
-    guessTimer: 10, // 10 seconds for guessing
+    players: [],
+    mainTimer: ROUND_DURATION,
+    guessTimer: GUESS_DURATION,
     guessingPlayerId: null
   },
   states: {
@@ -71,15 +81,16 @@ export const appMachine = createMachine({
       on: {
         CONFIG_UPDATE: {
           actions: assign(({ context, event }) => {
-            if (event.type !== 'CONFIG_UPDATE') return context;
             const newConfig = { ...context.config, ...event.config };
-            // Initialize players if not already done
-            if (newConfig.players.length === 0) {
-              newConfig.players = Array.from({ length: newConfig.numPlayers }, (_, i) => ({
-                id: `player-${i + 1}`,
-                name: `Player ${i + 1}`,
-                score: 0
-              }));
+            if (newConfig.numPlayers > MAX_PLAYERS) {
+              newConfig.numPlayers = MAX_PLAYERS;
+            } else if (newConfig.numPlayers < MIN_PLAYERS) {
+              newConfig.numPlayers = MIN_PLAYERS;
+            }
+            if (newConfig.numRounds > MAX_ROUNDS) {
+              newConfig.numRounds = MAX_ROUNDS;
+            } else if (newConfig.numRounds < MIN_ROUNDS) {
+              newConfig.numRounds = MIN_ROUNDS;
             }
             return { ...context, config: newConfig };
           })
@@ -89,11 +100,16 @@ export const appMachine = createMachine({
           actions: assign(({ context }) => ({
             ...context,
             config: { ...context.config, currentRound: 1 },
+            players: Array.from({ length: context.config.numPlayers }, (_, i) => ({
+              id: `player-${i + 1}`,
+              name: `Player ${i + 1}`,
+              score: 0
+            })),
             gameState: generateGameState(),
             selectedTiles: [],
             foundEquations: [],
-            mainTimer: 180,
-            guessTimer: 10,
+            mainTimer: ROUND_DURATION,
+            guessTimer: GUESS_DURATION,
             guessingPlayerId: null
           }))
         }
@@ -105,7 +121,7 @@ export const appMachine = createMachine({
           target: 'guessing',
           actions: assign(({ context }) => ({
             ...context,
-            guessTimer: 10
+            guessTimer: GUESS_DURATION
           }))
         },
         UPDATE_TIMER: {
@@ -114,64 +130,9 @@ export const appMachine = createMachine({
             mainTimer: Math.max(0, context.mainTimer - 1)
           }))
         },
-        SELECT_TILE: {
-          actions: assign(({ context, event }) => {
-            if (event.type !== 'SELECT_TILE' || context.selectedTiles.length >= 3) {
-              return context;
-            }
-            return {
-              ...context,
-              selectedTiles: [...context.selectedTiles, event.tileIndex]
-            };
-          })
-        },
-        CHECK_EQUATION: {
-          actions: assign(({ context }) => {
-            if (context.selectedTiles.length !== 3 || !context.gameState || !context.guessingPlayerId) {
-              return context;
-            }
-            
-            const [i, j, k] = context.selectedTiles;
-            const equation = {
-              tiles: [
-                context.gameState.tiles[i],
-                context.gameState.tiles[j],
-                context.gameState.tiles[k]
-              ] as [typeof context.gameState.tiles[0], typeof context.gameState.tiles[0], typeof context.gameState.tiles[0]]
-            };
-            
-            const equationKey = `${i},${j},${k}`;
-            if (context.foundEquations.includes(equationKey)) {
-              return context;
-            }
-            
-            const result = calculateEquation(equation.tiles);
-            const newContext = { ...context };
-            
-            if (result === context.gameState.targetNumber) {
-              // Award point to the guessing player
-              const player = newContext.config.players.find(p => p.id === context.guessingPlayerId);
-              if (player) {
-                player.score += 1;
-              }
-            } else {
-              // Deduct point from the guessing player
-              const player = newContext.config.players.find(p => p.id === context.guessingPlayerId);
-              if (player) {
-                player.score -= 1;
-              }
-            }
-            
-            return {
-              ...newContext,
-              selectedTiles: [],
-              foundEquations: [...context.foundEquations, equationKey]
-            };
-          })
-        }
       },
       after: {
-        180000: { // 3 minutes in milliseconds
+        [ROUND_DURATION * 1000]: {
           target: 'roundResult',
           actions: assign(({ context }) => ({
             ...context,
@@ -196,7 +157,7 @@ export const appMachine = createMachine({
         },
         SELECT_TILE: {
           actions: assign(({ context, event }) => {
-            if (event.type !== 'SELECT_TILE' || context.selectedTiles.length >= 3) {
+            if (event.type !== 'SELECT_TILE' || context.selectedTiles.length >= TILES_PER_EQUATION) {
               return context;
             }
             return {
@@ -207,7 +168,7 @@ export const appMachine = createMachine({
         },
         CHECK_EQUATION: {
           actions: assign(({ context }) => {
-            if (context.selectedTiles.length !== 3 || !context.gameState || !context.guessingPlayerId) {
+            if (context.selectedTiles.length !== TILES_PER_EQUATION || !context.gameState || !context.guessingPlayerId) {
               return context;
             }
             
@@ -221,22 +182,26 @@ export const appMachine = createMachine({
             };
             
             const equationKey = `${i},${j},${k}`;
-            if (context.foundEquations.includes(equationKey)) {
-              return context;
-            }
             
             const result = calculateEquation(equation.tiles);
             const newContext = { ...context };
             
-            if (result === context.gameState.targetNumber) {
+            if (context.foundEquations.includes(equationKey)) {
+              // Deduct point from the guessing player
+              const player = newContext.players.find(p => p.id === context.guessingPlayerId);
+              if (player) {
+                player.score -= 1;
+              }
+            } else if (result === context.gameState.targetNumber) {
               // Award point to the guessing player
-              const player = newContext.config.players.find(p => p.id === context.guessingPlayerId);
+              const player = newContext.players.find(p => p.id === context.guessingPlayerId);
               if (player) {
                 player.score += 1;
               }
+              newContext.foundEquations.push(equationKey);
             } else {
               // Deduct point from the guessing player
-              const player = newContext.config.players.find(p => p.id === context.guessingPlayerId);
+              const player = newContext.players.find(p => p.id === context.guessingPlayerId);
               if (player) {
                 player.score -= 1;
               }
@@ -245,13 +210,12 @@ export const appMachine = createMachine({
             return {
               ...newContext,
               selectedTiles: [],
-              foundEquations: [...context.foundEquations, equationKey]
             };
           })
         }
       },
       after: {
-        10000: { // 10 seconds in milliseconds
+        [GUESS_DURATION * 1000]: {
           target: 'game',
           actions: assign(({ context }) => ({
             ...context,
@@ -282,8 +246,8 @@ export const appMachine = createMachine({
                 gameState: generateGameState(),
                 selectedTiles: [],
                 foundEquations: [],
-                mainTimer: 180,
-                guessTimer: 10,
+                mainTimer: ROUND_DURATION,
+                guessTimer: GUESS_DURATION,
                 guessingPlayerId: null
               };
             })

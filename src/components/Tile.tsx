@@ -4,12 +4,11 @@ import type { Tile as TileType } from "@/logic/game/types";
 
 interface TileProps {
   tile: TileType;
-  index: number;
   isSelected: boolean;
   onClick: () => void;
 }
 
-export function Tile({ tile, index, isSelected, onClick }: TileProps) {
+export function Tile({ tile, isSelected, onClick }: TileProps) {
   return (
     <button
       type="button"

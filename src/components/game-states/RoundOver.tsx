@@ -1,6 +1,6 @@
 "use client";
 
-import type { Player } from "@/app/game/types";
+import type { Player } from "@/logic/game/types";
 
 interface RoundOverProps {
   players: Player[];
