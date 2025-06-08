@@ -27,7 +27,7 @@ interface GameConfig {
   currentRound: number;
 }
 
-interface GameStoreState {
+interface GameData {
   // Current app state
   currentState: GameAppState;
 
@@ -44,15 +44,16 @@ interface GameStoreState {
   // Timers
   mainTimerInterval: NodeJS.Timeout | null;
   guessTimerInterval: NodeJS.Timeout | null;
+}
 
+interface GameStoreState extends GameData {
   // Actions
   start: () => void;
   updateConfig: (config: Partial<GameConfig>) => void;
   startGame: () => void;
-  startGuessing: () => void;
-  selectPlayer: (playerId: string) => void;
+  startGuessing: (playerId: string) => void;
   selectTile: (tileIndex: number) => void;
-  checkEquation: () => void;
+  submitEquation: () => void;
   nextRound: () => void;
   continueGame: () => void;
   exitToMenu: () => void;
@@ -73,6 +74,20 @@ const initialConfig: GameConfig = {
   currentRound: 0,
 };
 
+const initialState: GameData = {
+  currentState: "menu" as GameAppState,
+  gameState: null as GameState | null,
+  selectedTiles: [],
+  foundEquations: [],
+  config: initialConfig,
+  players: [],
+  mainTimer: ROUND_DURATION,
+  guessTimer: GUESS_DURATION,
+  guessingPlayerId: null,
+  mainTimerInterval: null,
+  guessTimerInterval: null,
+};
+
 const createInitialPlayers = (numPlayers: number): Player[] => {
   return Array.from({ length: numPlayers }, (_, i) => ({
     id: `player-${i + 1}`,
@@ -83,18 +98,7 @@ const createInitialPlayers = (numPlayers: number): Player[] => {
 
 export const useGameStore = create<GameStoreState>()(
   immer((set, get) => ({
-    // Initial state
-    currentState: "menu",
-    gameState: null,
-    selectedTiles: [],
-    foundEquations: [],
-    config: initialConfig,
-    players: createInitialPlayers(INITIAL_PLAYERS),
-    mainTimer: ROUND_DURATION,
-    guessTimer: GUESS_DURATION,
-    guessingPlayerId: null,
-    mainTimerInterval: null,
-    guessTimerInterval: null,
+    ...initialState,
 
     start: () => {
       set((state) => {
@@ -117,11 +121,6 @@ export const useGameStore = create<GameStoreState>()(
             Math.min(MAX_ROUNDS, newConfig.numRounds),
           );
         }
-
-        // Update players array if numPlayers changed
-        if (newConfig.numPlayers !== undefined) {
-          state.players = createInitialPlayers(state.config.numPlayers);
-        }
       });
     },
 
@@ -131,6 +130,7 @@ export const useGameStore = create<GameStoreState>()(
         state.currentState = "game";
         state.config.currentRound = 1;
         state.gameState = generateGameState();
+        state.players = createInitialPlayers(state.config.numPlayers);
         state.selectedTiles = [];
         state.foundEquations = [];
         state.mainTimer = ROUND_DURATION;
@@ -140,31 +140,32 @@ export const useGameStore = create<GameStoreState>()(
       startMainTimer();
     },
 
-    startGuessing: () => {
+    startGuessing: (playerId) => {
       const { stopMainTimer, startGuessTimer } = get();
       stopMainTimer();
       set((state) => {
         state.currentState = "guessing";
+        state.guessingPlayerId = playerId;
         state.guessTimer = GUESS_DURATION;
       });
       startGuessTimer();
     },
 
-    selectPlayer: (playerId) => {
-      set((state) => {
-        state.guessingPlayerId = playerId;
-      });
-    },
-
     selectTile: (tileIndex) => {
+      const { selectedTiles, submitEquation } = get();
+
       set((state) => {
         if (state.selectedTiles.length < TILES_PER_EQUATION) {
           state.selectedTiles.push(tileIndex);
         }
       });
+
+      if (selectedTiles.length === TILES_PER_EQUATION - 1) {
+        submitEquation();
+      }
     },
 
-    checkEquation: () => {
+    submitEquation: () => {
       const { startMainTimer } = get();
       set((state) => {
         if (
@@ -307,6 +308,13 @@ export const useGameStore = create<GameStoreState>()(
             state.guessingPlayerId = null;
             state.selectedTiles = [];
             state.guessTimerInterval = null;
+            // deduct point for incorrect equation
+            const player = state.players.find(
+              (p) => p.id === state.guessingPlayerId,
+            );
+            if (player) {
+              player.score -= 1;
+            }
           });
           clearInterval(interval);
           startMainTimer();

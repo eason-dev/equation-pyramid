@@ -4,22 +4,16 @@ import type { Player } from "@/logic/game/types";
 
 interface PlayerListProps {
   players: Player[];
-  onSelectPlayer: (id: string) => void;
   selectedPlayerId: string | null;
 }
 
-export function PlayerList({
-  players,
-  onSelectPlayer,
-  selectedPlayerId,
-}: PlayerListProps) {
+export function PlayerList({ players, selectedPlayerId }: PlayerListProps) {
   return (
     <div className="space-y-2">
       {players.map((player) => (
         <button
           type="button"
           key={player.id}
-          onClick={() => onSelectPlayer(player.id)}
           className={`w-full p-3 rounded-lg border-2 transition-colors ${
             selectedPlayerId === player.id
               ? "border-green-500 bg-green-50"

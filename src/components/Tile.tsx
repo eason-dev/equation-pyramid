@@ -6,13 +6,15 @@ interface TileProps {
   tile: TileType;
   isSelected: boolean;
   onClick: () => void;
+  disabled: boolean;
 }
 
-export function Tile({ tile, isSelected, onClick }: TileProps) {
+export function Tile({ tile, isSelected, onClick, disabled }: TileProps) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       className={`p-4 rounded-lg border-2 transition-colors ${
         isSelected
           ? "border-blue-500 bg-blue-50"

@@ -169,7 +169,7 @@ describe("Game Store", () => {
       result.current.selectTile(0);
       result.current.selectTile(1);
       result.current.selectTile(2);
-      result.current.checkEquation();
+      result.current.submitEquation();
     });
 
     expect(result.current.players[0].score).toBe(1); // Player 1 gets a point
@@ -198,7 +198,7 @@ describe("Game Store", () => {
       result.current.selectTile(0);
       result.current.selectTile(1);
       result.current.selectTile(2);
-      result.current.checkEquation();
+      result.current.submitEquation();
     });
 
     expect(result.current.players[0].score).toBe(-1); // Player 1 loses a point

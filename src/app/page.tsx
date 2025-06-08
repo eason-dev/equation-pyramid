@@ -19,7 +19,6 @@ export default function Home() {
     updateConfig,
     startGame,
     selectTile,
-    selectPlayer,
     nextRound,
     continueGame,
   } = useGameStore();
@@ -60,7 +59,6 @@ export default function Home() {
               selectedPlayerId={selectedPlayerId}
               timeRemaining={timeRemaining}
               onTileClick={selectTile}
-              onPlayerSelect={selectPlayer}
             />
           )}
 

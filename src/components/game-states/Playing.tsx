@@ -12,7 +12,6 @@ interface PlayingProps {
   selectedPlayerId: string | null;
   timeRemaining: number;
   onTileClick: (index: number) => void;
-  onPlayerSelect: (playerId: string) => void;
 }
 
 export function Playing({
@@ -21,22 +20,13 @@ export function Playing({
   selectedPlayerId,
   timeRemaining,
   onTileClick,
-  onPlayerSelect,
 }: PlayingProps) {
-  const {
-    currentState,
-    selectedTiles,
-    gameState,
-    guessTimer,
-    startGuessing,
-    checkEquation,
-  } = useGameStore();
+  const { currentState, selectedTiles, gameState, guessTimer, startGuessing } =
+    useGameStore();
 
   const isGuessing = currentState === "guessing";
   const canStartGuessing =
     currentState === "game" && selectedTiles.length === 0;
-  const canSubmitGuess =
-    isGuessing && selectedTiles.length === 3 && selectedPlayerId;
 
   return (
     <div className="space-y-8">
@@ -53,11 +43,7 @@ export function Playing({
       )}
 
       <div className="flex justify-between items-center">
-        <PlayerList
-          players={players}
-          onSelectPlayer={onPlayerSelect}
-          selectedPlayerId={selectedPlayerId}
-        />
+        <PlayerList players={players} selectedPlayerId={selectedPlayerId} />
         <div className="text-center">
           <Timer seconds={isGuessing ? guessTimer : timeRemaining} />
           {isGuessing && (
@@ -71,20 +57,11 @@ export function Playing({
         {canStartGuessing && (
           <button
             type="button"
-            onClick={startGuessing}
+            // TODO: select player
+            onClick={() => startGuessing("player-1")}
             className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
           >
             Start Guessing
-          </button>
-        )}
-
-        {canSubmitGuess && (
-          <button
-            type="button"
-            onClick={checkEquation}
-            className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-          >
-            Submit Equation
           </button>
         )}
       </div>
@@ -118,6 +95,7 @@ export function Playing({
             tile={tile}
             isSelected={selectedTiles.includes(index)}
             onClick={() => onTileClick(index)}
+            disabled={!isGuessing}
           />
         ))}
       </div>
