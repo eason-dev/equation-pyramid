@@ -120,7 +120,7 @@ export function Playing({
                 Found Equations:
               </h4>
               <div className="space-y-1">
-                {foundEquations.map((equationKey, index) => {
+                {foundEquations.map((equationKey) => {
                   const [i, j, k] = equationKey.split(",").map(Number);
                   const equation = gameState.validEquations.find(
                     (eq) =>
@@ -129,7 +129,7 @@ export function Playing({
                       eq.tiles[2].number === tiles[k].number,
                   );
                   return (
-                    <div key={index} className="text-sm text-gray-600">
+                    <div key={equationKey} className="text-sm text-gray-600">
                       {equation?.tiles.map((t) => t.label).join(" ")} ={" "}
                       {equation?.result}
                     </div>
