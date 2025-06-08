@@ -5,33 +5,34 @@ import { Config } from "@/components/game-states/Config";
 import { Playing } from "@/components/game-states/Playing";
 import { RoundOver } from "@/components/game-states/RoundOver";
 import { GameOver } from "@/components/game-states/GameOver";
-import { useGameState } from "@/logic/state/useGameState";
+import { useGameStore } from "@/logic/state/gameStore";
 
 export default function Home() {
   const {
-    state,
-    send,
-    context: {
-      config: { numRounds, currentRound },
-      players,
-      gameState,
-      selectedTiles,
-      guessingPlayerId,
-      mainTimer,
-    },
-  } = useGameState();
+    currentState,
+    config,
+    players,
+    gameState,
+    guessingPlayerId,
+    mainTimer,
+    start,
+    updateConfig,
+    startGame,
+    selectTile,
+    selectPlayer,
+    nextRound,
+    continueGame,
+  } = useGameStore();
 
   const tiles = gameState?.tiles ?? [];
-  const selectedTileIndex =
-    selectedTiles.length > 0 ? selectedTiles[selectedTiles.length - 1] : null;
   const selectedPlayerId = guessingPlayerId;
   const timeRemaining = mainTimer;
 
-  const handleConfigUpdate = (config: {
+  const handleConfigUpdate = (newConfig: {
     numPlayers?: number;
     numRounds?: number;
   }) => {
-    send({ type: "CONFIG_UPDATE", config });
+    updateConfig(newConfig);
   };
 
   return (
@@ -41,48 +42,38 @@ export default function Home() {
           Equation Pyramid
         </h1>
         <div className="bg-white rounded-xl shadow-lg p-8">
-          {state.matches("menu") && (
-            <Menu onStart={() => send({ type: "START" })} />
-          )}
+          {currentState === "menu" && <Menu onStart={start} />}
 
-          {state.matches("config") && (
+          {currentState === "config" && (
             <Config
-              numPlayers={players.length}
-              numRounds={numRounds}
+              numPlayers={config.numPlayers}
+              numRounds={config.numRounds}
               onConfigUpdate={handleConfigUpdate}
-              onStartGame={() => send({ type: "START_GAME" })}
+              onStartGame={startGame}
             />
           )}
 
-          {state.matches("game") && (
+          {(currentState === "game" || currentState === "guessing") && (
             <Playing
               tiles={tiles}
               players={players}
-              selectedTileIndex={selectedTileIndex}
               selectedPlayerId={selectedPlayerId}
               timeRemaining={timeRemaining}
-              onTileClick={(tileIndex) =>
-                send({ type: "SELECT_TILE", tileIndex })
-              }
-              onPlayerSelect={(playerId) =>
-                send({ type: "SELECT_PLAYER", playerId })
-              }
+              onTileClick={selectTile}
+              onPlayerSelect={selectPlayer}
             />
           )}
 
-          {state.matches("roundOver") && (
+          {currentState === "roundOver" && (
             <RoundOver
               players={players}
-              currentRound={currentRound}
-              onNextRound={() => send({ type: "NEXT_ROUND" })}
+              currentRound={config.currentRound}
+              onNextRound={nextRound}
             />
           )}
 
-          {state.matches("gameOver") && (
-            <GameOver
-              players={players}
-              onNewGame={() => send({ type: "CONTINUE" })}
-            />
+          {currentState === "gameOver" && (
+            <GameOver players={players} onNewGame={continueGame} />
           )}
         </div>
       </div>
