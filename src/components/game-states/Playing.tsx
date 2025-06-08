@@ -66,27 +66,6 @@ export function Playing({
         )}
       </div>
 
-      {/* Selected Tiles Display */}
-      {selectedTiles.length > 0 && (
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <h3 className="font-medium text-gray-900 mb-2">Selected Tiles:</h3>
-          <div className="flex space-x-2">
-            {selectedTiles.map((tileIndex) => {
-              const tile = tiles[tileIndex];
-              return (
-                <div
-                  key={tileIndex}
-                  className="px-3 py-2 bg-white border border-blue-200 rounded text-center"
-                >
-                  <div className="font-bold">{tile.number}</div>
-                  <div className="text-sm">{tile.operator}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
       <div className="grid grid-cols-3 gap-4">
         {tiles.map((tile, index) => (
           <Tile
@@ -99,6 +78,27 @@ export function Playing({
           />
         ))}
       </div>
+
+      {/* Selected Tiles Display */}
+      {selectedTiles.length > 0 && (
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <h3 className="font-medium text-gray-900 mb-2">Selected Tiles:</h3>
+          <div className="flex space-x-2">
+            {selectedTiles.map((tileIndex) => {
+              const tile = tiles[tileIndex];
+              return (
+                <Tile
+                  key={tileIndex}
+                  tile={tile}
+                  isSelected={false}
+                  onClick={() => {}}
+                  disabled
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
