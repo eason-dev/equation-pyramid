@@ -282,9 +282,11 @@ export const useGameStore = create<GameStoreState>()(
     },
 
     transitionToRoundOver: () => {
+      const { stopMainTimer } = get();
+      stopMainTimer();
+
       set((state) => {
         state.currentState = "roundOver";
-        state.mainTimerInterval = null;
       });
     },
 
