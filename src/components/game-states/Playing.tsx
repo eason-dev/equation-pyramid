@@ -3,6 +3,7 @@
 import { Tile } from "@/components/Tile";
 import { PlayerList } from "@/components/PlayerList";
 import { Timer } from "@/components/Timer";
+import { RoundStepper } from "@/components/RoundStepper";
 import { useGameStore } from "@/logic/state/gameStore";
 import type { Player, Tile as TileType } from "@/logic/game/types";
 import { DEBUG } from "@/constants";
@@ -29,6 +30,7 @@ export function Playing({
     guessTimer,
     startGuessing,
     foundEquations,
+    config,
   } = useGameStore();
 
   const isGuessing = currentState === "guessing";
@@ -37,6 +39,12 @@ export function Playing({
 
   return (
     <div className="space-y-8">
+      {/* Round Stepper */}
+      <RoundStepper
+        currentRound={config.currentRound}
+        totalRounds={config.numRounds}
+      />
+
       {/* Target Number Display */}
       {gameState && (
         <div className="text-center">
