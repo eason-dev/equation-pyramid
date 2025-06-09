@@ -4,6 +4,8 @@ const OPERATORS: Operator[] = ["+", "-", "*", "/"];
 const INVALID_RESULT = -1;
 const MAX_DIVIDE_TILES = 2;
 const MAX_MULTIPLY_TILES = 2;
+const MIN_VALID_EQUATIONS = 2;
+const MAX_VALID_EQUATIONS = 5;
 
 export function generateRandomTile(label: string): Tile {
   const operator = OPERATORS[Math.floor(Math.random() * OPERATORS.length)]; // +, -, *, /
@@ -158,9 +160,10 @@ export function generateGameState(): GameState {
     const divideCount = tiles.filter((tile) => tile.operator === "/").length;
     const multiplyCount = tiles.filter((tile) => tile.operator === "*").length;
 
-    // If we have valid equations and the operator counts are within limits, break the loop
+    // If we have valid equations within the desired range and the operator counts are within limits, break the loop
     isValidState =
-      validEquations.length > 0 &&
+      validEquations.length >= MIN_VALID_EQUATIONS &&
+      validEquations.length <= MAX_VALID_EQUATIONS &&
       divideCount <= MAX_DIVIDE_TILES &&
       multiplyCount <= MAX_MULTIPLY_TILES;
   } while (!isValidState);
