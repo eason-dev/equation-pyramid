@@ -5,6 +5,7 @@ import { PlayerList } from "@/components/PlayerList";
 import { Timer } from "@/components/Timer";
 import { useGameStore } from "@/logic/state/gameStore";
 import type { Player, Tile as TileType } from "@/logic/game/types";
+import { DEBUG } from "@/constants";
 
 interface PlayingProps {
   tiles: TileType[];
@@ -135,6 +136,26 @@ export function Playing({
                     </div>
                   );
                 })}
+              </div>
+            </div>
+          )}
+
+          {/* Debug Mode: Show All Valid Equations */}
+          {DEBUG && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <h4 className="text-sm font-medium text-gray-700 mb-1">
+                Debug: All Valid Equations:
+              </h4>
+              <div className="space-y-1">
+                {gameState.validEquations.map((equation) => (
+                  <div
+                    key={equation.tiles.map((t) => t.label).join("")}
+                    className="text-sm text-gray-500"
+                  >
+                    {equation.tiles.map((t) => t.label).join(" ")} ={" "}
+                    {equation.result}
+                  </div>
+                ))}
               </div>
             </div>
           )}
