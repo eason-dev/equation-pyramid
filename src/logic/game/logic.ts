@@ -2,6 +2,8 @@ import type { Tile, Equation, Operator, GameState } from "@/logic/game/types";
 
 const OPERATORS: Operator[] = ["+", "-", "*", "/"];
 const INVALID_RESULT = -1;
+const MAX_DIVIDE_TILES = 2;
+const MAX_MULTIPLY_TILES = 2;
 
 export function generateRandomTile(label: string): Tile {
   const operator = OPERATORS[Math.floor(Math.random() * OPERATORS.length)]; // +, -, *, /
@@ -139,19 +141,29 @@ export function generateAllEquations(tiles: Tile[]): Equation[] {
 }
 
 export function generateGameState(): GameState {
-  const tiles = generateTiles(10);
-  const equations = generateAllEquations(tiles);
+  let tiles: Tile[];
+  let validEquations: Equation[];
+  let isValidState = false;
 
-  // Filter out invalid equations and those with results outside 1-20 range
-  const validEquations = equations.filter(
-    (eq) => eq.result !== INVALID_RESULT && eq.result >= 1 && eq.result <= 20,
-  );
+  do {
+    tiles = generateTiles(10);
+    const equations = generateAllEquations(tiles);
 
-  // Ensure we have at least one valid equation
-  if (validEquations.length === 0) {
-    // If no valid equations found, generate new tiles and try again
-    return generateGameState();
-  }
+    // Filter out invalid equations and those with results outside 1-20 range
+    validEquations = equations.filter(
+      (eq) => eq.result !== INVALID_RESULT && eq.result >= 1 && eq.result <= 20,
+    );
+
+    // Check if we have too many divide or multiply tiles
+    const divideCount = tiles.filter((tile) => tile.operator === "/").length;
+    const multiplyCount = tiles.filter((tile) => tile.operator === "*").length;
+
+    // If we have valid equations and the operator counts are within limits, break the loop
+    isValidState =
+      validEquations.length > 0 &&
+      divideCount <= MAX_DIVIDE_TILES &&
+      multiplyCount <= MAX_MULTIPLY_TILES;
+  } while (!isValidState);
 
   // Pick a random equation's result as the target
   const targetEquation =
