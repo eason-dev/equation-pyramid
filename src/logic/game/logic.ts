@@ -6,10 +6,14 @@ const MAX_DIVIDE_TILES = 2;
 const MAX_MULTIPLY_TILES = 2;
 const MIN_VALID_EQUATIONS = 2;
 const MAX_VALID_EQUATIONS = 5;
+const MIN_TILE_NUMBER = 1;
+const MAX_TILE_NUMBER = 20;
 
 export function generateRandomTile(label: string): Tile {
   const operator = OPERATORS[Math.floor(Math.random() * OPERATORS.length)]; // +, -, *, /
-  const number = Math.floor(Math.random() * 20) + 1; // 1-20
+  const number =
+    Math.floor(Math.random() * (MAX_TILE_NUMBER - MIN_TILE_NUMBER + 1)) +
+    MIN_TILE_NUMBER; // 1-20
   return { operator, number, label };
 }
 
