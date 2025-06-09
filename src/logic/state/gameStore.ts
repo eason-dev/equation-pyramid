@@ -66,6 +66,9 @@ interface GameStoreState extends GameData {
 
   // Reset actions
   resetGame: () => void;
+
+  // New actions
+  transitionToRoundOver: () => void;
 }
 
 const initialConfig: GameConfig = {
@@ -268,16 +271,20 @@ export const useGameStore = create<GameStoreState>()(
           });
         } else {
           // Timer expired - transition to round over
-          set((state) => {
-            state.currentState = "roundOver";
-            state.mainTimerInterval = null;
-          });
+          get().transitionToRoundOver();
           clearInterval(interval);
         }
       }, 1000);
 
       set((state) => {
         state.mainTimerInterval = interval;
+      });
+    },
+
+    transitionToRoundOver: () => {
+      set((state) => {
+        state.currentState = "roundOver";
+        state.mainTimerInterval = null;
       });
     },
 

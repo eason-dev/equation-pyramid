@@ -31,6 +31,7 @@ export function Playing({
     startGuessing,
     foundEquations,
     config,
+    transitionToRoundOver,
   } = useGameStore();
 
   const isGuessing = currentState === "guessing";
@@ -165,6 +166,13 @@ export function Playing({
                   </div>
                 ))}
               </div>
+              <button
+                type="button"
+                onClick={() => transitionToRoundOver()}
+                className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+              >
+                Debug: Finish Round
+              </button>
             </div>
           )}
         </div>
