@@ -41,10 +41,12 @@ export function GamePlayingView({
   return (
     <div className="space-y-8">
       {/* Round Stepper */}
-      <RoundStepper
-        currentRound={config.currentRound}
-        totalRounds={config.numRounds}
-      />
+      {config.numRounds > 1 && (
+        <RoundStepper
+          currentRound={config.currentRound}
+          totalRounds={config.numRounds}
+        />
+      )}
 
       {/* Target Number Display */}
       {gameState && (
