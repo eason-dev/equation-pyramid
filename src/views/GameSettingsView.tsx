@@ -33,7 +33,7 @@ export function GameSettingsView({
               type="button"
               onClick={() => onConfigUpdate({ numPlayers: option })}
               className={`
-                w-12 h-12 rounded-full flex items-center justify-center font-semibold transition-all duration-200
+                w-20 h-20 rounded-full flex flex-col items-center justify-center font-semibold transition-all duration-200
                 ${
                   numPlayers === option
                     ? "bg-blue-500 text-white shadow-lg scale-110"
@@ -41,7 +41,8 @@ export function GameSettingsView({
                 }
               `}
             >
-              {option}
+              <span className="text-lg font-bold">{option}</span>
+              <span className="text-xs">Player{option === 1 ? "" : "s"}</span>
             </button>
           ))}
         </div>
@@ -56,7 +57,7 @@ export function GameSettingsView({
               type="button"
               onClick={() => onConfigUpdate({ numRounds: option })}
               className={`
-                w-12 h-12 rounded-full flex items-center justify-center font-semibold transition-all duration-200
+                w-20 h-20 rounded-full flex flex-col items-center justify-center font-semibold transition-all duration-200
                 ${
                   numRounds === option
                     ? "bg-green-500 text-white shadow-lg scale-110"
@@ -64,7 +65,8 @@ export function GameSettingsView({
                 }
               `}
             >
-              {option}
+              <span className="text-lg font-bold">{option}</span>
+              <span className="text-xs">Round{option === 1 ? "" : "s"}</span>
             </button>
           ))}
         </div>
