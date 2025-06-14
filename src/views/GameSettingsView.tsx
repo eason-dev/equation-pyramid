@@ -14,7 +14,14 @@ export function GameSettingsView({
   onStartGame,
 }: GameSettingsViewProps) {
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-4 items-center">
+      <div className="flex flex-col gap-4 items-center">
+        <h1 className="text-2xl font-bold text-gray-900">Game Setup</h1>
+        <p className="text-gray-600">
+          Set the number of players and rounds for the game.
+        </p>
+      </div>
+
       <div className="flex gap-4 items-center">
         <label htmlFor="numPlayers" className="font-medium text-gray-900">
           Number of Players:
@@ -34,6 +41,7 @@ export function GameSettingsView({
           ))}
         </select>
       </div>
+
       <div className="flex gap-4 items-center">
         <label htmlFor="numRounds" className="font-medium text-gray-900">
           Number of Rounds:
@@ -46,7 +54,7 @@ export function GameSettingsView({
           }
           className="p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          {[1, 2, 3, 4, 5].map((n) => (
+          {[1, 3, 5].map((n) => (
             <option key={n} value={n}>
               {n}
             </option>
@@ -58,7 +66,7 @@ export function GameSettingsView({
         onClick={onStartGame}
         className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
       >
-        Start Game
+        Start
       </button>
     </div>
   );
