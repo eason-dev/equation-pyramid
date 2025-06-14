@@ -43,7 +43,7 @@ export function GamePlayingView({
     currentState === "game" && selectedTiles.length === 0;
 
   return (
-    <div className="min-h-screen space-y-6">
+    <div className="min-h-screen space-y-6 p-6">
       {/* Round Stepper */}
       {config.numRounds > 1 && (
         <RoundStepper
@@ -116,8 +116,8 @@ export function GamePlayingView({
 
               {/* Selected Tiles */}
               {selectedTiles.length > 0 && (
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="flex space-x-2">
+                <div className="p-4">
+                  <div className="flex space-x-10">
                     {selectedTiles.map((tileIndex) => {
                       const tile = tiles[tileIndex];
                       return (
