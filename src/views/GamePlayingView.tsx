@@ -61,7 +61,7 @@ export function GamePlayingView({
       <div className="grid grid-cols-12 gap-6 items-start">
         {/* Left column: Answers tile */}
         <div className="col-span-3">
-          {gameState && (
+          {gameState && foundEquations.length > 0 && (
             <AnswersTile
               foundEquations={foundEquations}
               validEquations={gameState.validEquations}
