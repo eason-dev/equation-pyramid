@@ -1,5 +1,7 @@
 "use client";
 
+import { PLAYERS_OPTIONS, ROUNDS_OPTIONS } from "@/constants";
+
 interface GameSettingsViewProps {
   numPlayers: number;
   numRounds: number;
@@ -14,7 +16,7 @@ export function GameSettingsView({
   onStartGame,
 }: GameSettingsViewProps) {
   return (
-    <div className="flex flex-col gap-4 items-center">
+    <div className="flex flex-col gap-6 items-center">
       <div className="flex flex-col gap-4 items-center">
         <h1 className="text-2xl font-bold text-gray-900">Game Setup</h1>
         <p className="text-gray-600">
@@ -22,45 +24,52 @@ export function GameSettingsView({
         </p>
       </div>
 
-      <div className="flex gap-4 items-center">
-        <label htmlFor="numPlayers" className="font-medium text-gray-900">
-          Number of Players:
-        </label>
-        <select
-          id="numPlayers"
-          value={numPlayers}
-          onChange={(e) =>
-            onConfigUpdate({ numPlayers: Number.parseInt(e.target.value) })
-          }
-          className="p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {[1, 2].map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
+      <div className="flex flex-col gap-4 items-center">
+        <div className="font-medium text-gray-900">Number of Players:</div>
+        <div className="flex gap-3">
+          {PLAYERS_OPTIONS.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => onConfigUpdate({ numPlayers: option })}
+              className={`
+                w-12 h-12 rounded-full flex items-center justify-center font-semibold transition-all duration-200
+                ${
+                  numPlayers === option
+                    ? "bg-blue-500 text-white shadow-lg scale-110"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105"
+                }
+              `}
+            >
+              {option}
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
-      <div className="flex gap-4 items-center">
-        <label htmlFor="numRounds" className="font-medium text-gray-900">
-          Number of Rounds:
-        </label>
-        <select
-          id="numRounds"
-          value={numRounds}
-          onChange={(e) =>
-            onConfigUpdate({ numRounds: Number.parseInt(e.target.value) })
-          }
-          className="p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {[1, 3, 5].map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
+      <div className="flex flex-col gap-4 items-center">
+        <div className="font-medium text-gray-900">Number of Rounds:</div>
+        <div className="flex gap-3">
+          {ROUNDS_OPTIONS.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => onConfigUpdate({ numRounds: option })}
+              className={`
+                w-12 h-12 rounded-full flex items-center justify-center font-semibold transition-all duration-200
+                ${
+                  numRounds === option
+                    ? "bg-green-500 text-white shadow-lg scale-110"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105"
+                }
+              `}
+            >
+              {option}
+            </button>
           ))}
-        </select>
+        </div>
       </div>
+
       <button
         type="button"
         onClick={onStartGame}

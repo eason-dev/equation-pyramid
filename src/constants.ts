@@ -3,8 +3,10 @@ export const DEBUG = process.env.NEXT_PUBLIC_DEBUG === "true";
 // Game Configuration Constants
 export const MAX_PLAYERS = 2;
 export const MIN_PLAYERS = 1;
+export const PLAYERS_OPTIONS = [1, 2];
 export const MAX_ROUNDS = 5;
 export const MIN_ROUNDS = 1;
+export const ROUNDS_OPTIONS = [1, 3, 5];
 export const INITIAL_PLAYERS = 1;
 export const INITIAL_ROUNDS = 3;
 
