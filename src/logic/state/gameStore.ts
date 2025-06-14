@@ -2,16 +2,17 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import type { GameState, Player } from "@/logic/game/types";
 import { generateGameState, calculateEquation } from "@/logic/game/logic";
-
-const MAX_PLAYERS = 2;
-const MIN_PLAYERS = 1;
-const MAX_ROUNDS = 5;
-const MIN_ROUNDS = 1;
-const INITIAL_PLAYERS = 1;
-const INITIAL_ROUNDS = 3;
-const ROUND_DURATION = 180; // 3 minutes in seconds
-const GUESS_DURATION = 10; // 10 seconds in seconds
-const TILES_PER_EQUATION = 3;
+import {
+  MAX_PLAYERS,
+  MIN_PLAYERS,
+  MAX_ROUNDS,
+  MIN_ROUNDS,
+  INITIAL_PLAYERS,
+  INITIAL_ROUNDS,
+  ROUND_DURATION,
+  GUESS_DURATION,
+  TILES_PER_EQUATION,
+} from "@/constants";
 
 export type GameAppState =
   | "menu"

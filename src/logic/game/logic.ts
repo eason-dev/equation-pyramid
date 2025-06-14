@@ -1,13 +1,14 @@
-import type { Tile, Equation, Operator, GameState } from "@/logic/game/types";
-
-const OPERATORS: Operator[] = ["+", "-", "*", "/"];
-const INVALID_RESULT = -1;
-const MAX_DIVIDE_TILES = 2;
-const MAX_MULTIPLY_TILES = 2;
-const MIN_VALID_EQUATIONS = 2;
-const MAX_VALID_EQUATIONS = 5;
-const MIN_TILE_NUMBER = 1;
-const MAX_TILE_NUMBER = 20;
+import type { Tile, Equation, GameState } from "@/logic/game/types";
+import {
+  OPERATORS,
+  INVALID_RESULT,
+  MAX_DIVIDE_TILES,
+  MAX_MULTIPLY_TILES,
+  MIN_VALID_EQUATIONS,
+  MAX_VALID_EQUATIONS,
+  MIN_TILE_NUMBER,
+  MAX_TILE_NUMBER,
+} from "@/constants";
 
 export function generateRandomTile(label: string): Tile {
   const operator = OPERATORS[Math.floor(Math.random() * OPERATORS.length)]; // +, -, *, /
