@@ -1,6 +1,7 @@
 "use client";
 
 import { Tile } from "@/components/Tile";
+import { TileList } from "@/components/TileList";
 import { PlayerList } from "@/components/PlayerList";
 import { Timer } from "@/components/Timer";
 import { RoundStepper } from "@/components/RoundStepper";
@@ -84,18 +85,12 @@ export function GamePlayingView({
         )}
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        {tiles.map((tile, index) => (
-          <Tile
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            key={index}
-            tile={tile}
-            isSelected={selectedTiles.includes(index)}
-            onClick={() => onTileClick(index)}
-            disabled={!isGuessing}
-          />
-        ))}
-      </div>
+      <TileList
+        tiles={tiles}
+        selectedTiles={selectedTiles}
+        onTileClick={onTileClick}
+        isGuessing={isGuessing}
+      />
 
       {/* Selected Tiles Display */}
       {selectedTiles.length > 0 && (
