@@ -7,7 +7,7 @@ import { Timer } from "@/components/Timer";
 import { RoundStepper } from "@/components/RoundStepper";
 import { TargetTile } from "@/components/TargetTile";
 import { AnswersTile } from "@/components/AnswersTile";
-import { GuessingTimer } from "@/components/GuessingTimer";
+
 import { useGameStore } from "@/logic/state/gameStore";
 import type { Player, Tile as TileType } from "@/logic/game/types";
 import { DEBUG } from "@/constants";
@@ -99,26 +99,40 @@ export function GamePlayingView({
             isGuessing={isGuessing}
           />
 
-          {/* Selected Tiles Display */}
-          {selectedTiles.length > 0 && (
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-medium text-gray-900 mb-2">
-                Selected Tiles:
-              </h3>
-              <div className="flex justify-center space-x-2">
-                {selectedTiles.map((tileIndex) => {
-                  const tile = tiles[tileIndex];
-                  return (
-                    <Tile
-                      key={tileIndex}
-                      tile={tile}
-                      isSelected={false}
-                      onClick={() => {}}
-                      disabled
-                    />
-                  );
-                })}
-              </div>
+          {/* Guessing Timer and Selected Tiles Container */}
+          {(selectedTiles.length > 0 || isGuessing) && (
+            <div className="flex items-center justify-center space-x-6">
+              {/* Guessing Timer */}
+              {isGuessing && (
+                <div className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg">
+                  <div className="text-center">
+                    <p className="text-sm font-medium mb-1">Guessing Time!</p>
+                    <div className="text-xl font-bold">
+                      0:{guessTimer.toString().padStart(2, "0")}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Selected Tiles */}
+              {selectedTiles.length > 0 && (
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <div className="flex space-x-2">
+                    {selectedTiles.map((tileIndex) => {
+                      const tile = tiles[tileIndex];
+                      return (
+                        <Tile
+                          key={tileIndex}
+                          tile={tile}
+                          isSelected={false}
+                          onClick={() => {}}
+                          disabled
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -155,9 +169,6 @@ export function GamePlayingView({
           </button>
         </div>
       )}
-
-      {/* Guessing Timer - appears at bottom when guessing */}
-      <GuessingTimer seconds={guessTimer} isVisible={isGuessing} />
     </div>
   );
 }
