@@ -22,16 +22,27 @@ export function Tile({ tile, isSelected, onClick, disabled }: TileProps) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`p-4 rounded-lg border-2 transition-colors flex flex-col items-center justify-center gap-1 ${
-        isSelected
-          ? "border-blue-500 bg-blue-50"
-          : "border-gray-200 hover:border-gray-300"
-      }`}
+      className={`
+        w-20 h-20 
+        rotate-45 
+        border-2 transition-colors 
+        flex items-center justify-center
+        relative
+        ${
+          isSelected
+            ? "border-blue-500 bg-blue-50"
+            : "border-gray-300 bg-gray-800 hover:border-gray-400"
+        }
+      `}
     >
-      <div className="text-sm font-medium text-gray-600">{tile.label}</div>
-      <div className="flex items-center gap-1">
-        <div className="text-lg">{operatorMap[tile.operator as Operator]}</div>
-        <div className="text-xl font-bold">{tile.number}</div>
+      <div className="-rotate-45 flex flex-col items-center justify-center gap-0.5">
+        <div className="text-xs font-medium text-gray-400">{tile.label}</div>
+        <div className="flex items-center gap-0.5">
+          <div className="text-sm text-white">
+            {operatorMap[tile.operator as Operator]}
+          </div>
+          <div className="text-lg font-bold text-white">{tile.number}</div>
+        </div>
       </div>
     </button>
   );
