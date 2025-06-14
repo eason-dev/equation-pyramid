@@ -2,12 +2,12 @@
 
 import type { Player } from "@/logic/game/types";
 
-interface GameOverProps {
+interface GameOverViewProps {
   players: Player[];
   onNewGame: () => void;
 }
 
-export function GameOver({ players, onNewGame }: GameOverProps) {
+export function GameOverView({ players, onNewGame }: GameOverViewProps) {
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
   const winner = sortedPlayers[0];
 

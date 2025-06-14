@@ -8,7 +8,7 @@ import { useGameStore } from "@/logic/state/gameStore";
 import type { Player, Tile as TileType } from "@/logic/game/types";
 import { DEBUG } from "@/constants";
 
-interface PlayingProps {
+interface GamePlayingViewProps {
   tiles: TileType[];
   players: Player[];
   selectedPlayerId: string | null;
@@ -16,13 +16,13 @@ interface PlayingProps {
   onTileClick: (index: number) => void;
 }
 
-export function Playing({
+export function GamePlayingView({
   tiles,
   players,
   selectedPlayerId,
   timeRemaining,
   onTileClick,
-}: PlayingProps) {
+}: GamePlayingViewProps) {
   const {
     currentState,
     selectedTiles,

@@ -2,17 +2,17 @@
 
 import type { Player } from "@/logic/game/types";
 
-interface RoundOverProps {
+interface GameRoundOverViewProps {
   players: Player[];
   currentRound: number;
   onNextRound: () => void;
 }
 
-export function RoundOver({
+export function GameRoundOverView({
   players,
   currentRound,
   onNextRound,
-}: RoundOverProps) {
+}: GameRoundOverViewProps) {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-900">

@@ -1,18 +1,18 @@
 "use client";
 
-interface ConfigProps {
+interface GameSettingsViewProps {
   numPlayers: number;
   numRounds: number;
   onConfigUpdate: (config: { numPlayers?: number; numRounds?: number }) => void;
   onStartGame: () => void;
 }
 
-export function Config({
+export function GameSettingsView({
   numPlayers,
   numRounds,
   onConfigUpdate,
   onStartGame,
-}: ConfigProps) {
+}: GameSettingsViewProps) {
   return (
     <div className="space-y-6">
       <div className="flex gap-4 items-center">
