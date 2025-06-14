@@ -7,7 +7,7 @@ import { Timer } from "@/components/Timer";
 import { RoundStepper } from "@/components/RoundStepper";
 import { TargetTile } from "@/components/TargetTile";
 import { AnswersTile } from "@/components/AnswersTile";
-
+import { DebugPanel } from "@/components/DebugPanel";
 import { useGameStore } from "@/logic/state/gameStore";
 import type { Player, Tile as TileType } from "@/logic/game/types";
 import { DEBUG } from "@/constants";
@@ -143,31 +143,12 @@ export function GamePlayingView({
         </div>
       </div>
 
-      {/* Debug Mode: Show All Valid Equations */}
+      {/* Debug Panel */}
       {DEBUG && gameState && (
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-700 mb-1">
-            Debug: All Valid Equations:
-          </h4>
-          <div className="space-y-1">
-            {gameState.validEquations.map((equation) => (
-              <div
-                key={equation.tiles.map((t) => t.label).join("")}
-                className="text-sm text-gray-500"
-              >
-                {equation.tiles.map((t) => t.label).join(" ")} ={" "}
-                {equation.result}
-              </div>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={() => transitionToRoundOver()}
-            className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-          >
-            Debug: Finish Round
-          </button>
-        </div>
+        <DebugPanel
+          validEquations={gameState.validEquations}
+          onFinishRound={transitionToRoundOver}
+        />
       )}
     </div>
   );
