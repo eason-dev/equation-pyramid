@@ -12,7 +12,7 @@ const preview: Preview = {
     backgrounds: {
       options: {
         // Custom
-        game: { name: "Game", value: "#0a0c11" },
+        game: { name: "Game", value: "#020306" },
         // 👇 Default options
         dark: { name: "Dark", value: "#333" },
         light: { name: "Light", value: "#F7F9F2" },
