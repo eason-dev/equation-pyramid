@@ -8,6 +8,24 @@ const meta = {
   component: Tile,
   parameters: {
     layout: "centered",
+    backgrounds: {
+      default: "dark",
+      values: [
+        { name: "dark", value: "#1a1a1a" },
+        { name: "light", value: "#ffffff" },
+      ],
+    },
+  },
+  argTypes: {
+    tile: {
+      control: { type: "object" },
+    },
+    isSelected: {
+      control: { type: "boolean" },
+    },
+    disabled: {
+      control: { type: "boolean" },
+    },
   },
 } satisfies Meta<typeof Tile>;
 
@@ -19,7 +37,7 @@ export const Default: Story = {
     tile: {
       number: 1,
       operator: "+",
-      label: "1",
+      label: "A",
     },
     isSelected: false,
     onClick: fn(),
@@ -31,5 +49,51 @@ export const Selected: Story = {
   args: {
     ...Default.args,
     isSelected: true,
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    ...Default.args,
+    disabled: true,
+  },
+};
+
+export const WithSubtraction: Story = {
+  args: {
+    tile: {
+      number: 5,
+      operator: "-",
+      label: "B",
+    },
+    isSelected: false,
+    onClick: fn(),
+    disabled: false,
+  },
+};
+
+export const WithMultiplication: Story = {
+  args: {
+    tile: {
+      number: 3,
+      operator: "*",
+      label: "C",
+    },
+    isSelected: false,
+    onClick: fn(),
+    disabled: false,
+  },
+};
+
+export const WithDivision: Story = {
+  args: {
+    tile: {
+      number: 2,
+      operator: "/",
+      label: "D",
+    },
+    isSelected: false,
+    onClick: fn(),
+    disabled: false,
   },
 };
