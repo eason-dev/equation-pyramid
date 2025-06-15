@@ -35,7 +35,7 @@ export default function AppPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-900">
+    <main className="min-h-screen bg-[#0a0c11] text-white">
       {currentState === "menu" && (
         <HomeView onStart={start} onTutorialClick={() => {}} />
       )}
