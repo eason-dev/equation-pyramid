@@ -26,3 +26,10 @@ export const Default: Story = {
     disabled: false,
   },
 };
+
+export const Selected: Story = {
+  args: {
+    ...Default.args,
+    isSelected: true,
+  },
+};
