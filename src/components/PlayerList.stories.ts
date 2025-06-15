@@ -7,7 +7,6 @@ const meta = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 } satisfies Meta<typeof PlayerList>;
 
 export default meta;
