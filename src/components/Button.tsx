@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  variant?: "primary";
+  variant?: "primary" | "secondary";
   size?: "default";
 }
 
@@ -13,7 +13,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       children,
-      // variant = "primary",
+      variant = "primary",
       // size = "default",
       className,
       disabled,
@@ -22,6 +22,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const getStateStyles = () => {
+      if (variant === "secondary") {
+        if (disabled) {
+          return {
+            background: "transparent",
+            border: "none",
+            color: "rgba(255, 255, 255, 0.5)",
+          };
+        }
+        // Secondary default state - no background or border
+        return {
+          background: "transparent",
+          border: "none",
+          color: "#FFFFFF",
+        };
+      }
+
+      // Primary variant
       if (disabled) {
         return {
           background: "rgba(11, 11, 11, 0.8)",
@@ -30,7 +47,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         };
       }
 
-      // Default enabled state
+      // Primary default enabled state
       return {
         background: "rgba(36, 36, 47, 0.8)",
         border: "1px solid rgba(169, 199, 255, 0.75)",
@@ -41,6 +58,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const getHoverStyles = () => {
       if (disabled) return {};
 
+      if (variant === "secondary") {
+        // Secondary hover - subtle background
+        return {
+          background: "rgba(255, 255, 255, 0.1)",
+        };
+      }
+
+      // Primary hover
       return {
         background: "rgba(48, 48, 64, 0.8)",
         boxShadow: "4px 4px 20px 0px rgba(191, 191, 191, 0.25)",
@@ -50,6 +75,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const getActiveStyles = () => {
       if (disabled) return {};
 
+      if (variant === "secondary") {
+        // Secondary active - slightly more visible background
+        return {
+          background: "rgba(255, 255, 255, 0.2)",
+        };
+      }
+
+      // Primary active
       return {
         background: "rgba(62, 62, 76, 0.8)",
       };
@@ -87,7 +120,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           if (!disabled) {
             Object.assign(e.currentTarget.style, {
               background: styles.background,
-              boxShadow: "none",
+              boxShadow: variant === "primary" ? "none" : undefined,
             });
           }
         }}

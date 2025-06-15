@@ -9,29 +9,50 @@ const meta = {
   parameters: {
     layout: "centered",
   },
+  argTypes: {
+    children: {
+      control: { type: "text" },
+    },
+  },
 } satisfies Meta<typeof Button>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Primary: Story = {
   args: {
     children: "Start Again",
+    variant: "primary",
     onClick: fn(),
     disabled: false,
   },
 };
 
-export const Disabled: Story = {
+export const PrimaryDisabled: Story = {
   args: {
-    ...Default.args,
+    ...Primary.args,
+    disabled: true,
+  },
+};
+
+export const Secondary: Story = {
+  args: {
+    ...Primary.args,
+    children: "Skip",
+    variant: "secondary",
+  },
+};
+
+export const SecondaryDisabled: Story = {
+  args: {
+    ...Secondary.args,
     disabled: true,
   },
 };
 
 export const LongText: Story = {
   args: {
-    ...Default.args,
+    ...Primary.args,
     children: "Continue Playing",
   },
 };
