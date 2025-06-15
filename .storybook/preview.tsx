@@ -41,7 +41,7 @@ const preview: Preview = {
   decorators: [
     (Story) => {
       return (
-        <main className="min-h-screen bg-[#0a0c11] text-white">
+        <main className="text-white">
           <Story />
         </main>
       );

@@ -39,7 +39,7 @@ export const OneRound: Story = {
   },
 };
 
-export const TenRounds: Story = {
+export const FiveRounds: Story = {
   args: {
     ...Default.args,
     numRounds: 5,
