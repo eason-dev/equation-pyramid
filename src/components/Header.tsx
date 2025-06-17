@@ -6,9 +6,13 @@ export function Header() {
   return (
     <header className="flex items-center justify-between p-6">
       {/* Logo */}
-      <div className="w-[60px]">
+      <button
+        type="button"
+        className="cursor-pointer"
+        onClick={() => window.location.reload()}
+      >
         <Typography variant="h2">Logo</Typography>
-      </div>
+      </button>
 
       {/* Center - Empty space for game-specific content */}
       <div className="flex-1" />
