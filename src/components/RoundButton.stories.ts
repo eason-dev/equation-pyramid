@@ -25,6 +25,9 @@ const meta: Meta<typeof RoundButton> = {
     disabled: {
       control: "boolean",
     },
+    isActive: {
+      control: "boolean",
+    },
   },
 };
 
@@ -59,5 +62,19 @@ export const ShortText: Story = {
 export const LongText: Story = {
   args: {
     children: "Let the Game Begin",
+  },
+};
+
+export const Active: Story = {
+  args: {
+    children: "Start",
+    isActive: true,
+  },
+};
+
+export const ActiveWithCustomText: Story = {
+  args: {
+    children: "Playing",
+    isActive: true,
   },
 };

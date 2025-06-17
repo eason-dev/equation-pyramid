@@ -5,10 +5,11 @@ import { cn } from "@/lib/utils";
 
 interface RoundButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
+  isActive?: boolean;
 }
 
 export const RoundButton = forwardRef<HTMLButtonElement, RoundButtonProps>(
-  ({ children, className, disabled, ...props }, ref) => {
+  ({ children, className, disabled, isActive = false, ...props }, ref) => {
     const getStateStyles = () => {
       if (disabled) {
         return {
@@ -16,6 +17,15 @@ export const RoundButton = forwardRef<HTMLButtonElement, RoundButtonProps>(
           border: "1px solid rgba(104, 104, 104, 0.75)",
           color: "#FFFFFF",
           boxShadow: "none",
+        };
+      }
+
+      if (isActive) {
+        return {
+          background: "#3E3E4C",
+          border: "1px solid rgba(169, 199, 255, 0.75)",
+          color: "#FFFFFF",
+          boxShadow: "4px 4px 20px 0px rgba(191, 191, 191, 0.25)",
         };
       }
 
@@ -39,7 +49,7 @@ export const RoundButton = forwardRef<HTMLButtonElement, RoundButtonProps>(
     };
 
     const getActiveStyles = () => {
-      if (disabled) return {};
+      if (disabled || isActive) return {};
 
       // Primary active
       return {
