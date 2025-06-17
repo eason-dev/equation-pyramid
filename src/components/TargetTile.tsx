@@ -1,14 +1,19 @@
 "use client";
 
+import { Block } from "./Block";
+import { Typography } from "./Typography";
+
 interface TargetTileProps {
   targetNumber: number;
 }
 
 export function TargetTile({ targetNumber }: TargetTileProps) {
   return (
-    <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
-      <h3 className="text-lg font-semibold mb-2 text-center">Target</h3>
-      <div className="text-3xl font-bold text-center">{targetNumber}</div>
-    </div>
+    <Block className="text-center min-w-[128px] min-h-[128px]">
+      <Typography variant="h2">Target</Typography>
+      <Typography variant="p1" className="mt-2.5">
+        {targetNumber}
+      </Typography>
+    </Block>
   );
 }
