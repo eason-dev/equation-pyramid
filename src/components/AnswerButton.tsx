@@ -8,12 +8,26 @@ interface AnswerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   playerName: string;
   score: number;
   onClick: () => void;
+  isOver?: boolean;
 }
 
 export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
-  ({ playerName, score, onClick, className, disabled, ...props }, ref) => {
+  (
+    {
+      playerName,
+      score,
+      onClick,
+      isOver = false,
+      className,
+      disabled,
+      ...props
+    },
+    ref,
+  ) => {
+    const isDisabled = disabled || isOver;
+
     const getStateStyles = () => {
-      if (disabled) {
+      if (isDisabled) {
         return {
           background: "rgba(11, 11, 11, 0.8)",
           border: "1px solid rgba(104, 104, 104, 0.75)",
@@ -30,7 +44,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
     };
 
     const getHoverStyles = () => {
-      if (disabled) return {};
+      if (isDisabled) return {};
 
       return {
         background: "rgba(48, 48, 64, 0.8)",
@@ -39,7 +53,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
     };
 
     const getActiveStyles = () => {
-      if (disabled) return {};
+      if (isDisabled) return {};
 
       return {
         background: "rgba(62, 62, 76, 0.8)",
@@ -53,7 +67,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
       <button
         ref={ref}
         type="button"
-        disabled={disabled}
+        disabled={isDisabled}
         onClick={onClick}
         className={cn(
           // Base styles
@@ -61,7 +75,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
           "rounded-xl transition-all duration-200",
           "gap-4 p-5",
           "min-w-[200px] min-h-[200px]",
-          disabled ? "cursor-not-allowed" : "cursor-pointer",
+          isDisabled ? "cursor-not-allowed" : "cursor-pointer",
           className,
         )}
         style={{
@@ -70,13 +84,13 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
           color: styles.color,
         }}
         onMouseEnter={(e) => {
-          if (!disabled) {
+          if (!isDisabled) {
             const hoverStyles = getHoverStyles();
             Object.assign(e.currentTarget.style, hoverStyles);
           }
         }}
         onMouseLeave={(e) => {
-          if (!disabled) {
+          if (!isDisabled) {
             Object.assign(e.currentTarget.style, {
               background: styles.background,
               boxShadow: "none",
@@ -84,13 +98,13 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
           }
         }}
         onMouseDown={(e) => {
-          if (!disabled) {
+          if (!isDisabled) {
             const activeStyles = getActiveStyles();
             Object.assign(e.currentTarget.style, activeStyles);
           }
         }}
         onMouseUp={(e) => {
-          if (!disabled) {
+          if (!isDisabled) {
             const hoverStyles = getHoverStyles();
             Object.assign(e.currentTarget.style, hoverStyles);
           }
@@ -100,8 +114,8 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         {/* Player Name */}
         <Typography variant="h2">{playerName}</Typography>
 
-        {/* Call to Action */}
-        <Typography variant="h2">Press Here to Answer!</Typography>
+        {/* Call to Action - only show when not in over state */}
+        {!isOver && <Typography variant="h2">Press Here to Answer!</Typography>}
 
         {/* Score Badge */}
         <div

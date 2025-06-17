@@ -73,3 +73,12 @@ export const ZeroScore: Story = {
     score: 0,
   },
 };
+
+export const RoundOver: Story = {
+  args: {
+    ...Default.args,
+    playerName: "Alice",
+    score: 5,
+    isOver: true,
+  },
+};

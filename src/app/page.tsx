@@ -3,7 +3,6 @@
 import { HomeView } from "@/views/HomeView";
 import { GameSettingsView } from "@/views/GameSettingsView";
 import { GamePlayingView } from "@/views/GamePlayingView";
-import { GameRoundOverView } from "@/views/GameRoundOverView";
 import { GameOverView } from "@/views/GameOverView";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -22,7 +21,6 @@ export default function AppPage() {
     updateConfig,
     startGame,
     selectTile,
-    nextRound,
     continueGame,
   } = useGameStore();
 
@@ -67,10 +65,14 @@ export default function AppPage() {
         )}
 
         {currentState === "roundOver" && (
-          <GameRoundOverView
+          <GamePlayingView
+            tiles={tiles}
             players={players}
-            currentRound={config.currentRound}
-            onNextRound={nextRound}
+            selectedPlayerId={selectedPlayerId}
+            timeRemaining={timeRemaining}
+            onTileClick={selectTile}
+            isOver={true}
+            DEBUG={DEBUG}
           />
         )}
 

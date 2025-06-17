@@ -251,3 +251,31 @@ export const LowTime: Story = {
     },
   },
 };
+
+export const RoundOver: Story = {
+  args: {
+    ...baseArgs,
+    isOver: true,
+    storeOverrides: {
+      ...Default.args.storeOverrides,
+      foundEquations: ["0,1,2", "3,4,5"],
+    },
+  },
+};
+
+export const RoundOverSinglePlayer: Story = {
+  args: {
+    ...baseArgs,
+    players: [mockPlayers[0]],
+    isOver: true,
+    storeOverrides: {
+      ...Default.args.storeOverrides,
+      foundEquations: ["0,1,2", "3,4,5"],
+      config: {
+        numPlayers: 1,
+        numRounds: 3,
+        currentRound: 1,
+      },
+    },
+  },
+};

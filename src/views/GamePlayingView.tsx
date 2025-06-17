@@ -8,6 +8,7 @@ import { AnswersTile } from "@/components/AnswersTile";
 import { AnswerButton } from "@/components/AnswerButton";
 import { GuessingState } from "@/components/GuessingState";
 import { DebugPanel } from "@/components/DebugPanel";
+import { Typography } from "@/components/Typography";
 
 import { type GameStoreState, useGameStore } from "@/logic/state/gameStore";
 import type { Player, Tile as TileType } from "@/logic/game/types";
@@ -21,6 +22,7 @@ interface GamePlayingViewProps {
   timeRemaining: number;
   onTileClick: (index: number) => void;
   DEBUG?: boolean;
+  isOver?: boolean;
 
   // Optional store state override for testing/Storybook
   storeOverrides?: Partial<GameStoreState>;
@@ -34,6 +36,7 @@ export function GamePlayingView({
   onTileClick,
   storeOverrides,
   DEBUG = false,
+  isOver = false,
 }: GamePlayingViewProps) {
   const hookStore = useGameStore();
 
@@ -51,9 +54,9 @@ export function GamePlayingView({
     transitionToRoundOver,
   } = mergedStore;
 
-  const isGuessing = currentState === "guessing";
+  const isGuessing = currentState === "guessing" && !isOver;
   const canStartGuessing =
-    currentState === "game" && selectedTiles.length === 0;
+    currentState === "game" && selectedTiles.length === 0 && !isOver;
   const isSinglePlayer = players.length === 1;
   const selectedPlayer = players.find((p) => p.id === selectedPlayerId);
 
@@ -124,6 +127,7 @@ export function GamePlayingView({
                 playerName={players[0].name}
                 score={players[0].score}
                 onClick={() => startGuessing(players[0].id)}
+                isOver={isOver}
               />
             ) : (
               /* Multi-Player Buttons */
@@ -134,10 +138,48 @@ export function GamePlayingView({
                     playerName={player.name}
                     score={player.score}
                     onClick={() => startGuessing(player.id)}
+                    isOver={isOver}
                   />
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Round Over State - Show disabled answer buttons */}
+        {isOver && (
+          <div className="flex flex-col items-center gap-6">
+            {isSinglePlayer ? (
+              /* Single Player Button - Disabled */
+              <AnswerButton
+                playerName={players[0].name}
+                score={players[0].score}
+                onClick={() => {}}
+                isOver={true}
+              />
+            ) : (
+              /* Multi-Player Buttons - Disabled */
+              <div className="flex items-center gap-24">
+                {players.map((player) => (
+                  <AnswerButton
+                    key={player.id}
+                    playerName={player.name}
+                    score={player.score}
+                    onClick={() => {}}
+                    isOver={true}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Round Over Text */}
+        {isOver && (
+          <div className="flex justify-center">
+            <Typography variant="h1" className="text-white">
+              All Answers Completed
+            </Typography>
           </div>
         )}
       </div>
