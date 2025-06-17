@@ -45,14 +45,6 @@ const mockValidEquations: Equation[] = [
   },
 ];
 
-export const Empty: Story = {
-  args: {
-    foundEquations: [],
-    validEquations: mockValidEquations,
-    tiles: mockTiles,
-  },
-};
-
 export const WithFoundEquations: Story = {
   args: {
     foundEquations: ["0,1,2", "3,4,5"],
