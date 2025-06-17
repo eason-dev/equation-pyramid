@@ -1,34 +1,58 @@
 "use client";
 
+import { Typography } from "@/components/Typography";
+import { Button } from "@/components/Button";
+import { TileList } from "@/components/TileList";
+import type { Tile } from "@/logic/game/types";
+
 interface HomeViewProps {
   onStart: () => void;
   onTutorialClick: () => void;
 }
 
+const mockTiles: Tile[] = [
+  { number: 1, operator: "+", label: "A" },
+  { number: 1, operator: "+", label: "A" },
+  { number: 1, operator: "+", label: "A" },
+  { number: 1, operator: "+", label: "A" },
+  { number: 1, operator: "+", label: "A" },
+  { number: 1, operator: "+", label: "A" },
+  { number: 1, operator: "+", label: "A" },
+  { number: 1, operator: "+", label: "A" },
+  { number: 1, operator: "+", label: "A" },
+  { number: 1, operator: "+", label: "A" },
+];
+
 export function HomeView({ onStart, onTutorialClick }: HomeViewProps) {
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-4xl font-bold text-center mb-8">Equation Pyramid</h1>
+    <div className="flex flex-col items-center justify-center h-screen gap-24">
+      {/* Title Section */}
+      <div className="flex flex-col items-center gap-6">
+        <Typography variant="h1" className="text-center text-white">
+          Equation Pyramid
+        </Typography>
+        <Typography variant="p1" className="text-center text-white">
+          Using 3 tiles to reach the target number!
+        </Typography>
+      </div>
 
-      <p className="text-center mb-8">
-        Using 3 tiles to reach the target number!
-      </p>
+      {/* Center Section - Pyramid Tiles */}
+      <TileList
+        tiles={mockTiles}
+        selectedTiles={[]}
+        onTileClick={() => {}}
+        isGuessing={false}
+      />
 
-      <button
-        type="button"
-        onClick={onStart}
-        className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
-      >
-        Start New Game
-      </button>
-
-      <button
-        type="button"
-        onClick={onTutorialClick}
-        className="px-6 py-3 cursor-pointer"
-      >
-        Tutorial
-      </button>
+      {/* Buttons Section */}
+      <div className="flex flex-col items-center gap-8">
+        <Button variant="primary" onClick={onStart}>
+          Start Game
+        </Button>
+        <Button variant="secondary" onClick={onTutorialClick}>
+          Tutorial
+        </Button>
+      </div>
     </div>
   );
 }
