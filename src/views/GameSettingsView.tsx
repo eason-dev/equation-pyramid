@@ -1,6 +1,9 @@
 "use client";
 
 import { PLAYERS_OPTIONS, ROUNDS_OPTIONS } from "@/constants";
+import { Typography } from "@/components/Typography";
+import { RoundButton } from "@/components/RoundButton";
+import { Button } from "@/components/Button";
 
 interface GameSettingsViewProps {
   numPlayers: number;
@@ -16,69 +19,59 @@ export function GameSettingsView({
   onStartGame,
 }: GameSettingsViewProps) {
   return (
-    <div className="flex flex-col gap-6 items-center">
-      <div className="flex flex-col gap-4 items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Game Setup</h1>
-        <p className="text-gray-600">
-          Set the number of players and rounds for the game.
-        </p>
+    <div className="flex flex-col items-center gap-20">
+      {/* Header Section */}
+      <div className="flex flex-col items-center gap-6">
+        <Typography variant="h1" className="text-center">
+          Game Setup
+        </Typography>
+        <Typography variant="p1" className="text-center">
+          Choose number of player and round
+        </Typography>
       </div>
 
-      <div className="flex flex-col gap-4 items-center">
-        <div className="font-medium text-gray-900">Number of Players:</div>
-        <div className="flex gap-3">
-          {PLAYERS_OPTIONS.map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => onConfigUpdate({ numPlayers: option })}
-              className={`
-                w-20 h-20 rounded-full flex flex-col items-center justify-center font-semibold transition-all duration-200
-                ${
-                  numPlayers === option
-                    ? "bg-blue-500 text-white shadow-lg scale-110"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105"
-                }
-              `}
-            >
-              <span className="text-lg font-bold">{option}</span>
-              <span className="text-xs">Player{option === 1 ? "" : "s"}</span>
-            </button>
-          ))}
+      {/* Button Groups */}
+      <div className="flex flex-col items-center gap-20">
+        {/* Number of Players */}
+        <div className="flex flex-col items-center gap-6">
+          <Typography variant="h2" className="text-center">
+            Number of Player
+          </Typography>
+          <div className="flex items-center justify-center gap-[72px]">
+            {PLAYERS_OPTIONS.map((option) => (
+              <RoundButton
+                key={option}
+                onClick={() => onConfigUpdate({ numPlayers: option })}
+                isActive={numPlayers === option}
+              >
+                {option}
+              </RoundButton>
+            ))}
+          </div>
+        </div>
+
+        {/* Number of Rounds */}
+        <div className="flex flex-col items-center gap-6">
+          <Typography variant="h2">Number of Round</Typography>
+          <div className="flex items-center justify-center gap-[72px] p-2.5">
+            {ROUNDS_OPTIONS.map((option) => (
+              <RoundButton
+                key={option}
+                onClick={() => onConfigUpdate({ numRounds: option })}
+                isActive={numRounds === option}
+                // style={{ width: "136px", height: "136px" }}
+              >
+                {option}
+              </RoundButton>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 items-center">
-        <div className="font-medium text-gray-900">Number of Rounds:</div>
-        <div className="flex gap-3">
-          {ROUNDS_OPTIONS.map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => onConfigUpdate({ numRounds: option })}
-              className={`
-                w-20 h-20 rounded-full flex flex-col items-center justify-center font-semibold transition-all duration-200
-                ${
-                  numRounds === option
-                    ? "bg-green-500 text-white shadow-lg scale-110"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105"
-                }
-              `}
-            >
-              <span className="text-lg font-bold">{option}</span>
-              <span className="text-xs">Round{option === 1 ? "" : "s"}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <button
-        type="button"
-        onClick={onStartGame}
-        className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-      >
+      {/* Start Button */}
+      <Button onClick={onStartGame} variant="primary">
         Start
-      </button>
+      </Button>
     </div>
   );
 }
