@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import { TileList } from "@/components/TileList";
 import { Timer } from "@/components/Timer";
 import { RoundStepper } from "@/components/RoundStepper";
@@ -9,6 +10,7 @@ import { AnswerButton } from "@/components/AnswerButton";
 import { GuessingState } from "@/components/GuessingState";
 import { DebugPanel } from "@/components/DebugPanel";
 import { Typography } from "@/components/Typography";
+import { RoundButton } from "@/components/RoundButton";
 
 import { type GameStoreState, useGameStore } from "@/logic/state/gameStore";
 import type { Player, Tile as TileType } from "@/logic/game/types";
@@ -52,6 +54,7 @@ export function GamePlayingView({
     foundEquations,
     config,
     transitionToRoundOver,
+    nextRound,
   } = mergedStore;
 
   const isGuessing = currentState === "guessing" && !isOver;
@@ -59,6 +62,53 @@ export function GamePlayingView({
     currentState === "game" && selectedTiles.length === 0 && !isOver;
   const isSinglePlayer = players.length === 1;
   const selectedPlayer = players.find((p) => p.id === selectedPlayerId);
+
+  // Mouse tracking for floating button with ref-based approach
+  const floatingButtonRef = useRef<HTMLDivElement>(null);
+  const mousePos = useRef({ x: 0, y: 0 });
+  const buttonPos = useRef({ x: 0, y: 0 });
+  const animationRef = useRef<number | undefined>(undefined);
+
+  useEffect(() => {
+    if (!isOver) {
+      if (animationRef.current !== undefined) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      return;
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePos.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const animateButton = () => {
+      const dx = mousePos.current.x - buttonPos.current.x;
+      const dy = mousePos.current.y - buttonPos.current.y;
+
+      // Spring animation with damping
+      const spring = 0.15;
+      buttonPos.current.x += dx * spring;
+      buttonPos.current.y += dy * spring;
+
+      // Directly update DOM element style
+      if (floatingButtonRef.current) {
+        floatingButtonRef.current.style.left = `${buttonPos.current.x - 80}px`;
+        floatingButtonRef.current.style.top = `${buttonPos.current.y - 80}px`;
+      }
+
+      animationRef.current = requestAnimationFrame(animateButton);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    animateButton();
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      if (animationRef.current !== undefined) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [isOver]);
 
   return (
     <div className="flex flex-col">
@@ -190,6 +240,23 @@ export function GamePlayingView({
           validEquations={gameState.validEquations}
           onFinishRound={transitionToRoundOver}
         />
+      )}
+
+      {/* Floating Next Round Button */}
+      {isOver && (
+        <div
+          ref={floatingButtonRef}
+          className="fixed pointer-events-none z-50"
+          style={{
+            left: "0px",
+            top: "0px",
+            transform: "translate3d(0, 0, 0)", // Enable hardware acceleration
+          }}
+        >
+          <div className="pointer-events-auto">
+            <RoundButton onClick={nextRound}>Next Round</RoundButton>
+          </div>
+        </div>
       )}
     </div>
   );
