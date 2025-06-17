@@ -10,9 +10,10 @@ import { AnswerButton } from "@/components/AnswerButton";
 import { GuessingTimer } from "@/components/GuessingTimer";
 import { DebugPanel } from "@/components/DebugPanel";
 import { Typography } from "@/components/Typography";
-import { useGameStore } from "@/logic/state/gameStore";
+import { type GameStoreState, useGameStore } from "@/logic/state/gameStore";
 import type { Player, Tile as TileType } from "@/logic/game/types";
 import { DEBUG, GUESS_DURATION } from "@/constants";
+import { mergeWithConfig } from "@/lib/utils";
 
 interface GamePlayingViewProps {
   tiles: TileType[];
@@ -20,6 +21,9 @@ interface GamePlayingViewProps {
   selectedPlayerId: string | null;
   timeRemaining: number;
   onTileClick: (index: number) => void;
+
+  // Optional store state override for testing/Storybook
+  storeOverrides?: Partial<GameStoreState>;
 }
 
 export function GamePlayingView({
@@ -28,7 +32,13 @@ export function GamePlayingView({
   selectedPlayerId,
   timeRemaining,
   onTileClick,
+  storeOverrides,
 }: GamePlayingViewProps) {
+  const hookStore = useGameStore();
+
+  // Use clean merge utility to handle nested objects properly
+  const mergedStore = mergeWithConfig(hookStore, storeOverrides);
+
   const {
     currentState,
     selectedTiles,
@@ -38,7 +48,7 @@ export function GamePlayingView({
     foundEquations,
     config,
     transitionToRoundOver,
-  } = useGameStore();
+  } = mergedStore;
 
   const isGuessing = currentState === "guessing";
   const canStartGuessing =

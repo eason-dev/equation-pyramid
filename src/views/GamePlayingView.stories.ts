@@ -1,10 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-
 import { fn } from "storybook/test";
-
-import type { Player, Tile } from "@/logic/game/types";
-import { ROUND_DURATION } from "@/constants";
-
+import type { Player, Tile, GameState } from "@/logic/game/types";
+import { GUESS_DURATION } from "@/constants";
 import { GamePlayingView } from "./GamePlayingView";
 
 const meta = {
@@ -31,30 +28,171 @@ const mockTiles: Tile[] = [
 ];
 
 const mockPlayers: Player[] = [
-  { id: "1", name: "Alice", score: 85 },
-  { id: "2", name: "Bob", score: 92 },
+  { id: "1", name: "Alice", score: 1 },
+  { id: "2", name: "Bob", score: 3 },
 ];
+
+const mockGameState: GameState = {
+  tiles: mockTiles,
+  targetNumber: 15,
+  validEquations: [
+    {
+      tiles: [mockTiles[0], mockTiles[1], mockTiles[2]],
+      result: 15,
+    },
+    {
+      tiles: [mockTiles[3], mockTiles[4], mockTiles[5]],
+      result: 15,
+    },
+  ],
+};
+
+const baseArgs = {
+  tiles: mockTiles,
+  players: mockPlayers,
+  selectedPlayerId: null,
+  timeRemaining: 123,
+  onTileClick: fn(),
+};
 
 export const Default: Story = {
   args: {
-    tiles: mockTiles,
-    players: mockPlayers,
-    selectedPlayerId: null,
-    timeRemaining: ROUND_DURATION,
-    onTileClick: fn(),
+    ...baseArgs,
+    storeOverrides: {
+      currentState: "game",
+      selectedTiles: [],
+      mainTimer: 123,
+      gameState: mockGameState,
+      guessTimer: GUESS_DURATION,
+      startGuessing: fn(),
+      foundEquations: [],
+      config: {
+        numPlayers: 2,
+        numRounds: 3,
+        currentRound: 1,
+      },
+      transitionToRoundOver: fn(),
+    },
   },
 };
 
 export const SinglePlayer: Story = {
   args: {
-    ...Default.args,
-    players: [mockPlayers[1]],
+    ...baseArgs,
+    players: [mockPlayers[0]],
+    storeOverrides: {
+      ...Default.args.storeOverrides,
+      config: {
+        numPlayers: 1,
+        numRounds: 3,
+        currentRound: 1,
+      },
+    },
+  },
+};
+
+export const GuessingStateStart: Story = {
+  args: {
+    ...baseArgs,
+    selectedPlayerId: "1",
+    storeOverrides: {
+      ...Default.args.storeOverrides,
+      currentState: "guessing",
+      selectedTiles: [],
+      guessTimer: 8,
+    },
+  },
+};
+
+export const GuessingStateSelectedOne: Story = {
+  args: {
+    ...baseArgs,
+    selectedPlayerId: "1",
+    storeOverrides: {
+      ...GuessingStateStart.args.storeOverrides,
+      selectedTiles: [0],
+    },
+  },
+};
+
+export const GuessingStateSelectedTwo: Story = {
+  args: {
+    ...baseArgs,
+    selectedPlayerId: "2",
+    storeOverrides: {
+      ...GuessingStateStart.args.storeOverrides,
+      selectedTiles: [3, 4],
+    },
+  },
+};
+
+export const GuessingStateSelectedThree: Story = {
+  args: {
+    ...baseArgs,
+    selectedPlayerId: "2",
+    storeOverrides: {
+      ...GuessingStateStart.args.storeOverrides,
+      selectedTiles: [3, 4, 5],
+    },
+  },
+};
+
+export const GuessingWithLowTime: Story = {
+  args: {
+    ...baseArgs,
+    selectedPlayerId: "2",
+    storeOverrides: {
+      ...GuessingStateSelectedOne.args.storeOverrides,
+      guessTimer: 2,
+    },
+  },
+};
+
+export const WithFoundEquations: Story = {
+  args: {
+    ...baseArgs,
+    storeOverrides: {
+      ...Default.args.storeOverrides,
+      foundEquations: ["0,1,2", "3,4,5"],
+    },
+  },
+};
+
+export const MultipleRounds: Story = {
+  args: {
+    ...baseArgs,
+    storeOverrides: {
+      ...Default.args.storeOverrides,
+      config: {
+        numPlayers: 2,
+        numRounds: 5,
+        currentRound: 3,
+      },
+    },
+  },
+};
+
+export const SingleRoundHidden: Story = {
+  args: {
+    ...baseArgs,
+    storeOverrides: {
+      ...Default.args.storeOverrides,
+      config: {
+        numPlayers: 2,
+        numRounds: 1,
+        currentRound: 1,
+      },
+    },
   },
 };
 
 export const LowTime: Story = {
   args: {
-    ...Default.args,
+    ...baseArgs,
     timeRemaining: 15,
+    storeOverrides: {
+      ...Default.args.storeOverrides,
+      mainTimer: 15,
+    },
   },
 };

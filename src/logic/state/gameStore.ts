@@ -47,7 +47,7 @@ interface GameData {
   guessTimerInterval: NodeJS.Timeout | null;
 }
 
-interface GameStoreState extends GameData {
+export interface GameStoreState extends GameData {
   // Actions
   start: () => void;
   updateConfig: (config: Partial<GameConfig>) => void;
