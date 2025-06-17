@@ -16,6 +16,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     seconds: GUESS_DURATION,
+    totalSeconds: GUESS_DURATION,
     isVisible: true,
   },
 };
@@ -23,6 +24,7 @@ export const Default: Story = {
 export const LowTime: Story = {
   args: {
     seconds: 5,
+    totalSeconds: GUESS_DURATION,
     isVisible: true,
   },
 };
@@ -30,6 +32,15 @@ export const LowTime: Story = {
 export const Zero: Story = {
   args: {
     seconds: 0,
+    totalSeconds: GUESS_DURATION,
+    isVisible: true,
+  },
+};
+
+export const PartialProgress: Story = {
+  args: {
+    seconds: 7,
+    totalSeconds: GUESS_DURATION,
     isVisible: true,
   },
 };
