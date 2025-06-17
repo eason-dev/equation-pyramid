@@ -25,7 +25,7 @@ const mockTiles: Tile[] = [
 
 export function HomeView({ onStart, onTutorialClick }: HomeViewProps) {
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-24">
+    <div className="flex flex-col items-center justify-center gap-24">
       {/* Title Section */}
       <div className="flex flex-col items-center gap-6">
         <Typography variant="h1" className="text-center text-white">

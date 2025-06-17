@@ -8,7 +8,7 @@ import { AnswersTile } from "@/components/AnswersTile";
 import { AnswerButton } from "@/components/AnswerButton";
 import { GuessingState } from "@/components/GuessingState";
 import { DebugPanel } from "@/components/DebugPanel";
-import { Typography } from "@/components/Typography";
+
 import { type GameStoreState, useGameStore } from "@/logic/state/gameStore";
 import type { Player, Tile as TileType } from "@/logic/game/types";
 import { GUESS_DURATION } from "@/constants";
@@ -58,33 +58,20 @@ export function GamePlayingView({
   const selectedPlayer = players.find((p) => p.id === selectedPlayerId);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header Section */}
-      <header className="flex items-center justify-between p-6">
-        {/* Logo */}
-        <div className="w-[60px]">
-          <Typography variant="h2">Logo</Typography>
-        </div>
-
-        {/* Center - Timer and Round Stepper */}
-        <div className="flex flex-col items-center gap-10">
-          {config.numRounds > 1 && (
-            <RoundStepper
-              currentRound={config.currentRound}
-              totalRounds={config.numRounds}
-            />
-          )}
-          <Timer seconds={timeRemaining} />
-        </div>
-
-        {/* Music Icon Placeholder */}
-        <div className="w-[60px] flex justify-end">
-          <div className="w-5 h-5 bg-white/20 rounded" />
-        </div>
-      </header>
+    <div className="flex flex-col">
+      {/* Timer and Round Stepper Section */}
+      <div className="flex flex-col items-center gap-10">
+        {config.numRounds > 1 && (
+          <RoundStepper
+            currentRound={config.currentRound}
+            totalRounds={config.numRounds}
+          />
+        )}
+        <Timer seconds={timeRemaining} />
+      </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col items-center gap-14 px-6 pb-6">
+      <div className="flex-1 flex flex-col items-center gap-14 p-6">
         {/* Game Content */}
         <div className="flex items-start gap-10 w-full max-w-[1100px]">
           {/* Left Column: Answers tile */}
@@ -153,7 +140,7 @@ export function GamePlayingView({
             )}
           </div>
         )}
-      </main>
+      </div>
 
       {/* Debug Panel */}
       {DEBUG && gameState && (

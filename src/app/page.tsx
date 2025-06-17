@@ -5,6 +5,8 @@ import { GameSettingsView } from "@/views/GameSettingsView";
 import { GamePlayingView } from "@/views/GamePlayingView";
 import { GameRoundOverView } from "@/views/GameRoundOverView";
 import { GameOverView } from "@/views/GameOverView";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { useGameStore } from "@/logic/state/gameStore";
 import { DEBUG } from "@/constants";
 
@@ -36,42 +38,48 @@ export default function AppPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0a0c11] text-white">
-      {currentState === "menu" && (
-        <HomeView onStart={start} onTutorialClick={() => {}} />
-      )}
+    <div className="min-h-screen bg-[#0a0c11] text-white flex flex-col">
+      <Header />
 
-      {currentState === "config" && (
-        <GameSettingsView
-          numPlayers={config.numPlayers}
-          numRounds={config.numRounds}
-          onConfigUpdate={handleConfigUpdate}
-          onStartGame={startGame}
-        />
-      )}
+      <main className="flex-1">
+        {currentState === "menu" && (
+          <HomeView onStart={start} onTutorialClick={() => {}} />
+        )}
 
-      {(currentState === "game" || currentState === "guessing") && (
-        <GamePlayingView
-          tiles={tiles}
-          players={players}
-          selectedPlayerId={selectedPlayerId}
-          timeRemaining={timeRemaining}
-          onTileClick={selectTile}
-          DEBUG={DEBUG}
-        />
-      )}
+        {currentState === "config" && (
+          <GameSettingsView
+            numPlayers={config.numPlayers}
+            numRounds={config.numRounds}
+            onConfigUpdate={handleConfigUpdate}
+            onStartGame={startGame}
+          />
+        )}
 
-      {currentState === "roundOver" && (
-        <GameRoundOverView
-          players={players}
-          currentRound={config.currentRound}
-          onNextRound={nextRound}
-        />
-      )}
+        {(currentState === "game" || currentState === "guessing") && (
+          <GamePlayingView
+            tiles={tiles}
+            players={players}
+            selectedPlayerId={selectedPlayerId}
+            timeRemaining={timeRemaining}
+            onTileClick={selectTile}
+            DEBUG={DEBUG}
+          />
+        )}
 
-      {currentState === "gameOver" && (
-        <GameOverView players={players} onNewGame={continueGame} />
-      )}
-    </main>
+        {currentState === "roundOver" && (
+          <GameRoundOverView
+            players={players}
+            currentRound={config.currentRound}
+            onNextRound={nextRound}
+          />
+        )}
+
+        {currentState === "gameOver" && (
+          <GameOverView players={players} onNewGame={continueGame} />
+        )}
+      </main>
+
+      <Footer />
+    </div>
   );
 }
