@@ -1,13 +1,12 @@
 "use client";
 
-import { Tile } from "@/components/Tile";
 import { TileList } from "@/components/TileList";
 import { Timer } from "@/components/Timer";
 import { RoundStepper } from "@/components/RoundStepper";
 import { TargetTile } from "@/components/TargetTile";
 import { AnswersTile } from "@/components/AnswersTile";
 import { AnswerButton } from "@/components/AnswerButton";
-import { GuessingTimer } from "@/components/GuessingTimer";
+import { GuessingState } from "@/components/GuessingState";
 import { DebugPanel } from "@/components/DebugPanel";
 import { Typography } from "@/components/Typography";
 import { type GameStoreState, useGameStore } from "@/logic/state/gameStore";
@@ -108,62 +107,16 @@ export function GamePlayingView({
             />
 
             {/* Guessing State UI */}
-            {isGuessing && (
-              <div className="flex flex-col items-center gap-6">
-                {/* Guessing Timer */}
-                <div className="flex items-center gap-6 bg-gray-200 text-black px-6 py-4 rounded-lg">
-                  <GuessingTimer
-                    seconds={guessTimer}
-                    totalSeconds={GUESS_DURATION}
-                    isVisible={true}
-                  />
-                  <div className="flex flex-col items-center">
-                    {selectedPlayer && (
-                      <Typography variant="label" className="text-black mb-1">
-                        {selectedPlayer.name}
-                      </Typography>
-                    )}
-                    <Typography variant="p2" className="text-black">
-                      Guessing Time!
-                    </Typography>
-                  </div>
-                </div>
-
-                {/* Selected Tiles Display */}
-                {selectedTiles.length > 0 && (
-                  <div className="flex items-center gap-3 p-4 bg-white/10 rounded-lg backdrop-blur-sm">
-                    {selectedTiles.map((tileIndex, index) => {
-                      const tile = tiles[tileIndex];
-                      return (
-                        <div
-                          key={tileIndex}
-                          className="flex items-center gap-3"
-                        >
-                          <Tile
-                            tile={tile}
-                            isSelected={false}
-                            onClick={() => {}}
-                            disabled
-                          />
-                          {index < selectedTiles.length - 1 && (
-                            <Typography variant="h2" className="text-white/60">
-                              →
-                            </Typography>
-                          )}
-                        </div>
-                      );
-                    })}
-                    <Typography variant="h2" className="mx-4 text-white">
-                      =
-                    </Typography>
-                    <div className="w-[72px] h-[72px] bg-white/20 rounded-lg flex items-center justify-center border border-white/30">
-                      <Typography variant="h2" className="text-white">
-                        {gameState?.targetNumber || "?"}
-                      </Typography>
-                    </div>
-                  </div>
-                )}
-              </div>
+            {isGuessing && selectedPlayer && gameState && (
+              <GuessingState
+                playerName={selectedPlayer.name}
+                tiles={tiles}
+                selectedTiles={selectedTiles}
+                targetNumber={gameState.targetNumber}
+                countdownSeconds={guessTimer}
+                countdownTotalSeconds={GUESS_DURATION}
+                state="guessing"
+              />
             )}
           </div>
 
