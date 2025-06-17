@@ -6,6 +6,7 @@ import { GamePlayingView } from "@/views/GamePlayingView";
 import { GameRoundOverView } from "@/views/GameRoundOverView";
 import { GameOverView } from "@/views/GameOverView";
 import { useGameStore } from "@/logic/state/gameStore";
+import { DEBUG } from "@/constants";
 
 export default function AppPage() {
   const {
@@ -56,6 +57,7 @@ export default function AppPage() {
           selectedPlayerId={selectedPlayerId}
           timeRemaining={timeRemaining}
           onTileClick={selectTile}
+          DEBUG={DEBUG}
         />
       )}
 

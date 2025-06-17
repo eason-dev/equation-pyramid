@@ -47,9 +47,29 @@ export const InitialState: Story = {
   },
 };
 
+export const SinglePlayerMode: Story = {
+  args: {
+    // No playerName provided for single player mode
+    tiles: mockTiles,
+    selectedTiles: [],
+    targetNumber: 10,
+    countdownSeconds: GUESS_DURATION,
+    countdownTotalSeconds: GUESS_DURATION,
+    state: "guessing",
+  },
+};
+
 export const OneTileSelected: Story = {
   args: {
     ...InitialState.args,
+    selectedTiles: [0],
+    countdownSeconds: 8,
+  },
+};
+
+export const OneTileSelectedSinglePlayer: Story = {
+  args: {
+    ...SinglePlayerMode.args,
     selectedTiles: [0],
     countdownSeconds: 8,
   },
@@ -71,6 +91,14 @@ export const ThreeTilesSelected: Story = {
   },
 };
 
+export const ThreeTilesSelectedSinglePlayer: Story = {
+  args: {
+    ...SinglePlayerMode.args,
+    selectedTiles: [0, 1, 2],
+    countdownSeconds: 3,
+  },
+};
+
 export const CorrectAnswer: Story = {
   args: {
     ...InitialState.args,
@@ -80,9 +108,27 @@ export const CorrectAnswer: Story = {
   },
 };
 
+export const CorrectAnswerSinglePlayer: Story = {
+  args: {
+    ...SinglePlayerMode.args,
+    selectedTiles: [0, 1, 2],
+    countdownSeconds: 0,
+    state: "correct",
+  },
+};
+
 export const WrongAnswer: Story = {
   args: {
     ...InitialState.args,
+    selectedTiles: [0, 1, 2],
+    countdownSeconds: 0,
+    state: "wrong",
+  },
+};
+
+export const WrongAnswerSinglePlayer: Story = {
+  args: {
+    ...SinglePlayerMode.args,
     selectedTiles: [0, 1, 2],
     countdownSeconds: 0,
     state: "wrong",

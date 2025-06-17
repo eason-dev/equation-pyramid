@@ -11,7 +11,7 @@ import { DebugPanel } from "@/components/DebugPanel";
 import { Typography } from "@/components/Typography";
 import { type GameStoreState, useGameStore } from "@/logic/state/gameStore";
 import type { Player, Tile as TileType } from "@/logic/game/types";
-import { DEBUG, GUESS_DURATION } from "@/constants";
+import { GUESS_DURATION } from "@/constants";
 import { mergeWithConfig } from "@/lib/utils";
 
 interface GamePlayingViewProps {
@@ -20,6 +20,7 @@ interface GamePlayingViewProps {
   selectedPlayerId: string | null;
   timeRemaining: number;
   onTileClick: (index: number) => void;
+  DEBUG?: boolean;
 
   // Optional store state override for testing/Storybook
   storeOverrides?: Partial<GameStoreState>;
@@ -32,6 +33,7 @@ export function GamePlayingView({
   timeRemaining,
   onTileClick,
   storeOverrides,
+  DEBUG = false,
 }: GamePlayingViewProps) {
   const hookStore = useGameStore();
 
@@ -109,7 +111,7 @@ export function GamePlayingView({
             {/* Guessing State UI */}
             {isGuessing && selectedPlayer && gameState && (
               <GuessingState
-                playerName={selectedPlayer.name}
+                playerName={isSinglePlayer ? undefined : selectedPlayer.name}
                 tiles={tiles}
                 selectedTiles={selectedTiles}
                 targetNumber={gameState.targetNumber}

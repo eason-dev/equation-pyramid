@@ -148,7 +148,62 @@ export const GuessingWithLowTime: Story = {
   },
 };
 
-export const WithFoundEquations: Story = {
+export const SinglePlayerGuessingStart: Story = {
+  args: {
+    ...baseArgs,
+    players: [mockPlayers[0]],
+    selectedPlayerId: "1",
+    storeOverrides: {
+      ...Default.args.storeOverrides,
+      currentState: "guessing",
+      selectedTiles: [],
+      guessTimer: 8,
+      config: {
+        numPlayers: 1,
+        numRounds: 3,
+        currentRound: 1,
+      },
+    },
+  },
+};
+
+export const SinglePlayerGuessingSelectedOne: Story = {
+  args: {
+    ...baseArgs,
+    players: [mockPlayers[0]],
+    selectedPlayerId: "1",
+    storeOverrides: {
+      ...SinglePlayerGuessingStart.args.storeOverrides,
+      selectedTiles: [0],
+      guessTimer: 6,
+    },
+  },
+};
+
+export const SinglePlayerGuessingSelectedThree: Story = {
+  args: {
+    ...baseArgs,
+    players: [mockPlayers[0]],
+    selectedPlayerId: "1",
+    storeOverrides: {
+      ...SinglePlayerGuessingStart.args.storeOverrides,
+      selectedTiles: [0, 1, 2],
+      guessTimer: 3,
+    },
+  },
+};
+
+export const WithFoundEquationsSingle: Story = {
+  args: {
+    ...baseArgs,
+    storeOverrides: {
+      ...Default.args.storeOverrides,
+      foundEquations: ["0,1,2"],
+    },
+  },
+};
+
+export const WithFoundEquationsMultiple: Story = {
   args: {
     ...baseArgs,
     storeOverrides: {

@@ -8,7 +8,7 @@ import type { Tile as TileType } from "@/logic/game/types";
 import { cn } from "@/lib/utils";
 
 interface GuessingStateProps {
-  playerName: string;
+  playerName?: string;
   tiles: TileType[];
   selectedTiles: number[];
   targetNumber: number;
@@ -50,66 +50,66 @@ export function GuessingState({
             hasSelectedTiles ? "order-1" : "order-2 mx-auto",
           )}
         >
-          <div className="bg-gray-200 text-black px-6 py-4 rounded-lg">
-            <GuessingTimer
-              seconds={countdownSeconds}
-              totalSeconds={countdownTotalSeconds}
-              isVisible={true}
-            />
-          </div>
+          <GuessingTimer
+            seconds={countdownSeconds}
+            totalSeconds={countdownTotalSeconds}
+            isVisible={true}
+          />
         </div>
 
         {/* Selected Tiles Display - center when tiles are selected */}
         {hasSelectedTiles && (
-          <div className="order-2 flex items-center gap-3">
-            <div className="flex items-center gap-3 p-4 bg-white/10 rounded-lg backdrop-blur-sm">
-              {selectedTiles.map((tileIndex, index) => {
+          <div className="order-2">
+            {/* Fixed width container to allocate space for 3 tiles */}
+            <div
+              className="flex items-center gap-2.5"
+              style={{ width: "326px", height: "102px" }}
+            >
+              {/* Render selected tiles, left-aligned */}
+              {selectedTiles.map((tileIndex) => {
                 const tile = tiles[tileIndex];
                 return (
-                  <div key={tileIndex} className="flex items-center gap-3">
+                  <div key={tileIndex} className="w-[102px]">
                     <Tile
                       tile={tile}
                       isSelected={false}
                       onClick={() => {}}
                       disabled
                     />
-                    {index < selectedTiles.length - 1 && (
-                      <Typography variant="h2" className="text-white/60">
-                        →
-                      </Typography>
-                    )}
                   </div>
                 );
               })}
-              {hasThreeTiles && (
-                <Typography variant="h2" className="mx-4 text-white">
-                  =
-                </Typography>
-              )}
             </div>
           </div>
         )}
 
-        {/* Result Block - shows after 3 tiles selected */}
-        {hasThreeTiles && (
+        {/* Result Block - always allocate space, show content after 3 tiles selected */}
+        {hasSelectedTiles && (
           <div className="order-3">
-            <Block
-              className={cn(
-                "min-w-[120px] min-h-[120px] flex flex-col items-center justify-center gap-2.5 border-2 transition-colors",
-                getResultBorderStyle(),
-              )}
-            >
-              <Typography variant="h2">Result</Typography>
-              <Typography variant="p1">={targetNumber}</Typography>
-            </Block>
+            {hasThreeTiles ? (
+              <Block
+                className={cn(
+                  "min-w-[120px] min-h-[120px] flex flex-col items-center justify-center gap-2.5 border-2 transition-colors",
+                  getResultBorderStyle(),
+                )}
+              >
+                <Typography variant="h2">Result</Typography>
+                <Typography variant="p1">={targetNumber}</Typography>
+              </Block>
+            ) : (
+              /* Empty placeholder to maintain layout spacing */
+              <div className="min-w-[120px] min-h-[120px]" />
+            )}
           </div>
         )}
       </div>
 
-      {/* Player Name - always at bottom */}
-      <Typography variant="h2" className="text-white">
-        {playerName}
-      </Typography>
+      {/* Player Name - only show if provided */}
+      {playerName && (
+        <Typography variant="h2" className="text-white">
+          {playerName}
+        </Typography>
+      )}
     </div>
   );
 }
