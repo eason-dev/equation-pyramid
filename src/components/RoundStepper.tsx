@@ -12,23 +12,16 @@ export function RoundStepper({ currentRound, totalRounds }: RoundStepperProps) {
         <div key={round} className="flex items-center">
           <div
             className={cn(
-              "w-8 h-8 rounded-full transition-colors flex items-center justify-center text-sm font-medium",
-              round === currentRound
-                ? "bg-blue-500 text-white"
-                : round < currentRound
-                  ? "bg-blue-200 text-blue-700"
-                  : "bg-gray-200 text-gray-600",
+              "w-8 h-8 rounded-full border border-white/20 transition-colors flex items-center justify-center text-base font-normal",
+              "bg-black/60",
+              round === currentRound ? "text-white" : "text-[#969696]",
             )}
+            style={{ fontFamily: "Inter" }}
           >
             R{round}
           </div>
           {round < totalRounds && (
-            <div
-              className={cn(
-                "w-8 h-0.5",
-                round < currentRound ? "bg-blue-200" : "bg-gray-200",
-              )}
-            />
+            <div className="w-6 h-0 border-t-2 border-white/20" />
           )}
         </div>
       ))}
