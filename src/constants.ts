@@ -26,3 +26,7 @@ export const MIN_VALID_EQUATIONS = 2;
 export const MAX_VALID_EQUATIONS = 5;
 export const MIN_TILE_NUMBER = 1;
 export const MAX_TILE_NUMBER = 20;
+
+// Human-friendly Constraint Constants
+export const MAX_BIG_NUMBER_TILES = 3; // tiles with number >= 10
+export const BIG_NUMBER_THRESHOLD = 10;
