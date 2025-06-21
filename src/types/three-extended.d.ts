@@ -7,4 +7,10 @@ declare global {
       trippyMaterial: Object3DNode<ShaderMaterial, typeof ShaderMaterial>
     }
   }
+}
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    trippyMaterial: Object3DNode<ShaderMaterial, typeof ShaderMaterial>
+  }
 } 

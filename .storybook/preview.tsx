@@ -1,8 +1,8 @@
-import React from "react";
 
 import type { Preview } from "@storybook/nextjs-vite";
 
 import "../src/styles/globals.css";
+import { ShaderBackground } from "../src/components/ShaderBackground";
 
 const preview: Preview = {
   // Enables auto-generated documentation for all stories
@@ -41,9 +41,18 @@ const preview: Preview = {
   decorators: [
     (Story) => {
       return (
-        <main className="text-white">
-          <Story />
-        </main>
+        <>
+          {/* Background Shader for all stories */}
+          <ShaderBackground 
+            showControls={false} 
+            className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10"
+          />
+          
+          {/* Story content */}
+          <main className="text-white relative z-10">
+            <Story />
+          </main>
+        </>
       );
     },
   ],
