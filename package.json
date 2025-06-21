@@ -15,12 +15,17 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@react-three/drei": "^10.3.0",
+    "@react-three/fiber": "^9.1.2",
+    "babel-plugin-glsl": "^1.0.0",
     "clsx": "^2.1.1",
     "immer": "^10.1.1",
+    "leva": "^0.10.0",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.3.0",
+    "three": "^0.177.0",
     "zustand": "^5.0.5"
   },
   "devDependencies": {
@@ -40,6 +45,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.177.0",
     "@vitest/browser": "^3.2.3",
     "@vitest/coverage-v8": "^3.2.3",
     "eslint": "^9",
