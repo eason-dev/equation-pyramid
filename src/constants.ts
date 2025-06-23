@@ -1,4 +1,4 @@
-export const DEBUG = process.env.NEXT_PUBLIC_DEBUG === "true";
+export const DEBUG = true;
 
 // Game Configuration Constants
 export const MAX_PLAYERS = 2;

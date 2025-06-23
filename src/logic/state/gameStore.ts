@@ -227,7 +227,7 @@ export const useGameStore = create<GameStoreState>()(
     },
 
     nextRound: () => {
-      const { startMainTimer } = get();
+      const { startMainTimer, stopMainTimer, stopGuessTimer } = get();
       set((state) => {
         if (state.config.currentRound >= state.config.numRounds) {
           state.currentState = "gameOver";
@@ -245,6 +245,10 @@ export const useGameStore = create<GameStoreState>()(
 
       if (get().currentState === "game") {
         startMainTimer();
+      } else if (get().currentState === "gameOver") {
+        // Stop all timers when game is over
+        stopMainTimer();
+        stopGuessTimer();
       }
     },
 
