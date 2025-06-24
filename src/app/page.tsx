@@ -35,6 +35,24 @@ export default function AppPage() {
   const [transitionKey, setTransitionKey] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
   const [shouldShowConfettiAfterTransition, setShouldShowConfettiAfterTransition] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
+
+  // Handle shake effect for wrong answers
+  useEffect(() => {
+    if (displayState === "showingResult" && isCurrentEquationCorrect === false) {
+      setIsShaking(true);
+      
+      // Stop shaking after 600ms
+      const timer = setTimeout(() => {
+        setIsShaking(false);
+      }, 600);
+      return () => {
+        clearTimeout(timer);
+      };
+    } else {
+      setIsShaking(false);
+    }
+  }, [displayState, isCurrentEquationCorrect]);
 
   // Handle confetti logic when entering gameOver state
   useEffect(() => {
@@ -171,7 +189,11 @@ export default function AppPage() {
       <ShaderBackground showControls={true} color={getBackgroundColor()} />
       
       {/* Main Content */}
-      <div className="min-h-screen text-white flex flex-col relative z-10">
+      <div 
+        className={`min-h-screen text-white flex flex-col relative z-10 transition-transform duration-75 ${
+          isShaking ? 'animate-shake' : ''
+        }`}
+      >
         <Header />
 
         <main className="flex-1">
@@ -218,6 +240,71 @@ export default function AppPage() {
 
         <Footer />
       </div>
+
+      <style jsx global>{`
+        /* Hide scroll bars globally across all browsers while maintaining scroll functionality */
+        html, body {
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+        
+        /* Hide scroll bars for webkit browsers (Chrome, Safari, Edge) */
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+          display: none;
+          width: 0;
+          height: 0;
+        }
+        
+        /* Hide scroll bars for all elements while maintaining scroll functionality */
+        * {
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+        
+        /* Webkit browsers */
+        *::-webkit-scrollbar {
+          display: none;
+        }
+
+        @keyframes shake {
+          0%, 100% { 
+            transform: translateX(0); 
+          }
+          10% { 
+            transform: translateX(-8px) translateY(-2px) rotate(-1deg); 
+          }
+          20% { 
+            transform: translateX(8px) translateY(2px) rotate(1deg); 
+          }
+          30% { 
+            transform: translateX(-6px) translateY(-1px) rotate(-0.5deg); 
+          }
+          40% { 
+            transform: translateX(6px) translateY(1px) rotate(0.5deg); 
+          }
+          50% { 
+            transform: translateX(-4px) translateY(-0.5px) rotate(-0.25deg); 
+          }
+          60% { 
+            transform: translateX(4px) translateY(0.5px) rotate(0.25deg); 
+          }
+          70% { 
+            transform: translateX(-2px) translateY(-0.25px); 
+          }
+          80% { 
+            transform: translateX(2px) translateY(0.25px); 
+          }
+          90% { 
+            transform: translateX(-1px); 
+          }
+        }
+        
+        .animate-shake {
+          animation: shake 0.6s ease-in-out infinite;
+        }
+      `}</style>
     </>
   );
 }
