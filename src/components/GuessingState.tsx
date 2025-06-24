@@ -15,6 +15,7 @@ interface GuessingStateProps {
   countdownSeconds: number;
   countdownTotalSeconds: number;
   state: "guessing" | "correct" | "wrong";
+  calculatedResult?: number | null;
 }
 
 export function GuessingState({
@@ -25,6 +26,7 @@ export function GuessingState({
   countdownSeconds,
   countdownTotalSeconds,
   state,
+  calculatedResult,
 }: GuessingStateProps) {
   const hasSelectedTiles = selectedTiles.length > 0;
   const hasThreeTiles = selectedTiles.length === 3;
@@ -94,7 +96,9 @@ export function GuessingState({
                 )}
               >
                 <Typography variant="h2">Result</Typography>
-                <Typography variant="p1">={targetNumber}</Typography>
+                <Typography variant="p1">
+                  ={calculatedResult !== null && calculatedResult !== undefined ? calculatedResult : targetNumber}
+                </Typography>
               </Block>
             ) : (
               /* Empty placeholder to maintain layout spacing */

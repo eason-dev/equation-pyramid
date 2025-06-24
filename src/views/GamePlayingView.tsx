@@ -54,9 +54,12 @@ export function GamePlayingView({
     config,
     transitionToRoundOver,
     nextRound,
+    currentEquationResult,
+    isCurrentEquationCorrect,
   } = mergedStore;
 
   const isGuessing = currentState === "guessing" && !isOver;
+  const isShowingResult = currentState === "showingResult" && !isOver;
   const canStartGuessing =
     currentState === "game" && selectedTiles.length === 0 && !isOver;
   const isSinglePlayer = players.length === 1;
@@ -97,11 +100,11 @@ export function GamePlayingView({
               tiles={tiles}
               selectedTiles={selectedTiles}
               onTileClick={onTileClick}
-              isGuessing={isGuessing}
+              isGuessing={isGuessing || isShowingResult}
             />
 
             {/* Guessing State UI */}
-            {isGuessing && selectedPlayer && gameState && (
+            {(isGuessing || isShowingResult) && selectedPlayer && gameState && (
               <GuessingState
                 playerName={isSinglePlayer ? undefined : selectedPlayer.name}
                 tiles={tiles}
@@ -109,7 +112,16 @@ export function GamePlayingView({
                 targetNumber={gameState.targetNumber}
                 countdownSeconds={guessTimer}
                 countdownTotalSeconds={GUESS_DURATION}
-                state="guessing"
+                state={
+                  isShowingResult
+                    ? isCurrentEquationCorrect === true
+                      ? "correct"
+                      : isCurrentEquationCorrect === false
+                      ? "wrong"
+                      : "guessing"
+                    : "guessing"
+                }
+                calculatedResult={isShowingResult ? currentEquationResult : null}
               />
             )}
           </div>

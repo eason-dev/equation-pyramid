@@ -178,7 +178,7 @@ export default function AppPage() {
             />
           )}
 
-          {(displayState === "game" || displayState === "guessing") && (
+          {(displayState === "game" || displayState === "guessing" || displayState === "showingResult") && (
             <GamePlayingView
               tiles={tiles}
               players={players}

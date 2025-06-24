@@ -19,6 +19,7 @@ export type GameAppState =
   | "config"
   | "game"
   | "guessing"
+  | "showingResult"
   | "roundOver"
   | "gameOver";
 
@@ -42,9 +43,14 @@ interface GameData {
   guessTimer: number;
   guessingPlayerId: string | null;
 
+  // Result display data
+  currentEquationResult: number | null;
+  isCurrentEquationCorrect: boolean | null;
+
   // Timers
   mainTimerInterval: NodeJS.Timeout | null;
   guessTimerInterval: NodeJS.Timeout | null;
+  resultDelayInterval: NodeJS.Timeout | null;
 }
 
 export interface GameStoreState extends GameData {
@@ -64,6 +70,8 @@ export interface GameStoreState extends GameData {
   stopMainTimer: () => void;
   startGuessTimer: () => void;
   stopGuessTimer: () => void;
+  startResultDelayTimer: () => void;
+  stopResultDelayTimer: () => void;
 
   // Reset actions
   resetGame: () => void;
@@ -88,8 +96,11 @@ const initialState: GameData = {
   mainTimer: ROUND_DURATION,
   guessTimer: GUESS_DURATION,
   guessingPlayerId: null,
+  currentEquationResult: null,
+  isCurrentEquationCorrect: null,
   mainTimerInterval: null,
   guessTimerInterval: null,
+  resultDelayInterval: null,
 };
 
 const createInitialPlayers = (numPlayers: number): Player[] => {
@@ -156,7 +167,7 @@ export const useGameStore = create<GameStoreState>()(
     },
 
     selectTile: (tileIndex) => {
-      const { selectedTiles, submitEquation } = get();
+      const { selectedTiles, stopGuessTimer } = get();
 
       set((state) => {
         if (state.selectedTiles.length < TILES_PER_EQUATION) {
@@ -164,8 +175,41 @@ export const useGameStore = create<GameStoreState>()(
         }
       });
 
+      // When 3rd tile is selected, calculate result and show it with delay
       if (selectedTiles.length === TILES_PER_EQUATION - 1) {
-        submitEquation();
+        const state = get();
+        if (state.gameState) {
+          const [i, j, k] = [...state.selectedTiles, tileIndex];
+          const equation = {
+            tiles: [
+              state.gameState.tiles[i],
+              state.gameState.tiles[j],
+              state.gameState.tiles[k],
+            ] as [
+              (typeof state.gameState.tiles)[0],
+              (typeof state.gameState.tiles)[0],
+              (typeof state.gameState.tiles)[0],
+            ],
+          };
+
+          const result = calculateEquation(equation.tiles);
+          const isCorrect = result === state.gameState.targetNumber;
+          
+          stopGuessTimer();
+
+          set((state) => {
+            state.currentState = "showingResult";
+            state.currentEquationResult = result;
+            state.isCurrentEquationCorrect = isCorrect;
+            state.guessTimer = GUESS_DURATION; // Reset guess timer to prevent issues
+          });
+
+          // Auto-submit after 5 seconds to give more time to see the result
+          setTimeout(() => {
+            const { submitEquation } = get();
+            submitEquation();
+          }, 2500);
+        }
       }
     },
 
@@ -221,6 +265,8 @@ export const useGameStore = create<GameStoreState>()(
         // Reset selection and return to game state
         state.selectedTiles = [];
         state.guessingPlayerId = null;
+        state.currentEquationResult = null;
+        state.isCurrentEquationCorrect = null;
         state.currentState = "game";
       });
       startMainTimer();
@@ -350,6 +396,21 @@ export const useGameStore = create<GameStoreState>()(
       }
     },
 
+          startResultDelayTimer: () => {
+        const { stopResultDelayTimer } = get();
+        stopResultDelayTimer();
+      },
+
+      stopResultDelayTimer: () => {
+        const state = get();
+        if (state.resultDelayInterval) {
+          clearInterval(state.resultDelayInterval);
+          set((state) => {
+            state.resultDelayInterval = null;
+          });
+        }
+      },
+
     resetGame: () => {
       const { stopMainTimer, stopGuessTimer } = get();
       stopMainTimer();
@@ -365,6 +426,8 @@ export const useGameStore = create<GameStoreState>()(
         state.mainTimer = ROUND_DURATION;
         state.guessTimer = GUESS_DURATION;
         state.guessingPlayerId = null;
+        state.currentEquationResult = null;
+        state.isCurrentEquationCorrect = null;
       });
     },
   })),
