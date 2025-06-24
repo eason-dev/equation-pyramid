@@ -13,7 +13,7 @@ const TrippyMaterial = shaderMaterial(
     u_resolution: new THREE.Vector2(),
     u_scale: 1.0,
     u_strength: 0.6,
-    u_color: new THREE.Color('#00bfff'),
+    u_color: new THREE.Color('#242b3e'),
   },
   // Vertex shader
   `
@@ -51,8 +51,10 @@ const TrippyMaterial = shaderMaterial(
 
 extend({ TrippyMaterial })
 
-function FullscreenShader() {
+function FullscreenShader({ externalColor }: { externalColor?: string }) {
   const ref = useRef<any>(null)
+  const targetColorRef = useRef(new THREE.Color('#242b3e'))
+  const currentColorRef = useRef(new THREE.Color('#242b3e'))
 
   const { strength, color } = useControls({
     strength: { value: 0.6, min: 0.1, max: 2.0, step: 0.1 },
@@ -64,7 +66,14 @@ function FullscreenShader() {
       ref.current.u_time = clock.getElapsedTime() * 0.1
       ref.current.u_resolution = new THREE.Vector2(size.width, size.height)
       ref.current.u_strength = strength
-      ref.current.u_color = new THREE.Color(color)
+      
+      // Use external color if provided, otherwise use Leva controls
+      const targetColor = externalColor || color
+      targetColorRef.current.set(targetColor)
+      
+      // Smoothly interpolate to target color
+      currentColorRef.current.lerp(targetColorRef.current, 0.05)
+      ref.current.u_color = currentColorRef.current.clone()
     }
   })
 
@@ -79,15 +88,16 @@ function FullscreenShader() {
 interface ShaderBackgroundProps {
   showControls?: boolean
   className?: string
+  color?: string
 }
 
-export function ShaderBackground({ showControls = false, className = "fixed top-0 left-0 w-screen h-screen overflow-hidden -z-10" }: ShaderBackgroundProps) {
+export function ShaderBackground({ showControls = false, className = "fixed top-0 left-0 w-screen h-screen overflow-hidden -z-10", color }: ShaderBackgroundProps) {
   return (
     <>
       {showControls && <Leva collapsed={true} />}
       <div className={className}>
         <Canvas orthographic camera={{ zoom: 1, position: [0, 0, 1] }}>
-          <FullscreenShader />
+          <FullscreenShader externalColor={color} />
         </Canvas>
       </div>
     </>

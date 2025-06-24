@@ -26,6 +26,8 @@ export default function AppPage() {
     startGame,
     selectTile,
     continueGame,
+    currentEquationResult,
+    isCurrentEquationCorrect,
   } = useGameStore();
 
   const [showTransition, setShowTransition] = useState(false);
@@ -143,6 +145,14 @@ export default function AppPage() {
     updateConfig(newConfig);
   };
 
+  // Determine background color based on game state and answer correctness
+  const getBackgroundColor = () => {
+    if (displayState === "showingResult" && isCurrentEquationCorrect !== null) {
+      return isCurrentEquationCorrect ? "#233d29" : "#3d2323"; // Green for correct, red for wrong
+    }
+    return "#242b3e"; // Default blue-gray color
+  };
+
   return (
     <>
       {/* Confetti Effect */}
@@ -158,7 +168,7 @@ export default function AppPage() {
       )}
 
       {/* Background Shader */}
-      <ShaderBackground showControls={true} />
+      <ShaderBackground showControls={true} color={getBackgroundColor()} />
       
       {/* Main Content */}
       <div className="min-h-screen text-white flex flex-col relative z-10">
