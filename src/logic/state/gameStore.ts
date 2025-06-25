@@ -201,7 +201,7 @@ export const useGameStore = create<GameStoreState>()(
             state.currentState = "showingResult";
             state.currentEquationResult = result;
             state.isCurrentEquationCorrect = isCorrect;
-            state.guessTimer = GUESS_DURATION; // Reset guess timer to prevent issues
+            // Keep the current guessTimer value instead of resetting
           });
 
           // Auto-submit after 5 seconds to give more time to see the result
