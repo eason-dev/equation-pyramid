@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef, useEffect } from "react";
+import { gsap } from "gsap";
 import type { Operator, Tile as TileType } from "@/logic/game/types";
 
 interface TileProps {
@@ -7,6 +9,7 @@ interface TileProps {
   isSelected: boolean;
   onClick: () => void;
   disabled: boolean;
+  isFirstSelected?: boolean;
 }
 
 const operatorMap: Record<Operator, string> = {
@@ -16,7 +19,44 @@ const operatorMap: Record<Operator, string> = {
   "/": "÷",
 };
 
-export function Tile({ tile, isSelected, onClick, disabled }: TileProps) {
+export function Tile({ tile, isSelected, onClick, disabled, isFirstSelected = false }: TileProps) {
+  const operatorRef = useRef<HTMLSpanElement>(null);
+  const numberRef = useRef<HTMLSpanElement>(null);
+  const explosionContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isFirstSelected && operatorRef.current && explosionContainerRef.current && numberRef.current) {
+      const operatorElement = operatorRef.current;
+      const numberElement = numberRef.current;
+
+      // Calculate the operator width to determine proper centering offset
+      const operatorWidth = operatorElement.getBoundingClientRect().width;
+      const centeringOffset = -(operatorWidth / 2);
+
+      // Create timeline for coordinated animations
+      const tl = gsap.timeline();
+
+      // First: Operator scale up and fade out (longer duration)
+      tl.to(operatorElement, {
+        opacity: 0,
+        duration: 0.6,
+        ease: "power1.out",
+      });
+
+      // Then: Number slides to center position with calculated offset
+      tl.to(numberElement, {
+        x: centeringOffset, // Use calculated offset based on operator width
+        duration: 0.3,
+        ease: "power2.out",
+      }, "-=0.3"); // Start 0.3 seconds before the operator animation ends
+
+      // Add a subtle scale animation to the number for emphasis
+      tl.to(numberElement, {
+        duration: 0.4,
+      }, "-=0.4");
+    }
+  }, [isFirstSelected]);
+
   const getStateStyles = () => {
     if (disabled) {
       return {
@@ -66,6 +106,8 @@ export function Tile({ tile, isSelected, onClick, disabled }: TileProps) {
         gap-2.5
         px-[15px] py-[7px]
         font-inter
+        relative
+        overflow-hidden
         ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
       `}
       style={{
@@ -88,16 +130,37 @@ export function Tile({ tile, isSelected, onClick, disabled }: TileProps) {
         }
       }}
     >
-      <div className="-rotate-45 flex flex-col items-center justify-center gap-2.5">
+      {/* Explosion container for star animations */}
+      <div
+        ref={explosionContainerRef}
+        className="absolute inset-0 pointer-events-none"
+      />
+      
+      <div className="-rotate-45 flex flex-col items-center justify-center gap-1.5 w-full max-w-[50px]">
         <div
-          className="text-[20px] font-normal leading-[1.21] text-center"
+          className="text-[16px] font-normal leading-tight text-center w-full"
           style={{ color: "rgba(198, 197, 215, 0.8)" }}
         >
           {tile.label}
         </div>
-        <div className="text-[24px] font-bold leading-[1.21] text-center text-white">
-          {operatorMap[tile.operator as Operator]}
-          {tile.number}
+        <div 
+          className="text-[22px] font-bold leading-tight text-center text-white relative w-full overflow-hidden"
+          style={{ 
+            whiteSpace: "nowrap"
+          }}
+        >
+          <span
+            ref={operatorRef}
+            className="inline-block"
+          >
+            {operatorMap[tile.operator as Operator]}
+          </span>
+          <span
+            ref={numberRef}
+            className="inline-block"
+          >
+            {tile.number}
+          </span>
         </div>
       </div>
     </button>

@@ -26,6 +26,9 @@ const meta = {
     disabled: {
       control: { type: "boolean" },
     },
+    isFirstSelected: {
+      control: { type: "boolean" },
+    },
   },
 } satisfies Meta<typeof Tile>;
 
@@ -42,6 +45,7 @@ export const Default: Story = {
     isSelected: false,
     onClick: fn(),
     disabled: false,
+    isFirstSelected: false,
   },
 };
 
@@ -59,6 +63,15 @@ export const Disabled: Story = {
   },
 };
 
+export const FirstSelectedWithAnimation: Story = {
+  args: {
+    ...Default.args,
+    isSelected: true,
+    disabled: true,
+    isFirstSelected: true,
+  },
+};
+
 export const WithSubtraction: Story = {
   args: {
     tile: {
@@ -69,6 +82,7 @@ export const WithSubtraction: Story = {
     isSelected: false,
     onClick: fn(),
     disabled: false,
+    isFirstSelected: false,
   },
 };
 
@@ -82,6 +96,7 @@ export const WithMultiplication: Story = {
     isSelected: false,
     onClick: fn(),
     disabled: false,
+    isFirstSelected: false,
   },
 };
 
@@ -95,5 +110,6 @@ export const WithDivision: Story = {
     isSelected: false,
     onClick: fn(),
     disabled: false,
+    isFirstSelected: false,
   },
 };

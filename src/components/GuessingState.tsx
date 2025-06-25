@@ -68,8 +68,9 @@ export function GuessingState({
               style={{ width: "326px", height: "102px" }}
             >
               {/* Render selected tiles, left-aligned */}
-              {selectedTiles.map((tileIndex) => {
+              {selectedTiles.map((tileIndex, arrayIndex) => {
                 const tile = tiles[tileIndex];
+                const isFirstSelected = arrayIndex === 0; // First tile in the selected array
                 return (
                   <div key={tileIndex} className="w-[102px]">
                     <Tile
@@ -77,6 +78,7 @@ export function GuessingState({
                       isSelected={false}
                       onClick={() => {}}
                       disabled
+                      isFirstSelected={isFirstSelected}
                     />
                   </div>
                 );
