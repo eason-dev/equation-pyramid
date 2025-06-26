@@ -18,7 +18,7 @@ export function GuessingTimer({
   const progress = (seconds / totalSeconds) * 100;
   
   // Calculate circumference for a circle with radius 24
-  const radius = 24;
+  const radius = 18;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
@@ -30,23 +30,23 @@ export function GuessingTimer({
         viewBox="0 0 64 64"
         aria-hidden="true"
       >
-        {/* Background circle */}
+        {/* Background fill circle */}
         <circle
           cx="32"
           cy="32"
           r={radius}
-          fill="none"
-          stroke="rgba(255, 255, 255, 0.2)"
-          strokeWidth="3"
+          fill="rgba(11, 11, 11, 0.8)"
+          stroke="none"
         />
+
         {/* Progress circle */}
         <circle
           cx="32"
           cy="32"
           r={radius}
           fill="none"
-          stroke="white"
-          strokeWidth="3"
+          stroke="rgba(104, 104, 104, 0.75)"
+          strokeWidth="1.2"
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
