@@ -49,6 +49,13 @@ export default function AppPage() {
     endTime: 0.01,   // Skip last 10ms
   });
 
+  // End sound for round over
+  const endSoundControls = useAudio('/audio/end-sound.mp3', {
+    volume: 0.7,
+    loop: false,
+    autoPlay: false,
+  });
+
   // Answer sounds
   const { playCorrectSound, playIncorrectSound } = useAnswerSounds();
 
@@ -70,6 +77,9 @@ export default function AppPage() {
 
   // Track shake animation to prevent multiple shakes
   const shakeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Track end sound to prevent multiple plays
+  const endSoundPlayedRef = useRef<boolean>(false);
 
   // Handle answer sounds (separate from shake animation)
   useEffect(() => {
@@ -101,7 +111,11 @@ export default function AppPage() {
 
   // Handle shake animation separately to prevent multiple shakes
   useEffect(() => {
-    if (displayState === "showingResult" && isCurrentEquationCorrect === false) {
+    const shouldShake = 
+      (displayState === "showingResult" && isCurrentEquationCorrect === false) ||
+      displayState === "roundOver";
+
+    if (shouldShake) {
       // Clear any existing shake timeout
       if (shakeTimeoutRef.current) {
         clearTimeout(shakeTimeoutRef.current);
@@ -116,7 +130,7 @@ export default function AppPage() {
         shakeTimeoutRef.current = null;
       }, 600);
     } else {
-      // Clear shake when not showing wrong results
+      // Clear shake when not in shaking states
       if (shakeTimeoutRef.current) {
         clearTimeout(shakeTimeoutRef.current);
         shakeTimeoutRef.current = null;
@@ -131,6 +145,20 @@ export default function AppPage() {
       }
     };
   }, [displayState, isCurrentEquationCorrect]);
+
+  // Handle end sound when entering roundOver state
+  useEffect(() => {
+    if (displayState === "roundOver") {
+      // Only play the end sound if it hasn't been played yet for this round
+      if (endSoundControls.isLoaded && !endSoundPlayedRef.current) {
+        endSoundControls.play();
+        endSoundPlayedRef.current = true;
+      }
+    } else {
+      // Reset the flag when leaving roundOver state
+      endSoundPlayedRef.current = false;
+    }
+  }, [displayState, endSoundControls]);
 
   // Handle confetti logic when entering gameOver state
   useEffect(() => {
