@@ -11,6 +11,7 @@ import { ShaderBackground } from "@/components/ShaderBackground";
 import TransitionOverlay from "@/components/TransitionOverlay";
 import Confetti from "@/components/Confetti";
 import { useGameStore, type GameAppState } from "@/logic/state/gameStore";
+import { useAudio } from "@/hooks/useAudio";
 import { DEBUG } from "@/constants";
 
 export default function AppPage() {
@@ -29,6 +30,26 @@ export default function AppPage() {
     currentEquationResult,
     isCurrentEquationCorrect,
   } = useGameStore();
+
+  // Main menu background music
+  const mainAudioControls = useAudio('/audio/main-background-music.ogg', {
+    volume: 0.5,
+    loop: true,
+    autoPlay: true,
+    startTime: 0.025, // Skip first 50ms
+  });
+
+  // Game background music
+  const gameAudioControls = useAudio('/audio/ticking.ogg', {
+    volume: 0.8,
+    loop: true,
+    autoPlay: true,
+    startTime: 0.01, // Skip first 50ms
+    endTime: 0.01,   // Skip last 10ms
+  });
+
+  // Track which music should be active based on game state
+  const [activeMusicType, setActiveMusicType] = useState<'main' | 'game'>('main');
 
   const [showTransition, setShowTransition] = useState(false);
   const [displayState, setDisplayState] = useState<GameAppState>(currentState);
@@ -128,6 +149,33 @@ export default function AppPage() {
       }
     }
   }, [currentState, displayState]);
+
+  // Determine which music should be playing based on display state
+  useEffect(() => {
+    const isGuessingState = displayState === "guessing";
+
+    // Main music should always be playing (except when manually paused)
+    if (mainAudioControls.isLoaded && !mainAudioControls.isPlaying) {
+      mainAudioControls.play();
+    }
+
+    // Ticking sound only plays during guessing state (layered on top of main music)
+    if (isGuessingState) {
+      if (gameAudioControls.isLoaded && !gameAudioControls.isPlaying) {
+        gameAudioControls.play();
+      }
+      setActiveMusicType('game'); // For UI display purposes
+    } else {
+      // Stop ticking sound when not guessing
+      if (gameAudioControls.isPlaying) {
+        gameAudioControls.pause();
+      }
+      setActiveMusicType('main'); // For UI display purposes
+    }
+  }, [displayState, mainAudioControls, gameAudioControls]);
+
+  // Get the currently active audio controls for the Footer
+  const activeAudioControls = activeMusicType === 'game' ? gameAudioControls : mainAudioControls;
 
   const handleCenterReached = useCallback(() => {
     // Update display state when overlay reaches center
@@ -238,7 +286,7 @@ export default function AppPage() {
           )}
         </main>
 
-        <Footer />
+        <Footer audioControls={activeAudioControls} trackType={activeMusicType} />
       </div>
 
       <style jsx global>{`
