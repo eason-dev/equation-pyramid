@@ -3,6 +3,7 @@
 import { type ButtonHTMLAttributes, forwardRef } from "react";
 import { cn } from "@/lib/utils";
 import { Typography } from "./Typography";
+import { useButtonSound } from "@/hooks/useButtonSound";
 
 interface AnswerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   playerName: string;
@@ -24,6 +25,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
     },
     ref,
   ) => {
+    const { playButtonSound } = useButtonSound();
     const isDisabled = disabled || isOver;
 
     const getStateStyles = () => {
@@ -68,7 +70,12 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         ref={ref}
         type="button"
         disabled={isDisabled}
-        onClick={onClick}
+        onClick={(e) => {
+          if (!isDisabled) {
+            playButtonSound();
+            onClick();
+          }
+        }}
         className={cn(
           // Base styles
           "flex flex-col items-center justify-center",

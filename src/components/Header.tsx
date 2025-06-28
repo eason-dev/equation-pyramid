@@ -1,15 +1,21 @@
 "use client";
 
 import { Typography } from "./Typography";
+import { useButtonSound } from "@/hooks/useButtonSound";
 
 export function Header() {
+  const { playButtonSound } = useButtonSound();
+  
   return (
     <header className="flex items-center justify-between p-6">
       {/* Logo */}
       <button
         type="button"
         className="cursor-pointer"
-        onClick={() => window.location.reload()}
+        onClick={() => {
+          playButtonSound();
+          window.location.reload();
+        }}
       >
         <Typography variant="h2">Logo</Typography>
       </button>

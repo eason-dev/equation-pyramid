@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { AudioControls } from '@/hooks/useAudio';
+import { useButtonSound } from '@/hooks/useButtonSound';
 
 interface MusicButtonProps {
   audioControls: AudioControls;
@@ -10,6 +11,7 @@ interface MusicButtonProps {
 
 export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const { playButtonSound } = useButtonSound();
   const { isPlaying, volume, toggle, setVolume, isLoaded } = audioControls;
 
   const getTrackLabel = () => {
@@ -54,7 +56,10 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
       {/* Music Control Button */}
       <button
         type="button"
-        onClick={toggle}
+        onClick={() => {
+          playButtonSound();
+          toggle();
+        }}
         onMouseEnter={() => setShowVolumeSlider(true)}
         onMouseLeave={() => setShowVolumeSlider(false)}
         className="w-5 h-5 flex items-center justify-center rounded hover:bg-white/20 transition-colors"

@@ -2,6 +2,7 @@
 
 import { type ButtonHTMLAttributes, forwardRef } from "react";
 import { cn } from "@/lib/utils";
+import { useButtonSound } from "@/hooks/useButtonSound";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -17,10 +18,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       // size = "default",
       className,
       disabled,
+      onClick,
       ...props
     },
     ref,
   ) => {
+    const { playButtonSound } = useButtonSound();
     const getStateStyles = () => {
       if (variant === "secondary") {
         if (disabled) {
@@ -134,6 +137,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           if (!disabled) {
             const hoverStyles = getHoverStyles();
             Object.assign(e.currentTarget.style, hoverStyles);
+          }
+        }}
+        onClick={(e) => {
+          if (!disabled) {
+            playButtonSound();
+            onClick?.(e);
           }
         }}
         {...props}

@@ -3,6 +3,7 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import type { Operator, Tile as TileType } from "@/logic/game/types";
+import { useButtonSound } from "@/hooks/useButtonSound";
 
 interface TileProps {
   tile: TileType;
@@ -20,6 +21,7 @@ const operatorMap: Record<Operator, string> = {
 };
 
 export function Tile({ tile, isSelected, onClick, disabled, isFirstSelected = false }: TileProps) {
+  const { playButtonSound } = useButtonSound();
   const operatorRef = useRef<HTMLSpanElement>(null);
   const numberRef = useRef<HTMLSpanElement>(null);
   const explosionContainerRef = useRef<HTMLDivElement>(null);
@@ -95,7 +97,12 @@ export function Tile({ tile, isSelected, onClick, disabled, isFirstSelected = fa
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={() => {
+        if (!disabled) {
+          playButtonSound();
+          onClick();
+        }
+      }}
       disabled={disabled}
       className={`
         w-[72px] h-[72px]

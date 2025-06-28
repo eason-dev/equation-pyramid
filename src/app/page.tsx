@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { HomeView } from "@/views/HomeView";
 import { GameSettingsView } from "@/views/GameSettingsView";
 import { GamePlayingView } from "@/views/GamePlayingView";
@@ -12,6 +12,7 @@ import TransitionOverlay from "@/components/TransitionOverlay";
 import Confetti from "@/components/Confetti";
 import { useGameStore, type GameAppState } from "@/logic/state/gameStore";
 import { useAudio } from "@/hooks/useAudio";
+import { useAnswerSounds } from "@/hooks/useAnswerSounds";
 import { DEBUG } from "@/constants";
 
 export default function AppPage() {
@@ -48,6 +49,9 @@ export default function AppPage() {
     endTime: 0.01,   // Skip last 10ms
   });
 
+  // Answer sounds
+  const { playCorrectSound, playIncorrectSound } = useAnswerSounds();
+
   // Track which music should be active based on game state
   const [activeMusicType, setActiveMusicType] = useState<'main' | 'game'>('main');
 
@@ -58,21 +62,74 @@ export default function AppPage() {
   const [shouldShowConfettiAfterTransition, setShouldShowConfettiAfterTransition] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
 
-  // Handle shake effect for wrong answers
+  // Track the last answer state to prevent duplicate sound playback
+  const lastAnswerStateRef = useRef<{ result: number | null; correct: boolean | null }>({ 
+    result: null, 
+    correct: null 
+  });
+
+  // Track shake animation to prevent multiple shakes
+  const shakeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Handle answer sounds (separate from shake animation)
+  useEffect(() => {
+    if (displayState === "showingResult" && isCurrentEquationCorrect !== null) {
+      // Check if this is a new answer (different from last played)
+      const isNewAnswer = 
+        lastAnswerStateRef.current.result !== currentEquationResult ||
+        lastAnswerStateRef.current.correct !== isCurrentEquationCorrect;
+
+      if (isNewAnswer) {
+        // Update the ref to track this answer
+        lastAnswerStateRef.current = {
+          result: currentEquationResult,
+          correct: isCurrentEquationCorrect
+        };
+
+        // Play appropriate sound
+        if (isCurrentEquationCorrect === false) {
+          playIncorrectSound();
+        } else if (isCurrentEquationCorrect === true) {
+          playCorrectSound();
+        }
+      }
+    } else if (displayState !== "showingResult") {
+      // Reset the ref when not showing results
+      lastAnswerStateRef.current = { result: null, correct: null };
+    }
+  }, [displayState, isCurrentEquationCorrect, currentEquationResult, playCorrectSound, playIncorrectSound]);
+
+  // Handle shake animation separately to prevent multiple shakes
   useEffect(() => {
     if (displayState === "showingResult" && isCurrentEquationCorrect === false) {
+      // Clear any existing shake timeout
+      if (shakeTimeoutRef.current) {
+        clearTimeout(shakeTimeoutRef.current);
+      }
+
+      // Start shaking
       setIsShaking(true);
       
-      // Stop shaking after 600ms
-      const timer = setTimeout(() => {
+      // Stop shaking after exactly 600ms
+      shakeTimeoutRef.current = setTimeout(() => {
         setIsShaking(false);
+        shakeTimeoutRef.current = null;
       }, 600);
-      return () => {
-        clearTimeout(timer);
-      };
     } else {
+      // Clear shake when not showing wrong results
+      if (shakeTimeoutRef.current) {
+        clearTimeout(shakeTimeoutRef.current);
+        shakeTimeoutRef.current = null;
+      }
       setIsShaking(false);
     }
+
+    // Cleanup on unmount
+    return () => {
+      if (shakeTimeoutRef.current) {
+        clearTimeout(shakeTimeoutRef.current);
+      }
+    };
   }, [displayState, isCurrentEquationCorrect]);
 
   // Handle confetti logic when entering gameOver state
