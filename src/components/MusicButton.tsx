@@ -45,7 +45,7 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
       title={getTooltip()}
     >
       <img 
-        src="/Music.svg" 
+        src={isPlaying ? "/music.svg" : "/music-off.svg"} 
         alt={isPlaying ? "Pause music" : "Play music"}
         className="w-12 h-12"
       />
