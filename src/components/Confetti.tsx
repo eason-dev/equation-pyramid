@@ -1,6 +1,19 @@
 import { useEffect } from "react";
+import { useAudio } from "../hooks/useAudio";
 
 export default function Confetti() {
+  const winAudioControls = useAudio('/audio/win.mp3', {
+    volume: 0.8,
+    loop: false,
+    autoPlay: false,
+  });
+
+  // Play win sound when audio is loaded
+  useEffect(() => {
+    if (winAudioControls.isLoaded) {
+      winAudioControls.play();
+    }
+  }, [winAudioControls.isLoaded, winAudioControls.play]);
   
   useEffect(() => {
     const canvas = document.getElementById("confetti-canvas") as HTMLCanvasElement;
