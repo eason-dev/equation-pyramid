@@ -32,22 +32,22 @@ export default function AppPage() {
     isCurrentEquationCorrect,
   } = useGameStore();
 
-  // Main menu background music
+  // Main menu background music - MANUAL CONTROL ONLY
   const mainAudioControls = useAudio('/audio/main-background-music.ogg', {
     volume: 0.5,
     loop: true,
-    autoPlay: true,
+    autoPlay: false, // Disabled autoplay to prevent conflicts
     startTime: 0.025, // Skip first 50ms
   });
 
-  // Game background music
-  const gameAudioControls = useAudio('/audio/ticking.ogg', {
-    volume: 0.8,
-    loop: true,
-    autoPlay: true,
-    startTime: 0.01, // Skip first 50ms
-    endTime: 0.01,   // Skip last 10ms
-  });
+  // Game background music - DISABLED FOR NOW
+  // const gameAudioControls = useAudio('/audio/ticking.ogg', {
+  //   volume: 0.8,
+  //   loop: true,
+  //   autoPlay: false,
+  //   startTime: 0.01,
+  //   endTime: 0.01,
+  // });
 
   // End sound for round over
   const endSoundControls = useAudio('/audio/end-sound.mp3', {
@@ -80,6 +80,15 @@ export default function AppPage() {
 
   // Track end sound to prevent multiple plays
   const endSoundPlayedRef = useRef<boolean>(false);
+
+  // Cleanup confetti when component unmounts (navigating away from app)
+  useEffect(() => {
+    return () => {
+      // Stop confetti immediately when component unmounts
+      setShowConfetti(false);
+      setShouldShowConfettiAfterTransition(false);
+    };
+  }, []);
 
   // Handle answer sounds (separate from shake animation)
   useEffect(() => {
@@ -162,14 +171,6 @@ export default function AppPage() {
 
   // Handle confetti logic when entering gameOver state
   useEffect(() => {
-    console.log("Confetti useEffect triggered:", { 
-      currentState, 
-      displayState, 
-      playersCount: players.length, 
-      players: players.map(p => ({ name: p.name, score: p.score })),
-      numPlayers: config.numPlayers
-    });
-
     if (currentState === "gameOver") {
       // Check if confetti should be shown based on score conditions
       const shouldShowConfetti = () => {
@@ -177,22 +178,14 @@ export default function AppPage() {
         
         if (numPlayers === 1) {
           // Single player mode: show confetti if player has 3+ points
-          const result = players.length > 0 && players[0].score >= 1;
-          console.log("Single player check:", { playerScore: players[0]?.score, result });
-          return result;
+          return players.length > 0 && players[0].score >= 1;
         } else {
           // Multi-player mode: show confetti if any player has 3+ points
-          const result = players.some(player => player.score >= 1);
-          console.log("Multi-player check:", { 
-            playersWithHighScores: players.filter(p => p.score >= 1),
-            result 
-          });
-          return result;
+          return players.some(player => player.score >= 1);
         }
       };
 
       const shouldShow = shouldShowConfetti();
-      console.log("Should show confetti:", shouldShow);
 
       if (shouldShow) {
         // Check if there's a transition happening
@@ -200,20 +193,23 @@ export default function AppPage() {
           (displayState === "roundOver" && currentState === "gameOver");
         
         if (isTransitioning) {
-          console.log("Setting flag to show confetti after transition");
           setShouldShowConfettiAfterTransition(true);
         } else {
-          console.log("Setting showConfetti to true immediately (no transition)");
           setShowConfetti(true);
           // Hide confetti after animation completes (about 6 seconds)
           setTimeout(() => {
-            console.log("Hiding confetti after timeout");
             setShowConfetti(false);
           }, 6000);
         }
       }
+    } else {
+      // Stop confetti immediately when leaving gameOver state (changing pages/states)
+      if (showConfetti) {
+        setShowConfetti(false);
+        setShouldShowConfettiAfterTransition(false);
+      }
     }
-  }, [currentState, displayState, players, config.numPlayers, showTransition]);
+  }, [currentState, displayState, players, config.numPlayers, showTransition, showConfetti]);
 
   // Separate effect to handle display state updates
   useEffect(() => {
@@ -236,31 +232,30 @@ export default function AppPage() {
   }, [currentState, displayState]);
 
   // Determine which music should be playing based on display state
-  useEffect(() => {
-    const isGuessingState = displayState === "guessing";
-
-    // Main music should always be playing (except when manually paused)
-    if (mainAudioControls.isLoaded && !mainAudioControls.isPlaying) {
-      mainAudioControls.play();
-    }
-
-    // Ticking sound only plays during guessing state (layered on top of main music)
-    if (isGuessingState) {
-      if (gameAudioControls.isLoaded && !gameAudioControls.isPlaying) {
-        gameAudioControls.play();
-      }
-      setActiveMusicType('game'); // For UI display purposes
-    } else {
-      // Stop ticking sound when not guessing
-      if (gameAudioControls.isPlaying) {
-        gameAudioControls.pause();
-      }
-      setActiveMusicType('main'); // For UI display purposes
-    }
-  }, [displayState, mainAudioControls, gameAudioControls]);
+  // DISABLED: Auto music switching to prevent conflicts with manual control
+  // useEffect(() => {
+  //   const isGuessingState = displayState === "guessing";
+  //   // Main music should always be playing (except when manually paused)
+  //   if (mainAudioControls.isLoaded && !mainAudioControls.isPlaying) {
+  //     mainAudioControls.play();
+  //   }
+  //   // Ticking sound only plays during guessing state (layered on top of main music)
+  //   if (isGuessingState) {
+  //     if (gameAudioControls.isLoaded && !gameAudioControls.isPlaying) {
+  //       gameAudioControls.play();
+  //     }
+  //     setActiveMusicType('game'); // For UI display purposes
+  //   } else {
+  //     // Stop ticking sound when not guessing
+  //     if (gameAudioControls.isPlaying) {
+  //       gameAudioControls.pause();
+  //     }
+  //     setActiveMusicType('main'); // For UI display purposes
+  //   }
+  // }, [displayState, mainAudioControls, gameAudioControls]);
 
   // Get the currently active audio controls for the Footer
-  const activeAudioControls = activeMusicType === 'game' ? gameAudioControls : mainAudioControls;
+  const activeAudioControls = mainAudioControls; // Only main audio for now
 
   const handleCenterReached = useCallback(() => {
     // Update display state when overlay reaches center
@@ -273,13 +268,11 @@ export default function AppPage() {
     
     // Check if we should show confetti after transition
     if (shouldShowConfettiAfterTransition) {
-      console.log("Transition complete - showing confetti now!");
       setShowConfetti(true);
       setShouldShowConfettiAfterTransition(false);
       
       // Hide confetti after animation completes (about 6 seconds)
       setTimeout(() => {
-        console.log("Hiding confetti after timeout");
         setShowConfetti(false);
       }, 6000);
     }
@@ -307,7 +300,7 @@ export default function AppPage() {
   return (
     <>
       {/* Confetti Effect */}
-      {showConfetti && <Confetti />}
+      {showConfetti && <Confetti backgroundMusicPlaying={mainAudioControls.isPlaying} />}
 
       {/* Transition Overlay */}
       {showTransition && (

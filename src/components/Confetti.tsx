@@ -1,19 +1,39 @@
 import { useEffect } from "react";
 import { useAudio } from "../hooks/useAudio";
 
-export default function Confetti() {
+interface ConfettiProps {
+  backgroundMusicPlaying?: boolean;
+}
+
+export default function Confetti({ backgroundMusicPlaying = true }: ConfettiProps) {
   const winAudioControls = useAudio('/audio/win.mp3', {
     volume: 0.8,
     loop: false,
     autoPlay: false,
   });
 
-  // Play win sound when audio is loaded
+  // Play win sound when audio is loaded, but only if background music is playing
   useEffect(() => {
-    if (winAudioControls.isLoaded) {
+    if (winAudioControls.isLoaded && backgroundMusicPlaying) {
       winAudioControls.play();
     }
-  }, [winAudioControls.isLoaded, winAudioControls.play]);
+  }, [winAudioControls.isLoaded, winAudioControls.play, backgroundMusicPlaying]);
+
+  // Stop win audio when background music is turned off
+  useEffect(() => {
+    if (!backgroundMusicPlaying && winAudioControls.isPlaying) {
+      winAudioControls.pause();
+    }
+  }, [backgroundMusicPlaying, winAudioControls.isPlaying, winAudioControls.pause]);
+
+  // Cleanup: Stop win audio when component unmounts (leaving page)
+  useEffect(() => {
+    return () => {
+      if (winAudioControls.isPlaying) {
+        winAudioControls.pause();
+      }
+    };
+  }, [winAudioControls.isPlaying, winAudioControls.pause]);
   
   useEffect(() => {
     const canvas = document.getElementById("confetti-canvas") as HTMLCanvasElement;

@@ -14,110 +14,83 @@ export function useAudio(src: string, options: {
   volume?: number;
   loop?: boolean;
   autoPlay?: boolean;
-  startTime?: number; // Time in seconds to skip from the beginning
-  endTime?: number; // Time in seconds to skip from the end
+  startTime?: number;
+  endTime?: number;
 } = {}): AudioControls {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolumeState] = useState(options.volume ?? 0.5);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [duration, setDuration] = useState(0);
+  const userInteractedRef = useRef(false);
 
   // Initialize audio element
   useEffect(() => {
     const audio = new Audio(src);
-    audio.loop = false; // We'll handle looping manually for endTime support
-    audio.volume = volume;
+    audio.loop = options.loop ?? false;
     audio.preload = 'auto';
 
-    // Event listeners
-    const handleLoadedData = () => {
-      setIsLoaded(true);
-      setDuration(audio.duration);
-    };
-    
+    const handleLoadedData = () => setIsLoaded(true);
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
-    const handleEnded = () => {
-      setIsPlaying(false);
-      // Handle manual looping if enabled
-      if (options.loop && audioRef.current) {
-        const startTime = options.startTime || 0;
-        audioRef.current.currentTime = startTime;
-        audioRef.current.play().catch(e => console.warn('Loop play prevented:', e));
-      }
-    };
-    
-    const handleTimeUpdate = () => {
-      // Check if we should stop before the end
-      if (options.endTime && options.endTime > 0 && duration > 0) {
-        const stopTime = duration - options.endTime;
-        if (audio.currentTime >= stopTime) {
-          audio.pause();
-          // If looping, restart from beginning (plus startTime offset)
-          if (options.loop) {
-            const startTime = options.startTime || 0;
-            audio.currentTime = startTime;
-            audio.play().catch(e => console.warn('Loop play prevented:', e));
-          } else {
-            setIsPlaying(false);
-          }
-        }
-      }
-    };
-    
-    const handleError = (e: Event) => {
-      console.error('Audio loading error:', e);
-      setIsLoaded(false);
-    };
+    const handleEnded = () => setIsPlaying(false);
 
     audio.addEventListener('loadeddata', handleLoadedData);
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('timeupdate', handleTimeUpdate);
-    audio.addEventListener('error', handleError);
 
     audioRef.current = audio;
-
-    // Auto play if specified
-    if (options.autoPlay && isLoaded) {
-      // Set start time if specified
-      if (options.startTime && options.startTime > 0) {
-        audio.currentTime = options.startTime;
-      }
-      audio.play().catch(e => console.warn('Auto-play prevented:', e));
-    }
 
     return () => {
       audio.removeEventListener('loadeddata', handleLoadedData);
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
       audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
-      audio.removeEventListener('error', handleError);
       audio.pause();
       audioRef.current = null;
     };
-  }, [src, options.loop, options.autoPlay, options.startTime, options.endTime, isLoaded, volume, duration]);
+  }, [src, options.loop]);
+
+  // Handle volume changes
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
+
+  // Handle autoplay (only once, only if user hasn't interacted)
+  useEffect(() => {
+    if (options.autoPlay && isLoaded && !userInteractedRef.current && audioRef.current) {
+      if (options.startTime && options.startTime > 0) {
+        audioRef.current.currentTime = options.startTime;
+      }
+      audioRef.current.play().catch(() => {
+        // AutoPlay blocked by browser - this is normal
+      });
+    }
+  }, [isLoaded, options.autoPlay, options.startTime]);
 
   const play = useCallback(() => {
     if (audioRef.current && isLoaded) {
-      // Set start time if specified and audio is at the beginning
+      userInteractedRef.current = true;
       if (options.startTime && options.startTime > 0 && audioRef.current.currentTime === 0) {
         audioRef.current.currentTime = options.startTime;
       }
-      audioRef.current.play().catch(e => console.warn('Play prevented:', e));
+      audioRef.current.play().catch(() => {
+        // Play failed - browser restrictions or other issues
+      });
     }
   }, [isLoaded, options.startTime]);
 
   const pause = useCallback(() => {
     if (audioRef.current) {
+      userInteractedRef.current = true;
       audioRef.current.pause();
     }
   }, []);
 
   const toggle = useCallback(() => {
+    userInteractedRef.current = true;
     if (isPlaying) {
       pause();
     } else {
@@ -128,9 +101,6 @@ export function useAudio(src: string, options: {
   const setVolume = useCallback((newVolume: number) => {
     const clampedVolume = Math.max(0, Math.min(1, newVolume));
     setVolumeState(clampedVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = clampedVolume;
-    }
   }, []);
 
   return {

@@ -1,6 +1,5 @@
 "use client";
 
-import { Typography } from "./Typography";
 import { useButtonSound } from "@/hooks/useButtonSound";
 
 export function Header() {
@@ -17,7 +16,11 @@ export function Header() {
           window.location.reload();
         }}
       >
-        <Typography variant="h2">Logo</Typography>
+        <img 
+          src="/logo.svg" 
+          alt="Logo" 
+          className="h-8 w-auto"
+        />
       </button>
 
       {/* Center - Empty space for game-specific content */}
