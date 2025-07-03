@@ -193,7 +193,9 @@ export const useGameStore = create<GameStoreState>()(
           };
 
           const result = calculateEquation(equation.tiles);
-          const isCorrect = result === state.gameState.targetNumber;
+          const equationKey = `${i},${j},${k}`;
+          const isDuplicate = state.foundEquations.includes(equationKey);
+          const isCorrect = result === state.gameState.targetNumber && !isDuplicate;
           
           stopGuessTimer();
 
@@ -362,13 +364,13 @@ export const useGameStore = create<GameStoreState>()(
             state.guessTimer -= 1;
           });
         } else {
-          // Timer expired - transition back to game
+          // Timer expired - show wrong effect first, then transition back to game
           set((state) => {
-            state.currentState = "game";
-            state.guessingPlayerId = null;
-            state.selectedTiles = [];
+            state.currentState = "showingResult";
+            state.currentEquationResult = null; // null indicates timeout
+            state.isCurrentEquationCorrect = false; // Show wrong effect
             state.guessTimerInterval = null;
-            // deduct point for incorrect equation
+            // deduct point for timeout
             const player = state.players.find(
               (p) => p.id === state.guessingPlayerId,
             );
@@ -377,7 +379,18 @@ export const useGameStore = create<GameStoreState>()(
             }
           });
           clearInterval(interval);
-          startMainTimer();
+          
+          // Auto-transition back to game after showing wrong effect
+          setTimeout(() => {
+            set((state) => {
+              state.currentState = "game";
+              state.guessingPlayerId = null;
+              state.selectedTiles = [];
+              state.currentEquationResult = null;
+              state.isCurrentEquationCorrect = null;
+            });
+            startMainTimer();
+          }, 2500); // Same delay as normal equation submission
         }
       }, 1000);
 
