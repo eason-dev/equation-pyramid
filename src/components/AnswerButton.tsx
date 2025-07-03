@@ -128,6 +128,9 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         {/* Call to Action - only show when not in over state */}
         {!isOver && <Typography variant="h2">Press Here to Answer!</Typography>}
 
+        {/* Score text - only show when round is over */}
+        {isOver && <Typography variant="h2">Score</Typography>}
+
         {/* Score Badge */}
         <div
           className="flex items-center justify-center rounded-full"
