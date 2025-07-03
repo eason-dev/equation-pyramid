@@ -93,14 +93,16 @@ export function GuessingState({
             {hasThreeTiles ? (
               <Block
                 className={cn(
-                  "min-w-[120px] min-h-[120px] flex flex-col items-center justify-center gap-2.5 border-2 transition-colors",
+                  "w-[120px] h-[120px] flex flex-col items-center justify-center gap-2.5 border-2",
                   getResultBorderStyle(),
                 )}
               >
                 <Typography variant="h2">Result</Typography>
-                <Typography variant="p1">
-                  ={calculatedResult !== null && calculatedResult !== undefined ? calculatedResult : targetNumber}
-                </Typography>
+                <div className="relative w-full text-center min-h-[1.5rem] flex items-center justify-center">
+                  <Typography variant="p1" className={calculatedResult === null || calculatedResult === undefined ? "invisible" : ""}>
+                    ={calculatedResult !== null && calculatedResult !== undefined ? calculatedResult : "0"}
+                  </Typography>
+                </div>
               </Block>
             ) : (
               /* Empty placeholder to maintain layout spacing */
