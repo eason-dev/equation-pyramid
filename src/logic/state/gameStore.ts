@@ -29,6 +29,13 @@ interface GameConfig {
   currentRound: number;
 }
 
+interface RoundHistory {
+  roundNumber: number;
+  gameState: GameState;
+  foundEquations: string[];
+  playerScores: Record<string, number>;
+}
+
 interface GameData {
   // Current app state
   currentState: GameAppState;
@@ -42,6 +49,9 @@ interface GameData {
   mainTimer: number;
   guessTimer: number;
   guessingPlayerId: string | null;
+
+  // Round history
+  roundHistory: RoundHistory[];
 
   // Result display data
   currentEquationResult: number | null;
@@ -96,6 +106,7 @@ const initialState: GameData = {
   mainTimer: ROUND_DURATION,
   guessTimer: GUESS_DURATION,
   guessingPlayerId: null,
+  roundHistory: [],
   currentEquationResult: null,
   isCurrentEquationCorrect: null,
   mainTimerInterval: null,
@@ -277,6 +288,21 @@ export const useGameStore = create<GameStoreState>()(
     nextRound: () => {
       const { startMainTimer, stopMainTimer, stopGuessTimer } = get();
       set((state) => {
+        // Save current round to history before moving to next round or ending game
+        if (state.gameState && state.config.currentRound > 0) {
+          const playerScores: Record<string, number> = {};
+          state.players.forEach(player => {
+            playerScores[player.id] = player.score;
+          });
+          
+          state.roundHistory.push({
+            roundNumber: state.config.currentRound,
+            gameState: { ...state.gameState },
+            foundEquations: [...state.foundEquations],
+            playerScores
+          });
+        }
+
         if (state.config.currentRound >= state.config.numRounds) {
           state.currentState = "gameOver";
         } else {
@@ -439,6 +465,7 @@ export const useGameStore = create<GameStoreState>()(
         state.mainTimer = ROUND_DURATION;
         state.guessTimer = GUESS_DURATION;
         state.guessingPlayerId = null;
+        state.roundHistory = [];
         state.currentEquationResult = null;
         state.isCurrentEquationCorrect = null;
       });

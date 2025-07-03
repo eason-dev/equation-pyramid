@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { Player } from "@/logic/game/types";
 import { Typography } from "@/components/Typography";
 import { Button } from "@/components/Button";
@@ -28,7 +29,15 @@ export function GameOverView({
   // Use clean merge utility to handle nested objects properly
   const mergedStore = mergeWithConfig(hookStore, storeOverrides);
 
-  const { config, gameState, foundEquations } = mergedStore;
+  const { config, gameState, foundEquations, roundHistory } = mergedStore;
+
+  // State to track which round is currently being viewed
+  const [selectedRound, setSelectedRound] = useState(config.currentRound);
+
+  // Get the data for the selected round
+  const selectedRoundData = roundHistory.find(r => r.roundNumber === selectedRound);
+  const displayGameState = selectedRoundData?.gameState || gameState;
+  const displayFoundEquations = selectedRoundData?.foundEquations || foundEquations;
 
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
   const isSinglePlayer = players.length === 1;
@@ -42,7 +51,7 @@ export function GameOverView({
 
       {/* Score Section */}
       <div className="flex flex-col items-center gap-5 mb-16">
-        <Typography variant="h1" className="text-white text-center">
+        <Typography variant="h2" className="text-white text-center">
           YOUR SCORE IS
         </Typography>
 
@@ -70,39 +79,39 @@ export function GameOverView({
       </div>
 
       {/* Game Summary Section */}
-      {gameState && (
+      {displayGameState && (
         <div className="flex flex-col items-center gap-3 mb-16">
           {/* Round Stepper - show rounds based on total rounds from store */}
           {config.numRounds > 1 && (
             <RoundStepper
               currentRound={config.currentRound}
               totalRounds={config.numRounds}
+              selectedRound={selectedRound}
+              onRoundClick={setSelectedRound}
             />
           )}
 
           {/* Game Content */}
-          <div className="flex items-start gap-10">
-            {/* Answers - show content from store */}
-            {foundEquations.length > 0 && (
-              <AnswersTile
-                foundEquations={foundEquations}
-                validEquations={gameState.validEquations}
-                tiles={gameState.tiles}
-              />
-            )}
+          <div className="flex items-start gap-6 h-[360px]">
+            {/* Answers - show content from selected round */}
+            <AnswersTile
+              foundEquations={displayFoundEquations}
+              validEquations={displayGameState.validEquations}
+              tiles={displayGameState.tiles}
+            />
 
-            {/* Pyramid - show tiles from last round */}
+            {/* Pyramid - show tiles from selected round */}
             <div className="scale-75 origin-center">
               <TileList
-                tiles={gameState.tiles}
+                tiles={displayGameState.tiles}
                 selectedTiles={[]}
                 onTileClick={() => {}}
                 isGuessing={false}
               />
             </div>
 
-            {/* Target - show target number from store */}
-            <TargetTile targetNumber={gameState.targetNumber} />
+            {/* Target - show target number from selected round */}
+            <TargetTile targetNumber={displayGameState.targetNumber} />
           </div>
         </div>
       )}
