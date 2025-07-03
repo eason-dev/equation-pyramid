@@ -142,6 +142,7 @@ export function GamePlayingView({
                 score={players[0].score}
                 onClick={() => startGuessing(players[0].id)}
                 isOver={isOver}
+                isSinglePlayer={isSinglePlayer}
               />
             ) : (
               /* Multi-Player Buttons */
@@ -153,6 +154,7 @@ export function GamePlayingView({
                     score={player.score}
                     onClick={() => startGuessing(player.id)}
                     isOver={isOver}
+                    isSinglePlayer={isSinglePlayer}
                   />
                 ))}
               </div>
@@ -170,6 +172,7 @@ export function GamePlayingView({
                 score={players[0].score}
                 onClick={() => {}}
                 isOver={true}
+                isSinglePlayer={isSinglePlayer}
               />
             ) : (
               /* Multi-Player Buttons - Disabled */
@@ -181,6 +184,7 @@ export function GamePlayingView({
                     score={player.score}
                     onClick={() => {}}
                     isOver={true}
+                    isSinglePlayer={isSinglePlayer}
                   />
                 ))}
               </div>

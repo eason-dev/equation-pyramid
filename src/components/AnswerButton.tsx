@@ -10,6 +10,7 @@ interface AnswerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   score: number;
   onClick: () => void;
   isOver?: boolean;
+  isSinglePlayer?: boolean;
 }
 
 export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
@@ -19,6 +20,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
       score,
       onClick,
       isOver = false,
+      isSinglePlayer = false,
       className,
       disabled,
       ...props
@@ -118,8 +120,10 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         }}
         {...props}
       >
-        {/* Player Name */}
-        <Typography variant="h2">{playerName}</Typography>
+        {/* Player Name - hidden in single player mode */}
+        {!isSinglePlayer && (
+          <Typography variant="h2">{playerName}</Typography>
+        )}
 
         {/* Call to Action - only show when not in over state */}
         {!isOver && <Typography variant="h2">Press Here to Answer!</Typography>}

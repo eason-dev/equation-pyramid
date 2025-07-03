@@ -28,6 +28,9 @@ const meta = {
     disabled: {
       control: { type: "boolean" },
     },
+    isSinglePlayer: {
+      control: { type: "boolean" },
+    },
   },
 } satisfies Meta<typeof AnswerButton>;
 
@@ -80,5 +83,14 @@ export const RoundOver: Story = {
     playerName: "Alice",
     score: 5,
     isOver: true,
+  },
+};
+
+export const SinglePlayer: Story = {
+  args: {
+    ...Default.args,
+    playerName: "Player 1",
+    score: 25,
+    isSinglePlayer: true,
   },
 };
