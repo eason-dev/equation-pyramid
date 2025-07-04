@@ -32,38 +32,39 @@ export function GameOverView({
   const { config, gameState, foundEquations, roundHistory } = mergedStore;
 
   // State to track which round is currently being viewed
-  // Default to the highest round number in history, or currentRound if no history exists
+  // Always start with the most recent round that actually exists in history
   const getDefaultSelectedRound = () => {
     if (roundHistory.length > 0) {
       // Find the highest round number in history
       return Math.max(...roundHistory.map(r => r.roundNumber));
     }
-    // If no history, default to currentRound (but this should be rare)
+    // If no history exists, use currentRound but this should be rare in GameOver
     return config.currentRound;
   };
   
   const [selectedRound, setSelectedRound] = useState(getDefaultSelectedRound());
 
-  // Update selectedRound when roundHistory changes (in case new rounds are added)
+  // Update selectedRound when roundHistory changes to ensure we're showing a valid round
   useEffect(() => {
     if (roundHistory.length > 0) {
-      const newDefaultRound = Math.max(...roundHistory.map(r => r.roundNumber));
-      setSelectedRound(newDefaultRound);
+      const availableRounds = roundHistory.map(r => r.roundNumber);
+      const maxRound = Math.max(...availableRounds);
+      
+      // If the currently selected round doesn't exist in history, 
+      // reset to the highest available round
+      if (!availableRounds.includes(selectedRound)) {
+        setSelectedRound(maxRound);
+      }
+    } else {
+      // If round history is empty (new game), reset to current round
+      setSelectedRound(config.currentRound);
     }
-  }, [roundHistory]);
+  }, [roundHistory, selectedRound, config.currentRound]);
 
-  // Get the data for the selected round with robust fallbacks
-  let selectedRoundData = roundHistory.find(r => r.roundNumber === selectedRound);
+  // Get the data for the selected round - this should always exist after the useEffect above
+  const selectedRoundData = roundHistory.find(r => r.roundNumber === selectedRound);
   
-  // If selected round not found, try to use the most recent round from history
-  if (!selectedRoundData && roundHistory.length > 0) {
-    const mostRecentRound = roundHistory[roundHistory.length - 1];
-    selectedRoundData = mostRecentRound;
-    // Update the selected round to match the fallback
-    setSelectedRound(mostRecentRound.roundNumber);
-  }
-  
-  // Use selectedRoundData if available, otherwise fall back to current game state
+  // Display the selected round's data, or fall back to current game state if no history
   const displayGameState = selectedRoundData?.gameState || gameState;
   const displayFoundEquations = selectedRoundData?.foundEquations || foundEquations;
 
@@ -96,18 +97,20 @@ export function GameOverView({
     return false;
   };
 
-  // Temporary debugging for multiplayer issues
+  // Debug logging to understand round selection issues
   useEffect(() => {
-    if (!isSinglePlayer) {
-      console.log('Multiplayer GameOverView - Round History:', {
-        roundHistoryLength: roundHistory.length,
-        roundNumbers: roundHistory.map(r => r.roundNumber),
-        selectedRound,
-        currentRound: config.currentRound,
-        numRounds: config.numRounds
-      });
-    }
-  }, [roundHistory, selectedRound, config, isSinglePlayer]);
+    console.log('GameOverView - Round State:', {
+      roundHistoryLength: roundHistory.length,
+      roundNumbers: roundHistory.map(r => r.roundNumber),
+      selectedRound,
+      currentRound: config.currentRound,
+      numRounds: config.numRounds,
+      selectedRoundData: !!selectedRoundData,
+      displayGameState: !!displayGameState,
+      displayFoundEquations: displayFoundEquations.length,
+      timestamp: new Date().toISOString()
+    });
+  }, [roundHistory, selectedRound, config, selectedRoundData, displayGameState, displayFoundEquations]);
 
   return (
     <div className="flex flex-col items-center justify-center relative z-10">

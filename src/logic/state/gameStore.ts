@@ -162,6 +162,7 @@ export const useGameStore = create<GameStoreState>()(
         state.mainTimer = ROUND_DURATION;
         state.guessTimer = GUESS_DURATION;
         state.guessingPlayerId = null;
+        state.roundHistory = []; // Clear round history from previous games
       });
       startMainTimer();
     },
