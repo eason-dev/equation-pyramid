@@ -227,7 +227,7 @@ export const useGameStore = create<GameStoreState>()(
     },
 
     submitEquation: () => {
-      const { startMainTimer } = get();
+      const { startMainTimer, transitionToRoundOver } = get();
       set((state) => {
         if (
           state.selectedTiles.length !== TILES_PER_EQUATION ||
@@ -282,7 +282,17 @@ export const useGameStore = create<GameStoreState>()(
         state.isCurrentEquationCorrect = null;
         state.currentState = "game";
       });
-      startMainTimer();
+
+      // Check if all equations have been found after updating the state
+      const currentState = get();
+      if (currentState.gameState && 
+          currentState.foundEquations.length >= currentState.gameState.validEquations.length) {
+        // All answers completed - transition to round over
+        transitionToRoundOver();
+      } else {
+        // Continue the round
+        startMainTimer();
+      }
     },
 
     nextRound: () => {

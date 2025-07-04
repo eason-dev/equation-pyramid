@@ -64,6 +64,10 @@ export function GamePlayingView({
     currentState === "game" && selectedTiles.length === 0 && !isOver;
   const isSinglePlayer = players.length === 1;
   const selectedPlayer = players.find((p) => p.id === selectedPlayerId);
+  
+  // Check if all equations have been found
+  const allEquationsFound = gameState && foundEquations.length >= gameState.validEquations.length;
+  const shouldShowCompletion = isOver || allEquationsFound;
 
   return (
     <div className="flex flex-col">
@@ -133,7 +137,7 @@ export function GamePlayingView({
         </div>
 
         {/* Player Interaction Area */}
-        {canStartGuessing && (
+        {canStartGuessing && !shouldShowCompletion && (
           <div className="flex flex-col items-center gap-6">
             {isSinglePlayer ? (
               /* Single Player Button */
@@ -163,7 +167,7 @@ export function GamePlayingView({
         )}
 
         {/* Round Over State - Show disabled answer buttons */}
-        {isOver && (
+        {shouldShowCompletion && (
           <div className="flex flex-col items-center gap-6">
             {isSinglePlayer ? (
               /* Single Player Button - Disabled */
@@ -171,7 +175,7 @@ export function GamePlayingView({
                 playerName={players[0].name}
                 score={players[0].score}
                 onClick={() => {}}
-                isOver={true}
+                isOver={shouldShowCompletion}
                 isSinglePlayer={isSinglePlayer}
               />
             ) : (
@@ -183,7 +187,7 @@ export function GamePlayingView({
                     playerName={player.name}
                     score={player.score}
                     onClick={() => {}}
-                    isOver={true}
+                    isOver={shouldShowCompletion}
                     isSinglePlayer={isSinglePlayer}
                   />
                 ))}
@@ -193,7 +197,7 @@ export function GamePlayingView({
         )}
 
         {/* Round Over Text */}
-        {isOver && (
+        {shouldShowCompletion && (
           <div className="flex justify-center">
             <Typography variant="h1" className="text-white">
               All Answers Completed
@@ -211,7 +215,7 @@ export function GamePlayingView({
       )}
 
       {/* Floating Next Round Button */}
-      {isOver && (
+      {shouldShowCompletion && (
         <FloatingButton onClick={nextRound}>Next Round</FloatingButton>
       )}
     </div>
