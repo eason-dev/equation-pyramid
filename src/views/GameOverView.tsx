@@ -45,7 +45,7 @@ export function GameOverView({
   return (
     <div className="flex flex-col items-center justify-center relative z-10">
       {/* Title */}
-      <Typography variant="h1" className="text-white text-center mb-16">
+      <Typography variant="h1" className="text-white text-center mb-4">
         Equation Pyramid
       </Typography>
 
