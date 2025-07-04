@@ -1,11 +1,9 @@
 import { useEffect, useRef } from "react";
 import { useAudio } from "../hooks/useAudio";
 
-interface ConfettiProps {
-  backgroundMusicPlaying?: boolean;
-}
+type ConfettiProps = {}
 
-export default function Confetti({ backgroundMusicPlaying = true }: ConfettiProps) {
+export default function Confetti() {
   const animationRef = useRef<number | null>(null);
   const hasStartedRef = useRef(false);
   const audioPlayedRef = useRef(false);
@@ -16,20 +14,13 @@ export default function Confetti({ backgroundMusicPlaying = true }: ConfettiProp
     autoPlay: false,
   });
 
-  // Play win sound when audio is loaded, but only if background music is playing
+  // Play win sound when audio is loaded - global audio state is handled by useAudio hook
   useEffect(() => {
-    if (winAudioControls.isLoaded && backgroundMusicPlaying && !audioPlayedRef.current) {
+    if (winAudioControls.isLoaded && !audioPlayedRef.current) {
       winAudioControls.play();
       audioPlayedRef.current = true;
     }
-  }, [winAudioControls.isLoaded, winAudioControls.play, backgroundMusicPlaying]);
-
-  // Stop win audio when background music is turned off
-  useEffect(() => {
-    if (!backgroundMusicPlaying && winAudioControls.isPlaying) {
-      winAudioControls.pause();
-    }
-  }, [backgroundMusicPlaying, winAudioControls.isPlaying, winAudioControls.pause]);
+  }, [winAudioControls.isLoaded, winAudioControls.play]);
 
   // Cleanup: Stop win audio when component unmounts (leaving page)
   useEffect(() => {

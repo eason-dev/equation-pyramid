@@ -1,7 +1,10 @@
 import { useCallback } from 'react';
 import { useAudio } from './useAudio';
+import { useGameStore } from '@/logic/state/gameStore';
 
 export function useAnswerSounds() {
+  const isAudioEnabled = useGameStore((state) => state.isAudioEnabled);
+  
   const correctAudioControls = useAudio('/audio/correct-answer.mp3', {
     volume: 0.8,
     loop: false,
@@ -15,16 +18,16 @@ export function useAnswerSounds() {
   });
 
   const playCorrectSound = useCallback(() => {
-    if (correctAudioControls.isLoaded) {
+    if (correctAudioControls.isLoaded && isAudioEnabled) {
       correctAudioControls.play();
     }
-  }, [correctAudioControls]);
+  }, [correctAudioControls, isAudioEnabled]);
 
   const playIncorrectSound = useCallback(() => {
-    if (incorrectAudioControls.isLoaded) {
+    if (incorrectAudioControls.isLoaded && isAudioEnabled) {
       incorrectAudioControls.play();
     }
-  }, [incorrectAudioControls]);
+  }, [incorrectAudioControls, isAudioEnabled]);
 
   return { 
     playCorrectSound, 

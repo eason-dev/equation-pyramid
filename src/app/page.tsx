@@ -13,24 +13,34 @@ import Confetti from "@/components/Confetti";
 import { useGameStore, type GameAppState } from "@/logic/state/gameStore";
 import { useAudio } from "@/hooks/useAudio";
 import { useAnswerSounds } from "@/hooks/useAnswerSounds";
-import { DEBUG } from "@/constants";
 
 export default function AppPage() {
+  // Game store state
   const {
     currentState,
+    gameState,
+    selectedTiles,
+    foundEquations,
     config,
     players,
-    gameState,
-    guessingPlayerId,
     mainTimer,
+    guessTimer,
+    guessingPlayerId,
+    currentEquationResult,
+    isCurrentEquationCorrect,
+    // Actions
     start,
     updateConfig,
     startGame,
+    startGuessing,
     selectTile,
+    nextRound,
     continueGame,
-    currentEquationResult,
-    isCurrentEquationCorrect,
+    transitionToRoundOver,
   } = useGameStore();
+
+  // Debug mode
+  const DEBUG = process.env.NODE_ENV === "development";
 
   // Main menu background music - MANUAL CONTROL ONLY
   const mainAudioControls = useAudio('/audio/main-background-music.ogg', {
@@ -40,14 +50,14 @@ export default function AppPage() {
     startTime: 0.025, // Skip first 50ms
   });
 
-  // Game background music - DISABLED FOR NOW
-  // const gameAudioControls = useAudio('/audio/ticking.ogg', {
-  //   volume: 0.8,
-  //   loop: true,
-  //   autoPlay: false,
-  //   startTime: 0.01,
-  //   endTime: 0.01,
-  // });
+  // Game background music - ENABLED FOR GUESSING STATE
+  const gameAudioControls = useAudio('/audio/ticking.ogg', {
+    volume: 0.8,
+    loop: true,
+    autoPlay: false,
+    // startTime: 0.01,
+    endTime: 0.01,
+  });
 
   // End sound for round over
   const endSoundControls = useAudio('/audio/end-sound.mp3', {
@@ -84,6 +94,9 @@ export default function AppPage() {
   // Track end sound to prevent multiple plays
   const endSoundPlayedRef = useRef<boolean>(false);
 
+  // Track ticking sound to prevent multiple instances
+  const tickingSoundActiveRef = useRef<boolean>(false);
+
   // Cleanup confetti when component unmounts (navigating away from app)
   useEffect(() => {
     return () => {
@@ -92,6 +105,35 @@ export default function AppPage() {
       setShouldShowConfettiAfterTransition(false);
     };
   }, []);
+
+  // Handle background music logic
+  useEffect(() => {
+    const isGuessingState = displayState === "guessing";
+    const isAudioEnabled = useGameStore.getState().isAudioEnabled;
+
+    if (isAudioEnabled) {
+      // Main music should always be playing
+      if (mainAudioControls.isLoaded && !mainAudioControls.isPlaying) {
+        mainAudioControls.play();
+      }
+      
+      // Ticking sound only plays during guessing state (layered on top of main music)
+      if (isGuessingState) {
+        if (gameAudioControls.isLoaded && !tickingSoundActiveRef.current) {
+          gameAudioControls.play();
+          tickingSoundActiveRef.current = true;
+        }
+        setActiveMusicType('game');
+      } else {
+        // Stop ticking sound when not guessing
+        if (tickingSoundActiveRef.current) {
+          gameAudioControls.pause();
+          tickingSoundActiveRef.current = false;
+        }
+        setActiveMusicType('main');
+      }
+    }
+  }, [displayState, mainAudioControls, gameAudioControls]);
 
   // Handle answer sounds (separate from shake animation)
   useEffect(() => {
@@ -238,31 +280,8 @@ export default function AppPage() {
     }
   }, [currentState, displayState]);
 
-  // Determine which music should be playing based on display state
-  // DISABLED: Auto music switching to prevent conflicts with manual control
-  // useEffect(() => {
-  //   const isGuessingState = displayState === "guessing";
-  //   // Main music should always be playing (except when manually paused)
-  //   if (mainAudioControls.isLoaded && !mainAudioControls.isPlaying) {
-  //     mainAudioControls.play();
-  //   }
-  //   // Ticking sound only plays during guessing state (layered on top of main music)
-  //   if (isGuessingState) {
-  //     if (gameAudioControls.isLoaded && !gameAudioControls.isPlaying) {
-  //       gameAudioControls.play();
-  //     }
-  //     setActiveMusicType('game'); // For UI display purposes
-  //   } else {
-  //     // Stop ticking sound when not guessing
-  //     if (gameAudioControls.isPlaying) {
-  //       gameAudioControls.pause();
-  //     }
-  //     setActiveMusicType('main'); // For UI display purposes
-  //   }
-  // }, [displayState, mainAudioControls, gameAudioControls]);
-
   // Get the currently active audio controls for the Footer
-  const activeAudioControls = mainAudioControls; // Only main audio for now
+  const activeAudioControls = activeMusicType === 'game' ? gameAudioControls : mainAudioControls;
 
   const handleCenterReached = useCallback(() => {
     // Update display state when overlay reaches center
@@ -307,7 +326,7 @@ export default function AppPage() {
   return (
     <>
       {/* Confetti Effect */}
-      {showConfetti && <Confetti backgroundMusicPlaying={mainAudioControls.isPlaying} />}
+      {showConfetti && <Confetti />}
 
       {/* Transition Overlay */}
       {showTransition && (

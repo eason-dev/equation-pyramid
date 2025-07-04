@@ -61,6 +61,9 @@ interface GameData {
   mainTimerInterval: NodeJS.Timeout | null;
   guessTimerInterval: NodeJS.Timeout | null;
   resultDelayInterval: NodeJS.Timeout | null;
+
+  // Audio settings
+  isAudioEnabled: boolean;
 }
 
 export interface GameStoreState extends GameData {
@@ -88,6 +91,9 @@ export interface GameStoreState extends GameData {
 
   // New actions
   transitionToRoundOver: () => void;
+
+  // Audio actions
+  toggleAudio: () => void;
 }
 
 const initialConfig: GameConfig = {
@@ -112,6 +118,7 @@ const initialState: GameData = {
   mainTimerInterval: null,
   guessTimerInterval: null,
   resultDelayInterval: null,
+  isAudioEnabled: true,
 };
 
 const createInitialPlayers = (numPlayers: number): Player[] => {
@@ -504,6 +511,12 @@ export const useGameStore = create<GameStoreState>()(
         state.roundHistory = [];
         state.currentEquationResult = null;
         state.isCurrentEquationCorrect = null;
+      });
+    },
+
+    toggleAudio: () => {
+      set((state) => {
+        state.isAudioEnabled = !state.isAudioEnabled;
       });
     },
   })),

@@ -1,41 +1,49 @@
 "use client";
 
-import type { AudioControls } from '@/hooks/useAudio';
+import { useGameStore } from '@/logic/state/gameStore';
 import { useButtonSound } from '@/hooks/useButtonSound';
+import type { AudioControls } from '@/hooks/useAudio';
 
 interface MusicButtonProps {
-  audioControls: AudioControls;
+  audioControls?: AudioControls;
   trackType?: 'main' | 'game';
 }
 
 export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
   const { playButtonSound } = useButtonSound();
-  const { isPlaying, toggle, isLoaded } = audioControls;
+  const isAudioEnabled = useGameStore((state) => state.isAudioEnabled);
+  const toggleAudio = useGameStore((state) => state.toggleAudio);
 
   const handleToggle = () => {
     playButtonSound();
-    toggle();
+    
+    if (isAudioEnabled) {
+      // Audio is currently enabled, so we're turning it off
+      toggleAudio(); // This will mute all audio
+    } else {
+      // Audio is currently disabled, so we're turning it on
+      toggleAudio(); // This will unmute all audio
+      
+      // Also start the specific track if it's not playing
+      if (audioControls && audioControls.isLoaded && !audioControls.isPlaying) {
+        audioControls.play();
+      }
+    }
   };
 
   const getTrackLabel = () => {
     if (!trackType) return '';
-    return trackType === 'game' ? 'Game Music' : 'Menu Music';
+    return trackType === 'game' ? 'Game Audio' : 'Menu Audio';
   };
 
   const getTooltip = () => {
-    const action = isPlaying ? "Pause" : "Play";
+    const action = isAudioEnabled ? "Mute" : "Unmute";
     const track = getTrackLabel();
-    return track ? `${action} ${track}` : `${action} music`;
+    return track ? `${action} ${track}` : `${action} all audio`;
   };
 
-  if (!isLoaded) {
-    return (
-      <div 
-        className="w-12 h-12 bg-white/20 rounded animate-pulse" 
-        title={`Loading ${getTrackLabel() || 'music'}...`} 
-      />
-    );
-  }
+  // Show the music button state based on global audio state
+  const isShowingAsOn = isAudioEnabled;
 
   return (
     <button
@@ -45,8 +53,8 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
       title={getTooltip()}
     >
       <img 
-        src={isPlaying ? "/music.svg" : "/music-off.svg"} 
-        alt={isPlaying ? "Pause music" : "Play music"}
+        src={isShowingAsOn ? "/music.svg" : "/music-off.svg"} 
+        alt={isShowingAsOn ? "Mute audio" : "Unmute audio"}
         className="w-12 h-12"
       />
     </button>
