@@ -289,18 +289,23 @@ export const useGameStore = create<GameStoreState>()(
       const { startMainTimer, stopMainTimer, stopGuessTimer } = get();
       set((state) => {
         // Save current round to history before moving to next round or ending game
+        // (Only if not already saved by transitionToRoundOver)
         if (state.gameState && state.config.currentRound > 0) {
-          const playerScores: Record<string, number> = {};
-          state.players.forEach(player => {
-            playerScores[player.id] = player.score;
-          });
+          const existingRound = state.roundHistory.find(r => r.roundNumber === state.config.currentRound);
           
-          state.roundHistory.push({
-            roundNumber: state.config.currentRound,
-            gameState: { ...state.gameState },
-            foundEquations: [...state.foundEquations],
-            playerScores
-          });
+          if (!existingRound) {
+            const playerScores: Record<string, number> = {};
+            state.players.forEach(player => {
+              playerScores[player.id] = player.score;
+            });
+            
+            state.roundHistory.push({
+              roundNumber: state.config.currentRound,
+              gameState: { ...state.gameState },
+              foundEquations: [...state.foundEquations],
+              playerScores
+            });
+          }
         }
 
         if (state.config.currentRound >= state.config.numRounds) {
@@ -365,6 +370,26 @@ export const useGameStore = create<GameStoreState>()(
       stopMainTimer();
 
       set((state) => {
+        // Save current round to history when round ends
+        if (state.gameState && state.config.currentRound > 0) {
+          // Check if this round is already in history (to avoid duplicates)
+          const existingRound = state.roundHistory.find(r => r.roundNumber === state.config.currentRound);
+          
+          if (!existingRound) {
+            const playerScores: Record<string, number> = {};
+            state.players.forEach(player => {
+              playerScores[player.id] = player.score;
+            });
+            
+            state.roundHistory.push({
+              roundNumber: state.config.currentRound,
+              gameState: { ...state.gameState },
+              foundEquations: [...state.foundEquations],
+              playerScores
+            });
+          }
+        }
+        
         state.currentState = "roundOver";
       });
     },

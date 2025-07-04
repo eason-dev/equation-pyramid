@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAudio } from "../hooks/useAudio";
 
 interface ConfettiProps {
@@ -6,6 +6,10 @@ interface ConfettiProps {
 }
 
 export default function Confetti({ backgroundMusicPlaying = true }: ConfettiProps) {
+  const animationRef = useRef<number | null>(null);
+  const hasStartedRef = useRef(false);
+  const audioPlayedRef = useRef(false);
+  
   const winAudioControls = useAudio('/audio/win.mp3', {
     volume: 0.8,
     loop: false,
@@ -14,8 +18,9 @@ export default function Confetti({ backgroundMusicPlaying = true }: ConfettiProp
 
   // Play win sound when audio is loaded, but only if background music is playing
   useEffect(() => {
-    if (winAudioControls.isLoaded && backgroundMusicPlaying) {
+    if (winAudioControls.isLoaded && backgroundMusicPlaying && !audioPlayedRef.current) {
       winAudioControls.play();
+      audioPlayedRef.current = true;
     }
   }, [winAudioControls.isLoaded, winAudioControls.play, backgroundMusicPlaying]);
 
@@ -36,6 +41,10 @@ export default function Confetti({ backgroundMusicPlaying = true }: ConfettiProp
   }, [winAudioControls.isPlaying, winAudioControls.pause]);
   
   useEffect(() => {
+    // Prevent multiple animations from starting
+    if (hasStartedRef.current) return;
+    hasStartedRef.current = true;
+    
     const canvas = document.getElementById("confetti-canvas") as HTMLCanvasElement;
     if (!canvas) return;
     
@@ -140,7 +149,9 @@ export default function Confetti({ backgroundMusicPlaying = true }: ConfettiProp
         }
       }
       if (confetti.length > 0) {
-        requestAnimationFrame(animate);
+        animationRef.current = requestAnimationFrame(animate);
+      } else {
+        animationRef.current = null;
       }
     }
 
@@ -149,9 +160,14 @@ export default function Confetti({ backgroundMusicPlaying = true }: ConfettiProp
 
     return () => {
       // Cleanup function to stop animation if component unmounts
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
       confetti.length = 0;
+      hasStartedRef.current = false;
     };
-  }, []);
+  }, []); // Empty dependency array ensures this only runs once per mount
 
   return (
     <canvas

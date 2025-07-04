@@ -69,6 +69,9 @@ export default function AppPage() {
   const [shouldShowConfettiAfterTransition, setShouldShowConfettiAfterTransition] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
 
+  // Track if confetti has been shown for the current gameOver state
+  const confettiShownRef = useRef(false);
+
   // Track the last answer state to prevent duplicate sound playback
   const lastAnswerStateRef = useRef<{ result: number | null; correct: boolean | null }>({ 
     result: null, 
@@ -172,44 +175,48 @@ export default function AppPage() {
   // Handle confetti logic when entering gameOver state
   useEffect(() => {
     if (currentState === "gameOver") {
-      // Check if confetti should be shown based on score conditions
-      const shouldShowConfetti = () => {
-        const numPlayers = config.numPlayers;
-        
-        if (numPlayers === 1) {
-          // Single player mode: show confetti if player has 3+ points
-          return players.length > 0 && players[0].score >= 1;
-        } else {
-          // Multi-player mode: show confetti if any player has 3+ points
-          return players.some(player => player.score >= 1);
-        }
-      };
+      // Only show confetti if we haven't already shown it for this gameOver state
+      if (!confettiShownRef.current) {
+        // Check if confetti should be shown based on score conditions
+        const shouldShowConfetti = () => {
+          const numPlayers = config.numPlayers;
+          
+          if (numPlayers === 1) {
+            // Single player mode: show confetti if player has 1+ points
+            return players.length > 0 && players[0].score >= 1;
+          } else {
+            // Multi-player mode: show confetti if any player has 1+ points
+            return players.some(player => player.score >= 1);
+          }
+        };
 
-      const shouldShow = shouldShowConfetti();
+        const shouldShow = shouldShowConfetti();
 
-      if (shouldShow) {
-        // Check if there's a transition happening
-        const isTransitioning = showTransition || 
-          (displayState === "roundOver" && currentState === "gameOver");
-        
-        if (isTransitioning) {
-          setShouldShowConfettiAfterTransition(true);
-        } else {
-          setShowConfetti(true);
-          // Hide confetti after animation completes (about 6 seconds)
-          setTimeout(() => {
-            setShowConfetti(false);
-          }, 6000);
+        if (shouldShow) {
+          confettiShownRef.current = true; // Mark as shown
+          
+          // Check if there's a transition happening
+          const isTransitioning = showTransition || 
+            (displayState === "roundOver" && currentState === "gameOver");
+          
+          if (isTransitioning) {
+            setShouldShowConfettiAfterTransition(true);
+          } else {
+            setShowConfetti(true);
+            // Hide confetti after animation completes (about 6 seconds)
+            setTimeout(() => {
+              setShowConfetti(false);
+            }, 6000);
+          }
         }
       }
     } else {
-      // Stop confetti immediately when leaving gameOver state (changing pages/states)
-      if (showConfetti) {
-        setShowConfetti(false);
-        setShouldShowConfettiAfterTransition(false);
-      }
+      // Reset confetti flag and stop confetti when leaving gameOver state
+      confettiShownRef.current = false;
+      setShowConfetti(false);
+      setShouldShowConfettiAfterTransition(false);
     }
-  }, [currentState, displayState, players, config.numPlayers, showTransition, showConfetti]);
+  }, [currentState, displayState, players, config.numPlayers, showTransition]);
 
   // Separate effect to handle display state updates
   useEffect(() => {
