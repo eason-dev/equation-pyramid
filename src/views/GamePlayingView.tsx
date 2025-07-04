@@ -216,7 +216,9 @@ export function GamePlayingView({
 
       {/* Floating Next Round Button */}
       {shouldShowCompletion && (
-        <FloatingButton onClick={nextRound}>Next Round</FloatingButton>
+        <FloatingButton onClick={nextRound}>
+          {config.currentRound >= config.numRounds ? "End Game" : "Next Round"}
+        </FloatingButton>
       )}
     </div>
   );
