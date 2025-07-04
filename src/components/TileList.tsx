@@ -50,7 +50,7 @@ export function TileList({
                 tile={tile}
                 isSelected={selectedTiles.includes(originalIndex)}
                 onClick={() => onTileClick(originalIndex)}
-                disabled={!isGuessing}
+                disabled={!isGuessing || selectedTiles.includes(originalIndex)}
               />
             );
           })}

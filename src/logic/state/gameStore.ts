@@ -189,7 +189,7 @@ export const useGameStore = create<GameStoreState>()(
       const { selectedTiles, stopGuessTimer } = get();
 
       set((state) => {
-        if (state.selectedTiles.length < TILES_PER_EQUATION) {
+        if (state.selectedTiles.length < TILES_PER_EQUATION && !state.selectedTiles.includes(tileIndex)) {
           state.selectedTiles.push(tileIndex);
         }
       });
