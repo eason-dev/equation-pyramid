@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useButtonSound } from "@/hooks/useButtonSound";
 
 export function Header() {
@@ -8,20 +9,17 @@ export function Header() {
   return (
     <header className="flex items-center justify-between p-6">
       {/* Logo */}
-      <button
-        type="button"
+      <Link 
+        href="/" 
+        onClick={playButtonSound}
         className="cursor-pointer"
-        onClick={() => {
-          playButtonSound();
-          window.location.reload();
-        }}
       >
         <img 
           src="/logo.svg" 
           alt="Logo" 
           className="h-8 w-auto"
         />
-      </button>
+      </Link>
 
       {/* Center - Empty space for game-specific content */}
       <div className="flex-1" />

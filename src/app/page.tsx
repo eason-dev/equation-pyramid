@@ -19,12 +19,12 @@ export default function AppPage() {
   const {
     currentState,
     gameState,
-    selectedTiles,
-    foundEquations,
+    // selectedTiles,
+    // foundEquations,
     config,
     players,
     mainTimer,
-    guessTimer,
+    // guessTimer,
     guessingPlayerId,
     currentEquationResult,
     isCurrentEquationCorrect,
@@ -32,11 +32,11 @@ export default function AppPage() {
     start,
     updateConfig,
     startGame,
-    startGuessing,
+    // startGuessing,
     selectTile,
-    nextRound,
+    // nextRound,
     continueGame,
-    transitionToRoundOver,
+    // transitionToRoundOver,
   } = useGameStore();
 
   // Debug mode
@@ -226,10 +226,9 @@ export default function AppPage() {
           if (numPlayers === 1) {
             // Single player mode: show confetti if player has 1+ points
             return players.length > 0 && players[0].score >= 1;
-          } else {
-            // Multi-player mode: show confetti if any player has 1+ points
-            return players.some(player => player.score >= 1);
           }
+          // Multi-player mode: show confetti if any player has 1+ points
+          return players.some(player => player.score >= 1);
         };
 
         const shouldShow = shouldShowConfetti();

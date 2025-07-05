@@ -32,7 +32,7 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
       toggleAudio(); // This will unmute all audio
       
       // Also start the specific track if it's not playing
-      if (audioControls && audioControls.isLoaded && !audioControls.isPlaying) {
+      if (audioControls?.isLoaded && !audioControls.isPlaying) {
         audioControls.play();
       }
     }
