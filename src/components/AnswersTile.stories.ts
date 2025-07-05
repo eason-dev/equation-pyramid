@@ -74,6 +74,7 @@ const mockFoundEquationsMulti: FoundEquation[] = [
 ];
 
 export const SinglePlayerGamePlayingView: Story = {
+  name: "Single Player - During Game (No Checkmarks)",
   args: {
     foundEquations: mockFoundEquationsSingle,
     validEquations: mockValidEquations,
@@ -84,6 +85,7 @@ export const SinglePlayerGamePlayingView: Story = {
 };
 
 export const TwoPlayerGamePlayingView: Story = {
+  name: "Two Player - During Game (With Player Numbers)",
   args: {
     foundEquations: mockFoundEquationsMulti,
     validEquations: mockValidEquations,
@@ -94,6 +96,7 @@ export const TwoPlayerGamePlayingView: Story = {
 };
 
 export const SinglePlayerGameOverView: Story = {
+  name: "Single Player - Game Over (With Checkmarks)",
   args: {
     foundEquations: mockFoundEquationsSingle,
     validEquations: mockValidEquations,
@@ -104,6 +107,7 @@ export const SinglePlayerGameOverView: Story = {
 };
 
 export const TwoPlayerGameOverView: Story = {
+  name: "Two Player - Game Over (With Player Numbers)",
   args: {
     foundEquations: mockFoundEquationsMulti,
     validEquations: mockValidEquations,
@@ -114,6 +118,7 @@ export const TwoPlayerGameOverView: Story = {
 };
 
 export const GameOverViewWithUnfoundEquations: Story = {
+  name: "Game Over - Some Equations Unfound",
   args: {
     foundEquations: [{ key: "0,1,2", foundBy: "player-1" }],
     validEquations: mockValidEquations,
@@ -124,6 +129,7 @@ export const GameOverViewWithUnfoundEquations: Story = {
 };
 
 export const EmptyState: Story = {
+  name: "No Equations Found Yet",
   args: {
     foundEquations: [],
     validEquations: mockValidEquations,

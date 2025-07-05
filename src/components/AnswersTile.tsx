@@ -117,11 +117,7 @@ export function AnswersTile({
             return (
               <div key={foundEquation.key} className="flex items-center justify-center gap-2">
                 <div className="w-6 flex justify-center">
-                  {isSinglePlayer ? (
-                    <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">✓</span>
-                    </div>
-                  ) : (
+                  {!isSinglePlayer && (
                     <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
                       <span className="text-white text-xs font-bold">{playerIndex}</span>
                     </div>
