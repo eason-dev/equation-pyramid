@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Hide cursor globally when floating button is active */
+.hide-cursor * {
+  cursor: none !important;
+}
+
 /* Transition Overlay Styles */
 .transition-overlay {
   position: fixed;
