@@ -71,25 +71,30 @@ export function AnswersTile({
             const equationKey = createEquationKey(equation);
             const foundEquation = foundEquationMap.get(equationKey);
             const equationText = equation.tiles.map((t) => t.label).join(" ");
-
-            let prefix = "";
-            if (foundEquation) {
-              if (isSinglePlayer) {
-                prefix = "✓ ";
-              } else {
-                prefix = `${getPlayerIndex(foundEquation.foundBy)} `;
-              }
-            }
+            const playerIndex = foundEquation ? getPlayerIndex(foundEquation.foundBy) : null;
 
             return (
-              <Typography
-                key={equationKey}
-                variant="p1"
-                className="text-center"
-              >
-                {prefix}
-                {equationText}
-              </Typography>
+              <div key={equationKey} className="flex items-center justify-center gap-2">
+                <div className="w-6 flex justify-center">
+                  {foundEquation && (
+                    isSinglePlayer ? (
+                      <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">✓</span>
+                      </div>
+                    ) : (
+                      <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">{playerIndex}</span>
+                      </div>
+                    )
+                  )}
+                </div>
+                <Typography
+                  variant="p1"
+                  className="text-center"
+                >
+                  {equationText}
+                </Typography>
+              </div>
             );
           })}
         </div>
@@ -107,23 +112,28 @@ export function AnswersTile({
             const [i, j, k] = foundEquation.key.split(",").map(Number);
             const equationTiles = [tiles[i], tiles[j], tiles[k]];
             const equationText = equationTiles.map((t) => t.label).join(" ");
-
-            let prefix = "";
-            if (isSinglePlayer) {
-              prefix = "✓ ";
-            } else {
-              prefix = `${getPlayerIndex(foundEquation.foundBy)} `;
-            }
+            const playerIndex = getPlayerIndex(foundEquation.foundBy);
 
             return (
-              <Typography
-                key={foundEquation.key}
-                variant="p1"
-                className="text-center"
-              >
-                {prefix}
-                {equationText}
-              </Typography>
+              <div key={foundEquation.key} className="flex items-center justify-center gap-2">
+                <div className="w-6 flex justify-center">
+                  {isSinglePlayer ? (
+                    <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">✓</span>
+                    </div>
+                  ) : (
+                    <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">{playerIndex}</span>
+                    </div>
+                  )}
+                </div>
+                <Typography
+                  variant="p1"
+                  className="text-center"
+                >
+                  {equationText}
+                </Typography>
+              </div>
             );
           })}
         </div>
