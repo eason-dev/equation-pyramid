@@ -16,7 +16,7 @@ export function GuessingTimer({
 
   // Calculate progress percentage (100% at start, 0% at end)
   const progress = (seconds / totalSeconds) * 100;
-  
+
   // Calculate circumference for a circle with radius 24
   const radius = 18;
   const circumference = 2 * Math.PI * radius;
@@ -53,14 +53,12 @@ export function GuessingTimer({
           className="transition-all duration-1000 ease-linear"
         />
       </svg>
-      
+
       {/* daisyUI countdown component - centered */}
       <div className="relative z-10 flex items-center justify-center">
         <span className="sr-only">{seconds} seconds remaining</span>
         <span className="countdown" aria-live="polite">
-          <span 
-            style={{"--value": seconds} as React.CSSProperties}
-          >
+          <span style={{ "--value": seconds } as React.CSSProperties}>
             <Typography variant="p2" className="text-white">
               {seconds}
             </Typography>

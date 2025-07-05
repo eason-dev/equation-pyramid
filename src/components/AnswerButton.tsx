@@ -121,9 +121,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         {...props}
       >
         {/* Player Name - hidden in single player mode */}
-        {!isSinglePlayer && (
-          <Typography variant="h2">{playerName}</Typography>
-        )}
+        {!isSinglePlayer && <Typography variant="h2">{playerName}</Typography>}
 
         {/* Call to Action - only show when not in over state */}
         {!isOver && <Typography variant="h2">Press Here to Answer!</Typography>}

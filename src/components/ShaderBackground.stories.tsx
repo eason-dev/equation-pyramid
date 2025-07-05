@@ -1,20 +1,20 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { ShaderBackground } from './ShaderBackground';
+import type { Meta, StoryObj } from "@storybook/react";
+import { ShaderBackground } from "./ShaderBackground";
 
 const meta: Meta<typeof ShaderBackground> = {
-  title: 'Components/ShaderBackground',
+  title: "Components/ShaderBackground",
   component: ShaderBackground,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
   argTypes: {
     showControls: {
-      control: 'boolean',
-      description: 'Show Leva controls for adjusting shader parameters',
+      control: "boolean",
+      description: "Show Leva controls for adjusting shader parameters",
     },
     className: {
-      control: 'text',
-      description: 'CSS class name for the container',
+      control: "text",
+      description: "CSS class name for the container",
     },
   },
 };
@@ -46,11 +46,16 @@ export const Background: Story = {
       <ShaderBackground {...args} />
       <div className="relative z-10 p-8 text-white">
         <h1 className="text-4xl font-bold mb-4">Shader Background Demo</h1>
-        <p className="text-lg">This text is displayed over the animated shader background.</p>
+        <p className="text-lg">
+          This text is displayed over the animated shader background.
+        </p>
         <div className="mt-8 p-4 bg-black/20 rounded-lg backdrop-blur-sm">
-          <p>The shader creates a beautiful animated background effect that works perfectly behind UI elements.</p>
+          <p>
+            The shader creates a beautiful animated background effect that works
+            perfectly behind UI elements.
+          </p>
         </div>
       </div>
     </>
   ),
-}; 
+};

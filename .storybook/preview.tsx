@@ -1,4 +1,3 @@
-
 import type { Preview } from "@storybook/nextjs-vite";
 
 import "../src/styles/globals.css";
@@ -43,11 +42,11 @@ const preview: Preview = {
       return (
         <>
           {/* Background Shader for all stories */}
-          <ShaderBackground 
-            showControls={false} 
+          <ShaderBackground
+            showControls={false}
             className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10"
           />
-          
+
           {/* Story content */}
           <main className="text-white relative z-10">
             <Story />

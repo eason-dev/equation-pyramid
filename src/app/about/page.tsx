@@ -46,10 +46,10 @@ export default function AboutPage() {
               Inspiration
             </Typography>
             <Typography variant="p2" className="text-white text-left">
-              This is a game inspired by The Devil&apos;s Plan season 2 on Netflix. We 
-              played this game along with the participants in the show and 
-              really enjoyed it. So we decided to make it possible to let 
-              more people enjoy this game. Hope you like it :)
+              This is a game inspired by The Devil&apos;s Plan season 2 on
+              Netflix. We played this game along with the participants in the
+              show and really enjoyed it. So we decided to make it possible to
+              let more people enjoy this game. Hope you like it :)
             </Typography>
           </div>
 
@@ -59,10 +59,10 @@ export default function AboutPage() {
               Contributors
             </Typography>
             <Typography variant="p2" className="text-white text-left mb-4">
-              We are a couple who made this game together. Feel free to 
-              visit our LinkedIn or website down below!
+              We are a couple who made this game together. Feel free to visit
+              our LinkedIn or website down below!
             </Typography>
-            
+
             {/* Contributors List */}
             <div className="flex flex-wrap gap-10 justify-center">
               {/* Eason */}
@@ -73,26 +73,36 @@ export default function AboutPage() {
                     Eason
                   </Typography>
                   <div className="flex gap-2">
-                    <button 
+                    <button
                       type="button"
                       onClick={handleLinkClick}
                       className="w-6 h-6 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
                       title="Website"
                     >
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
                         <title>Website</title>
-                        <path d="M2 2V18H18V2H2ZM16 16H4V4H16V16ZM6 6H14V8H6V6ZM6 10H14V12H6V10Z"/>
+                        <path d="M2 2V18H18V2H2ZM16 16H4V4H16V16ZM6 6H14V8H6V6ZM6 10H14V12H6V10Z" />
                       </svg>
                     </button>
-                    <button 
+                    <button
                       type="button"
                       onClick={handleLinkClick}
                       className="w-6 h-6 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
                       title="LinkedIn"
                     >
-                      <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 18 18"
+                        fill="currentColor"
+                      >
                         <title>LinkedIn</title>
-                        <path d="M15.4 3H2.6C1.7 3 1 3.7 1 4.6V13.4C1 14.3 1.7 15 2.6 15H15.4C16.3 15 17 14.3 17 13.4V4.6C17 3.7 16.3 3 15.4 3ZM15 13H3V5H15V13ZM5 7H13V9H5V7ZM5 11H11V13H5V11Z"/>
+                        <path d="M15.4 3H2.6C1.7 3 1 3.7 1 4.6V13.4C1 14.3 1.7 15 2.6 15H15.4C16.3 15 17 14.3 17 13.4V4.6C17 3.7 16.3 3 15.4 3ZM15 13H3V5H15V13ZM5 7H13V9H5V7ZM5 11H11V13H5V11Z" />
                       </svg>
                     </button>
                   </div>
@@ -107,26 +117,36 @@ export default function AboutPage() {
                     Carol
                   </Typography>
                   <div className="flex gap-2">
-                    <button 
+                    <button
                       type="button"
                       onClick={handleLinkClick}
                       className="w-6 h-6 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
                       title="Website"
                     >
-                      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
                         <title>Website</title>
-                        <path d="M2 2V18H18V2H2ZM16 16H4V4H16V16ZM6 6H14V8H6V6ZM6 10H14V12H6V10Z"/>
+                        <path d="M2 2V18H18V2H2ZM16 16H4V4H16V16ZM6 6H14V8H6V6ZM6 10H14V12H6V10Z" />
                       </svg>
                     </button>
-                    <button 
+                    <button
                       type="button"
                       onClick={handleLinkClick}
                       className="w-6 h-6 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
                       title="LinkedIn"
                     >
-                      <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 18 18"
+                        fill="currentColor"
+                      >
                         <title>LinkedIn</title>
-                        <path d="M15.4 3H2.6C1.7 3 1 3.7 1 4.6V13.4C1 14.3 1.7 15 2.6 15H15.4C16.3 15 17 14.3 17 13.4V4.6C17 3.7 16.3 3 15.4 3ZM15 13H3V5H15V13ZM5 7H13V9H5V7ZM5 11H11V13H5V11Z"/>
+                        <path d="M15.4 3H2.6C1.7 3 1 3.7 1 4.6V13.4C1 14.3 1.7 15 2.6 15H15.4C16.3 15 17 14.3 17 13.4V4.6C17 3.7 16.3 3 15.4 3ZM15 13H3V5H15V13ZM5 7H13V9H5V7ZM5 11H11V13H5V11Z" />
                       </svg>
                     </button>
                   </div>

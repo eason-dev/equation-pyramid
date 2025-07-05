@@ -10,7 +10,10 @@ interface RoundButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const RoundButton = forwardRef<HTMLButtonElement, RoundButtonProps>(
-  ({ children, className, disabled, isActive = false, onClick, ...props }, ref) => {
+  (
+    { children, className, disabled, isActive = false, onClick, ...props },
+    ref,
+  ) => {
     const { playButtonSound } = useButtonSound();
     const getStateStyles = () => {
       if (disabled) {

@@ -99,8 +99,19 @@ export function GuessingState({
               >
                 <Typography variant="h2">Result</Typography>
                 <div className="relative w-full text-center min-h-[1.5rem] flex items-center justify-center">
-                  <Typography variant="p1" className={calculatedResult === null || calculatedResult === undefined ? "invisible" : ""}>
-                    ={calculatedResult !== null && calculatedResult !== undefined ? calculatedResult : "0"}
+                  <Typography
+                    variant="p1"
+                    className={
+                      calculatedResult === null ||
+                      calculatedResult === undefined
+                        ? "invisible"
+                        : ""
+                    }
+                  >
+                    =
+                    {calculatedResult !== null && calculatedResult !== undefined
+                      ? calculatedResult
+                      : "0"}
                   </Typography>
                 </div>
               </Block>

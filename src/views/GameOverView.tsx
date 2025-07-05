@@ -36,21 +36,21 @@ export function GameOverView({
   const getDefaultSelectedRound = () => {
     if (roundHistory.length > 0) {
       // Find the highest round number in history
-      return Math.max(...roundHistory.map(r => r.roundNumber));
+      return Math.max(...roundHistory.map((r) => r.roundNumber));
     }
     // If no history exists, use currentRound but this should be rare in GameOver
     return config.currentRound;
   };
-  
+
   const [selectedRound, setSelectedRound] = useState(getDefaultSelectedRound());
 
   // Update selectedRound when roundHistory changes to ensure we're showing a valid round
   useEffect(() => {
     if (roundHistory.length > 0) {
-      const availableRounds = roundHistory.map(r => r.roundNumber);
+      const availableRounds = roundHistory.map((r) => r.roundNumber);
       const maxRound = Math.max(...availableRounds);
-      
-      // If the currently selected round doesn't exist in history, 
+
+      // If the currently selected round doesn't exist in history,
       // reset to the highest available round
       if (!availableRounds.includes(selectedRound)) {
         setSelectedRound(maxRound);
@@ -62,26 +62,31 @@ export function GameOverView({
   }, [roundHistory, selectedRound, config.currentRound]);
 
   // Get the data for the selected round - this should always exist after the useEffect above
-  const selectedRoundData = roundHistory.find(r => r.roundNumber === selectedRound);
-  
+  const selectedRoundData = roundHistory.find(
+    (r) => r.roundNumber === selectedRound,
+  );
+
   // Display the selected round's data, or fall back to current game state if no history
   const displayGameState = selectedRoundData?.gameState || gameState;
-  const displayFoundEquations = selectedRoundData?.foundEquations || foundEquations;
+  const displayFoundEquations =
+    selectedRoundData?.foundEquations || foundEquations;
 
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
   const isSinglePlayer = players.length === 1;
-  
+
   // Determine crown logic for multiplayer
   const shouldShowCrown = (player: Player, index: number) => {
     if (isSinglePlayer) {
       return player.score >= 1; // Show crown for single player if score >= 1
     }
-    
+
     const highestScore = sortedPlayers[0].score;
     const hasHighestScore = player.score === highestScore;
-    const playersWithHighestScore = sortedPlayers.filter(p => p.score === highestScore);
+    const playersWithHighestScore = sortedPlayers.filter(
+      (p) => p.score === highestScore,
+    );
     const isTied = playersWithHighestScore.length > 1;
-    
+
     // Show crown if player has highest score
     if (hasHighestScore) {
       // If tied and both have score >= 1, show crown on both
@@ -93,24 +98,31 @@ export function GameOverView({
         return highestScore >= 1; // Single winner gets crown if score >= 1
       }
     }
-    
+
     return false;
   };
 
   // Debug logging to understand round selection issues
   useEffect(() => {
-    console.log('GameOverView - Round State:', {
+    console.log("GameOverView - Round State:", {
       roundHistoryLength: roundHistory.length,
-      roundNumbers: roundHistory.map(r => r.roundNumber),
+      roundNumbers: roundHistory.map((r) => r.roundNumber),
       selectedRound,
       currentRound: config.currentRound,
       numRounds: config.numRounds,
       selectedRoundData: !!selectedRoundData,
       displayGameState: !!displayGameState,
       displayFoundEquations: displayFoundEquations.length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-  }, [roundHistory, selectedRound, config, selectedRoundData, displayGameState, displayFoundEquations]);
+  }, [
+    roundHistory,
+    selectedRound,
+    config,
+    selectedRoundData,
+    displayGameState,
+    displayFoundEquations,
+  ]);
 
   return (
     <div className="flex flex-col items-center justify-center relative z-10">
@@ -128,7 +140,10 @@ export function GameOverView({
         {isSinglePlayer ? (
           /* Single Player Score Circle */
           <div className="flex flex-col items-center gap-2.5">
-            <ScoreCircle score={sortedPlayers[0].score} showCrown={shouldShowCrown(sortedPlayers[0], 0)} />
+            <ScoreCircle
+              score={sortedPlayers[0].score}
+              showCrown={shouldShowCrown(sortedPlayers[0], 0)}
+            />
           </div>
         ) : (
           /* Two Player Score Circles */
@@ -138,7 +153,10 @@ export function GameOverView({
                 key={player.id}
                 className="flex flex-col items-center gap-2.5"
               >
-                <ScoreCircle score={player.score} showCrown={shouldShowCrown(player, index)} />
+                <ScoreCircle
+                  score={player.score}
+                  showCrown={shouldShowCrown(player, index)}
+                />
                 <Typography variant="h2" className="text-white">
                   {player.name}
                 </Typography>
@@ -168,6 +186,7 @@ export function GameOverView({
               foundEquations={displayFoundEquations}
               validEquations={displayGameState.validEquations}
               tiles={displayGameState.tiles}
+              players={players}
               showAllAnswers={true}
             />
 

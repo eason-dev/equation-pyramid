@@ -9,9 +9,18 @@ interface TransitionOverlayProps {
   onCenterReached?: () => void;
 }
 
-export default function TransitionOverlay({ onComplete, onCenterReached }: TransitionOverlayProps) {
+export default function TransitionOverlay({
+  onComplete,
+  onCenterReached,
+}: TransitionOverlayProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const { play } = useAudio("/audio/page-transition.mp3", { volume: 0.7, loop: true, autoPlay: true, startTime: 0.05, endTime: 0.05});
+  const { play } = useAudio("/audio/page-transition.mp3", {
+    volume: 0.7,
+    loop: true,
+    autoPlay: true,
+    startTime: 0.05,
+    endTime: 0.05,
+  });
 
   useEffect(() => {
     if (!overlayRef.current) return;
@@ -36,7 +45,7 @@ export default function TransitionOverlay({ onComplete, onCenterReached }: Trans
         if (onCenterReached) {
           onCenterReached();
         }
-      }
+      },
     })
       .to({}, { duration: 2 }) // 停留時間
       // Slide up to top
@@ -58,4 +67,4 @@ export default function TransitionOverlay({ onComplete, onCenterReached }: Trans
       </div>
     </div>
   );
-} 
+}

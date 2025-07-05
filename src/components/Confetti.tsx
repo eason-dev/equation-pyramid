@@ -1,14 +1,14 @@
 import { useEffect, useRef } from "react";
 import { useAudio } from "../hooks/useAudio";
 
-type ConfettiProps = {}
+type ConfettiProps = {};
 
 export default function Confetti() {
   const animationRef = useRef<number | null>(null);
   const hasStartedRef = useRef(false);
   const audioPlayedRef = useRef(false);
-  
-  const winAudioControls = useAudio('/audio/win.mp3', {
+
+  const winAudioControls = useAudio("/audio/win.mp3", {
     volume: 0.8,
     loop: false,
     autoPlay: false,
@@ -30,15 +30,17 @@ export default function Confetti() {
       }
     };
   }, [winAudioControls.isPlaying, winAudioControls.pause]);
-  
+
   useEffect(() => {
     // Prevent multiple animations from starting
     if (hasStartedRef.current) return;
     hasStartedRef.current = true;
-    
-    const canvas = document.getElementById("confetti-canvas") as HTMLCanvasElement;
+
+    const canvas = document.getElementById(
+      "confetti-canvas",
+    ) as HTMLCanvasElement;
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -113,7 +115,7 @@ export default function Confetti() {
           -this.size / 2,
           -this.size / 2,
           this.size,
-          this.size * 0.5
+          this.size * 0.5,
         );
         ctx.restore();
       }
@@ -174,4 +176,4 @@ export default function Confetti() {
       }}
     />
   );
-} 
+}

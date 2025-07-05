@@ -1,10 +1,10 @@
 "use client";
 
-import * as THREE from 'three'
-import { Canvas, useFrame, extend } from '@react-three/fiber'
-import { shaderMaterial } from '@react-three/drei'
-import { Leva, useControls } from 'leva'
-import { useRef } from 'react'
+import * as THREE from "three";
+import { Canvas, useFrame, extend } from "@react-three/fiber";
+import { shaderMaterial } from "@react-three/drei";
+import { Leva, useControls } from "leva";
+import { useRef } from "react";
 
 // 🔮 Shader Material 定義
 const TrippyMaterial = shaderMaterial(
@@ -13,7 +13,7 @@ const TrippyMaterial = shaderMaterial(
     u_resolution: new THREE.Vector2(),
     u_scale: 1.0,
     u_strength: 0.6,
-    u_color: new THREE.Color('#242b3e'),
+    u_color: new THREE.Color("#242b3e"),
   },
   // Vertex shader
   `
@@ -46,52 +46,56 @@ const TrippyMaterial = shaderMaterial(
     
       gl_FragColor = vec4(color, 1.0);
     }
-  `
-)
+  `,
+);
 
-extend({ TrippyMaterial })
+extend({ TrippyMaterial });
 
 function FullscreenShader({ externalColor }: { externalColor?: string }) {
-  const ref = useRef<any>(null)
-  const targetColorRef = useRef(new THREE.Color('#242b3e'))
-  const currentColorRef = useRef(new THREE.Color('#242b3e'))
+  const ref = useRef<any>(null);
+  const targetColorRef = useRef(new THREE.Color("#242b3e"));
+  const currentColorRef = useRef(new THREE.Color("#242b3e"));
 
   const { strength, color } = useControls({
     strength: { value: 0.6, min: 0.1, max: 2.0, step: 0.1 },
-    color: '#242b3e',
-  })
+    color: "#242b3e",
+  });
 
   useFrame(({ clock, size }) => {
     if (ref.current) {
-      ref.current.u_time = clock.getElapsedTime() * 0.1
-      ref.current.u_resolution = new THREE.Vector2(size.width, size.height)
-      ref.current.u_strength = strength
-      
+      ref.current.u_time = clock.getElapsedTime() * 0.1;
+      ref.current.u_resolution = new THREE.Vector2(size.width, size.height);
+      ref.current.u_strength = strength;
+
       // Use external color if provided, otherwise use Leva controls
-      const targetColor = externalColor || color
-      targetColorRef.current.set(targetColor)
-      
+      const targetColor = externalColor || color;
+      targetColorRef.current.set(targetColor);
+
       // Smoothly interpolate to target color
-      currentColorRef.current.lerp(targetColorRef.current, 0.05)
-      ref.current.u_color = currentColorRef.current.clone()
+      currentColorRef.current.lerp(targetColorRef.current, 0.05);
+      ref.current.u_color = currentColorRef.current.clone();
     }
-  })
+  });
 
   return (
     <mesh>
       <planeGeometry args={[2, 2]} />
       <trippyMaterial ref={ref} />
     </mesh>
-  )
+  );
 }
 
 interface ShaderBackgroundProps {
-  showControls?: boolean
-  className?: string
-  color?: string
+  showControls?: boolean;
+  className?: string;
+  color?: string;
 }
 
-export function ShaderBackground({ showControls = false, className = "fixed top-0 left-0 w-screen h-screen overflow-hidden -z-10", color }: ShaderBackgroundProps) {
+export function ShaderBackground({
+  showControls = false,
+  className = "fixed top-0 left-0 w-screen h-screen overflow-hidden -z-10",
+  color,
+}: ShaderBackgroundProps) {
   return (
     <>
       {showControls && <Leva collapsed={true} />}
@@ -101,5 +105,5 @@ export function ShaderBackground({ showControls = false, className = "fixed top-
         </Canvas>
       </div>
     </>
-  )
-} 
+  );
+}

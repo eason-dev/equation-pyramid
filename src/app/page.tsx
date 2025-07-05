@@ -43,7 +43,7 @@ export default function AppPage() {
   const DEBUG = process.env.NODE_ENV === "development";
 
   // Main menu background music - MANUAL CONTROL ONLY
-  const mainAudioControls = useAudio('/audio/main-background-music.ogg', {
+  const mainAudioControls = useAudio("/audio/main-background-music.ogg", {
     volume: 0.5,
     loop: true,
     autoPlay: false, // Disabled autoplay to prevent conflicts
@@ -51,7 +51,7 @@ export default function AppPage() {
   });
 
   // Game background music - ENABLED FOR GUESSING STATE
-  const gameAudioControls = useAudio('/audio/ticking.ogg', {
+  const gameAudioControls = useAudio("/audio/ticking.ogg", {
     volume: 0.8,
     loop: true,
     autoPlay: false,
@@ -60,7 +60,7 @@ export default function AppPage() {
   });
 
   // End sound for round over
-  const endSoundControls = useAudio('/audio/end-sound.mp3', {
+  const endSoundControls = useAudio("/audio/end-sound.mp3", {
     volume: 0.7,
     loop: false,
     autoPlay: false,
@@ -70,22 +70,30 @@ export default function AppPage() {
   const { playCorrectSound, playIncorrectSound } = useAnswerSounds();
 
   // Track which music should be active based on game state
-  const [activeMusicType, setActiveMusicType] = useState<'main' | 'game'>('main');
+  const [activeMusicType, setActiveMusicType] = useState<"main" | "game">(
+    "main",
+  );
 
   const [showTransition, setShowTransition] = useState(false);
   const [displayState, setDisplayState] = useState<GameAppState>(currentState);
   const [transitionKey, setTransitionKey] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [shouldShowConfettiAfterTransition, setShouldShowConfettiAfterTransition] = useState(false);
+  const [
+    shouldShowConfettiAfterTransition,
+    setShouldShowConfettiAfterTransition,
+  ] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
 
   // Track if confetti has been shown for the current gameOver state
   const confettiShownRef = useRef(false);
 
   // Track the last answer state to prevent duplicate sound playback
-  const lastAnswerStateRef = useRef<{ result: number | null; correct: boolean | null }>({ 
-    result: null, 
-    correct: null 
+  const lastAnswerStateRef = useRef<{
+    result: number | null;
+    correct: boolean | null;
+  }>({
+    result: null,
+    correct: null,
   });
 
   // Track shake animation to prevent multiple shakes
@@ -116,21 +124,21 @@ export default function AppPage() {
       if (mainAudioControls.isLoaded && !mainAudioControls.isPlaying) {
         mainAudioControls.play();
       }
-      
+
       // Ticking sound only plays during guessing state (layered on top of main music)
       if (isGuessingState) {
         if (gameAudioControls.isLoaded && !tickingSoundActiveRef.current) {
           gameAudioControls.play();
           tickingSoundActiveRef.current = true;
         }
-        setActiveMusicType('game');
+        setActiveMusicType("game");
       } else {
         // Stop ticking sound when not guessing
         if (tickingSoundActiveRef.current) {
           gameAudioControls.pause();
           tickingSoundActiveRef.current = false;
         }
-        setActiveMusicType('main');
+        setActiveMusicType("main");
       }
     }
   }, [displayState, mainAudioControls, gameAudioControls]);
@@ -139,7 +147,7 @@ export default function AppPage() {
   useEffect(() => {
     if (displayState === "showingResult" && isCurrentEquationCorrect !== null) {
       // Check if this is a new answer (different from last played)
-      const isNewAnswer = 
+      const isNewAnswer =
         lastAnswerStateRef.current.result !== currentEquationResult ||
         lastAnswerStateRef.current.correct !== isCurrentEquationCorrect;
 
@@ -147,7 +155,7 @@ export default function AppPage() {
         // Update the ref to track this answer
         lastAnswerStateRef.current = {
           result: currentEquationResult,
-          correct: isCurrentEquationCorrect
+          correct: isCurrentEquationCorrect,
         };
 
         // Play appropriate sound
@@ -161,12 +169,19 @@ export default function AppPage() {
       // Reset the ref when not showing results
       lastAnswerStateRef.current = { result: null, correct: null };
     }
-  }, [displayState, isCurrentEquationCorrect, currentEquationResult, playCorrectSound, playIncorrectSound]);
+  }, [
+    displayState,
+    isCurrentEquationCorrect,
+    currentEquationResult,
+    playCorrectSound,
+    playIncorrectSound,
+  ]);
 
   // Handle shake animation separately to prevent multiple shakes
   useEffect(() => {
-    const shouldShake = 
-      (displayState === "showingResult" && isCurrentEquationCorrect === false) ||
+    const shouldShake =
+      (displayState === "showingResult" &&
+        isCurrentEquationCorrect === false) ||
       displayState === "roundOver";
 
     if (shouldShake) {
@@ -177,7 +192,7 @@ export default function AppPage() {
 
       // Start shaking
       setIsShaking(true);
-      
+
       // Stop shaking after exactly 600ms
       shakeTimeoutRef.current = setTimeout(() => {
         setIsShaking(false);
@@ -222,24 +237,25 @@ export default function AppPage() {
         // Check if confetti should be shown based on score conditions
         const shouldShowConfetti = () => {
           const numPlayers = config.numPlayers;
-          
+
           if (numPlayers === 1) {
             // Single player mode: show confetti if player has 1+ points
             return players.length > 0 && players[0].score >= 1;
           }
           // Multi-player mode: show confetti if any player has 1+ points
-          return players.some(player => player.score >= 1);
+          return players.some((player) => player.score >= 1);
         };
 
         const shouldShow = shouldShowConfetti();
 
         if (shouldShow) {
           confettiShownRef.current = true; // Mark as shown
-          
+
           // Check if there's a transition happening
-          const isTransitioning = showTransition || 
+          const isTransitioning =
+            showTransition ||
             (displayState === "roundOver" && currentState === "gameOver");
-          
+
           if (isTransitioning) {
             setShouldShowConfettiAfterTransition(true);
           } else {
@@ -263,15 +279,15 @@ export default function AppPage() {
   useEffect(() => {
     if (currentState !== displayState) {
       // Only show transition for specific state changes
-      const shouldShowTransition = 
+      const shouldShowTransition =
         (displayState === "config" && currentState === "game") ||
         (displayState === "roundOver" && currentState === "game") ||
         (displayState === "roundOver" && currentState === "gameOver");
-      
+
       if (shouldShowTransition) {
         setShowTransition(true);
         // Increment key to ensure fresh component
-        setTransitionKey(prev => prev + 1);
+        setTransitionKey((prev) => prev + 1);
       } else {
         // For other state changes, update display state immediately without transition
         setDisplayState(currentState);
@@ -280,7 +296,8 @@ export default function AppPage() {
   }, [currentState, displayState]);
 
   // Get the currently active audio controls for the Footer
-  const activeAudioControls = activeMusicType === 'game' ? gameAudioControls : mainAudioControls;
+  const activeAudioControls =
+    activeMusicType === "game" ? gameAudioControls : mainAudioControls;
 
   const handleCenterReached = useCallback(() => {
     // Update display state when overlay reaches center
@@ -290,12 +307,12 @@ export default function AppPage() {
   const handleTransitionComplete = useCallback(() => {
     // Animation completed, just hide overlay
     setShowTransition(false);
-    
+
     // Check if we should show confetti after transition
     if (shouldShowConfettiAfterTransition) {
       setShowConfetti(true);
       setShouldShowConfettiAfterTransition(false);
-      
+
       // Hide confetti after animation completes (about 6 seconds)
       setTimeout(() => {
         setShowConfetti(false);
@@ -329,8 +346,8 @@ export default function AppPage() {
 
       {/* Transition Overlay */}
       {showTransition && (
-        <TransitionOverlay 
-          key={transitionKey} 
+        <TransitionOverlay
+          key={transitionKey}
           onComplete={handleTransitionComplete}
           onCenterReached={handleCenterReached}
         />
@@ -338,11 +355,11 @@ export default function AppPage() {
 
       {/* Background Shader */}
       <ShaderBackground showControls={true} color={getBackgroundColor()} />
-      
+
       {/* Main Content */}
-      <div 
+      <div
         className={`min-h-screen text-white flex flex-col relative z-10 transition-transform duration-75 ${
-          isShaking ? 'animate-shake' : ''
+          isShaking ? "animate-shake" : ""
         }`}
       >
         <Header />
@@ -361,7 +378,9 @@ export default function AppPage() {
             />
           )}
 
-          {(displayState === "game" || displayState === "guessing" || displayState === "showingResult") && (
+          {(displayState === "game" ||
+            displayState === "guessing" ||
+            displayState === "showingResult") && (
             <GamePlayingView
               tiles={tiles}
               players={players}
@@ -389,7 +408,10 @@ export default function AppPage() {
           )}
         </main>
 
-        <Footer audioControls={activeAudioControls} trackType={activeMusicType} />
+        <Footer
+          audioControls={activeAudioControls}
+          trackType={activeMusicType}
+        />
       </div>
 
       <style jsx global>{`

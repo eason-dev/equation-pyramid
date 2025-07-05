@@ -5,20 +5,12 @@ import { useButtonSound } from "@/hooks/useButtonSound";
 
 export function Header() {
   const { playButtonSound } = useButtonSound();
-  
+
   return (
     <header className="flex items-center justify-between p-6">
       {/* Logo */}
-      <Link 
-        href="/" 
-        onClick={playButtonSound}
-        className="cursor-pointer"
-      >
-        <img 
-          src="/logo.svg" 
-          alt="Logo" 
-          className="h-8 w-auto"
-        />
+      <Link href="/" onClick={playButtonSound} className="cursor-pointer">
+        <img src="/logo.svg" alt="Logo" className="h-8 w-auto" />
       </Link>
 
       {/* Center - Empty space for game-specific content */}

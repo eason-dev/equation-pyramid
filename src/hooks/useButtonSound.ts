@@ -1,11 +1,11 @@
-import { useCallback } from 'react';
-import { useAudio } from './useAudio';
-import { useGameStore } from '@/logic/state/gameStore';
+import { useCallback } from "react";
+import { useAudio } from "./useAudio";
+import { useGameStore } from "@/logic/state/gameStore";
 
 export function useButtonSound() {
   const isAudioEnabled = useGameStore((state) => state.isAudioEnabled);
-  
-  const buttonAudioControls = useAudio('/audio/button-sound.mp3', {
+
+  const buttonAudioControls = useAudio("/audio/button-sound.mp3", {
     volume: 0.7,
     loop: false,
     autoPlay: false,
@@ -19,4 +19,4 @@ export function useButtonSound() {
   }, [buttonAudioControls, isAudioEnabled]);
 
   return { playButtonSound };
-} 
+}

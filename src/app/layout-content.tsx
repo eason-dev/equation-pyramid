@@ -27,7 +27,7 @@ export default function LayoutContent({
   useEffect(() => {
     if (pathname !== "/") {
       const isAudioEnabled = useGameStore.getState().isAudioEnabled;
-      
+
       if (isAudioEnabled) {
         // Start the main music if it's loaded and not playing
         if (mainAudioControls.isLoaded && !mainAudioControls.isPlaying) {

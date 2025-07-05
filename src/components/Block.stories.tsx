@@ -26,8 +26,7 @@ export const Default: Story = {
 
 export const TargetNumber: Story = {
   args: {
-    className:
-      "flex flex-col items-center justify-center gap-2.5",
+    className: "flex flex-col items-center justify-center gap-2.5",
     children: (
       <>
         <Typography variant="h2">Target</Typography>

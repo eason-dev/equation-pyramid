@@ -1,15 +1,15 @@
 "use client";
 
-import { MusicButton } from './MusicButton';
-import { Typography } from './Typography';
-import { useButtonSound } from '@/hooks/useButtonSound';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import type { AudioControls } from '@/hooks/useAudio';
+import { MusicButton } from "./MusicButton";
+import { Typography } from "./Typography";
+import { useButtonSound } from "@/hooks/useButtonSound";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { AudioControls } from "@/hooks/useAudio";
 
 interface FooterProps {
   audioControls?: AudioControls;
-  trackType?: 'main' | 'game';
+  trackType?: "main" | "game";
 }
 
 export function Footer({ audioControls, trackType }: FooterProps) {
@@ -29,7 +29,10 @@ export function Footer({ audioControls, trackType }: FooterProps) {
         <div className="flex items-center gap-4">
           {showAboutButton && (
             <Link href="/about" onClick={handleAboutClick}>
-              <Typography variant="p2" className="text-white font-bold cursor-pointer hover:text-gray-300 transition-colors">
+              <Typography
+                variant="p2"
+                className="text-white font-bold cursor-pointer hover:text-gray-300 transition-colors"
+              >
                 About
               </Typography>
             </Link>

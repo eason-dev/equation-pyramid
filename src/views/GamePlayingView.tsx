@@ -64,10 +64,12 @@ export function GamePlayingView({
     currentState === "game" && selectedTiles.length === 0 && !isOver;
   const isSinglePlayer = players.length === 1;
   const selectedPlayer = players.find((p) => p.id === selectedPlayerId);
-  
+
   // Check if all equations have been found
-  const allEquationsFound = gameState && foundEquations.length >= gameState.validEquations.length;
-  const shouldShowCompletion = isOver || allEquationsFound;
+  const allEquationsFound = gameState
+    ? foundEquations.length >= gameState.validEquations.length
+    : false;
+  const shouldShowCompletion = !!isOver || allEquationsFound;
 
   return (
     <div className="flex flex-col">
@@ -88,13 +90,16 @@ export function GamePlayingView({
         <div className="flex items-start gap-10 w-full max-w-[1100px]">
           {/* Left Column: Answers tile */}
           <div className="flex-shrink-0 w-[200px]">
-            {gameState && foundEquations.length > 0 && (
-              <AnswersTile
-                foundEquations={foundEquations}
-                validEquations={gameState.validEquations}
-                tiles={tiles}
-              />
-            )}
+            {gameState &&
+              (foundEquations.length > 0 || shouldShowCompletion) && (
+                <AnswersTile
+                  foundEquations={foundEquations}
+                  validEquations={gameState.validEquations}
+                  tiles={tiles}
+                  players={players}
+                  showAllAnswers={shouldShowCompletion}
+                />
+              )}
           </div>
 
           {/* Center Column: Game content */}
@@ -121,11 +126,13 @@ export function GamePlayingView({
                     ? isCurrentEquationCorrect === true
                       ? "correct"
                       : isCurrentEquationCorrect === false
-                      ? "wrong"
-                      : "guessing"
+                        ? "wrong"
+                        : "guessing"
                     : "guessing"
                 }
-                calculatedResult={isShowingResult ? currentEquationResult : null}
+                calculatedResult={
+                  isShowingResult ? currentEquationResult : null
+                }
               />
             )}
           </div>

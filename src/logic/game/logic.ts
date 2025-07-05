@@ -63,16 +63,23 @@ function generateConstrainedTiles(): Tile[] {
       const wouldExceedBigNumber =
         number >= BIG_NUMBER_THRESHOLD &&
         bigNumberCount >= MAX_BIG_NUMBER_TILES;
-      
+
       // Check for meaningless tiles
-      const isMeaningless = (operator === "*" && number === 1) || 
-                            (operator === "/" && number === 1);
-      
+      const isMeaningless =
+        (operator === "*" && number === 1) ||
+        (operator === "/" && number === 1);
+
       // Check for duplicates
       const tileKey = `${operator}${number}`;
       const isDuplicate = usedTiles.has(tileKey);
 
-      if (!wouldExceedMultiply && !wouldExceedDivide && !wouldExceedBigNumber && !isMeaningless && !isDuplicate) {
+      if (
+        !wouldExceedMultiply &&
+        !wouldExceedDivide &&
+        !wouldExceedBigNumber &&
+        !isMeaningless &&
+        !isDuplicate
+      ) {
         // Valid tile, update counters
         if (operator === "*") multiplyCount++;
         if (operator === "/") divideCount++;
@@ -87,16 +94,17 @@ function generateConstrainedTiles(): Tile[] {
         const safeOperator = Math.random() < 0.5 ? "+" : "-";
         let safeNumber;
         let safeTileKey;
-        
+
         // Try to find a safe number that's not duplicate
         for (let safeAttempt = 0; safeAttempt < 20; safeAttempt++) {
-          safeNumber = Math.floor(Math.random() * (BIG_NUMBER_THRESHOLD - 1)) + 1;
+          safeNumber =
+            Math.floor(Math.random() * (BIG_NUMBER_THRESHOLD - 1)) + 1;
           safeTileKey = `${safeOperator}${safeNumber}`;
           if (!usedTiles.has(safeTileKey)) {
             break;
           }
         }
-        
+
         tile = { operator: safeOperator, number: safeNumber!, label };
         usedTiles.add(safeTileKey!);
         break;
@@ -331,7 +339,7 @@ export function generateGameState(): GameState {
   if (validEquations.length > 0) {
     // Try to find a target with <= MAX_VALID_EQUATIONS
     const resultFrequency = new Map<number, Equation[]>();
-    
+
     for (const equation of validEquations) {
       if (!resultFrequency.has(equation.result)) {
         resultFrequency.set(equation.result, []);
@@ -341,7 +349,7 @@ export function generateGameState(): GameState {
         equations.push(equation);
       }
     }
-    
+
     // Look for a result with valid equation count
     for (const [result, equations] of resultFrequency.entries()) {
       if (

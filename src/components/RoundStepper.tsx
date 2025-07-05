@@ -8,11 +8,11 @@ interface RoundStepperProps {
   selectedRound?: number;
 }
 
-export function RoundStepper({ 
-  currentRound, 
-  totalRounds, 
+export function RoundStepper({
+  currentRound,
+  totalRounds,
   onRoundClick,
-  selectedRound
+  selectedRound,
 }: RoundStepperProps) {
   return (
     <div className="flex items-center justify-center">
@@ -23,7 +23,9 @@ export function RoundStepper({
             className={cn(
               "w-8 h-8 rounded-full border border-white/20 transition-colors flex items-center justify-center",
               "bg-black/60 hover:bg-black/80",
-              round === (selectedRound || currentRound) ? "text-white" : "text-[#969696]",
+              round === (selectedRound || currentRound)
+                ? "text-white"
+                : "text-[#969696]",
               onRoundClick && "cursor-pointer",
             )}
             onClick={() => onRoundClick?.(round)}

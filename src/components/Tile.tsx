@@ -20,14 +20,25 @@ const operatorMap: Record<Operator, string> = {
   "/": "÷",
 };
 
-export function Tile({ tile, isSelected, onClick, disabled, isFirstSelected = false }: TileProps) {
+export function Tile({
+  tile,
+  isSelected,
+  onClick,
+  disabled,
+  isFirstSelected = false,
+}: TileProps) {
   const { playButtonSound } = useButtonSound();
   const operatorRef = useRef<HTMLSpanElement>(null);
   const numberRef = useRef<HTMLSpanElement>(null);
   const explosionContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isFirstSelected && operatorRef.current && explosionContainerRef.current && numberRef.current) {
+    if (
+      isFirstSelected &&
+      operatorRef.current &&
+      explosionContainerRef.current &&
+      numberRef.current
+    ) {
       const operatorElement = operatorRef.current;
       const numberElement = numberRef.current;
 
@@ -46,16 +57,24 @@ export function Tile({ tile, isSelected, onClick, disabled, isFirstSelected = fa
       });
 
       // Then: Number slides to center position with calculated offset
-      tl.to(numberElement, {
-        x: centeringOffset, // Use calculated offset based on operator width
-        duration: 0.3,
-        ease: "power2.out",
-      }, "-=0.3"); // Start 0.3 seconds before the operator animation ends
+      tl.to(
+        numberElement,
+        {
+          x: centeringOffset, // Use calculated offset based on operator width
+          duration: 0.3,
+          ease: "power2.out",
+        },
+        "-=0.3",
+      ); // Start 0.3 seconds before the operator animation ends
 
       // Add a subtle scale animation to the number for emphasis
-      tl.to(numberElement, {
-        duration: 0.4,
-      }, "-=0.4");
+      tl.to(
+        numberElement,
+        {
+          duration: 0.4,
+        },
+        "-=0.4",
+      );
     }
   }, [isFirstSelected]);
 
@@ -142,7 +161,7 @@ export function Tile({ tile, isSelected, onClick, disabled, isFirstSelected = fa
         ref={explosionContainerRef}
         className="absolute inset-0 pointer-events-none"
       />
-      
+
       <div className="-rotate-45 flex flex-col items-center justify-center gap-1.5 w-full max-w-[50px]">
         <div
           className="text-[16px] font-normal leading-tight text-center w-full"
@@ -150,22 +169,16 @@ export function Tile({ tile, isSelected, onClick, disabled, isFirstSelected = fa
         >
           {tile.label}
         </div>
-        <div 
+        <div
           className="text-[22px] font-bold leading-tight text-center text-white relative w-full overflow-hidden"
-          style={{ 
-            whiteSpace: "nowrap"
+          style={{
+            whiteSpace: "nowrap",
           }}
         >
-          <span
-            ref={operatorRef}
-            className="inline-block"
-          >
+          <span ref={operatorRef} className="inline-block">
             {operatorMap[tile.operator as Operator]}
           </span>
-          <span
-            ref={numberRef}
-            className="inline-block"
-          >
+          <span ref={numberRef} className="inline-block">
             {tile.number}
           </span>
         </div>

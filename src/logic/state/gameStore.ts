@@ -29,10 +29,15 @@ interface GameConfig {
   currentRound: number;
 }
 
+interface FoundEquation {
+  key: string;
+  foundBy: string; // player id
+}
+
 interface RoundHistory {
   roundNumber: number;
   gameState: GameState;
-  foundEquations: string[];
+  foundEquations: FoundEquation[];
   playerScores: Record<string, number>;
 }
 
@@ -43,7 +48,7 @@ interface GameData {
   // Game data
   gameState: GameState | null;
   selectedTiles: number[];
-  foundEquations: string[];
+  foundEquations: FoundEquation[];
   config: GameConfig;
   players: Player[];
   mainTimer: number;
@@ -134,6 +139,8 @@ const createInitialPlayers = (numPlayers: number): Player[] => {
   }));
 };
 
+export type { FoundEquation };
+
 export const useGameStore = create<GameStoreState>()(
   immer((set, get) => ({
     ...initialState,
@@ -194,7 +201,10 @@ export const useGameStore = create<GameStoreState>()(
       const { selectedTiles, stopGuessTimer } = get();
 
       set((state) => {
-        if (state.selectedTiles.length < TILES_PER_EQUATION && !state.selectedTiles.includes(tileIndex)) {
+        if (
+          state.selectedTiles.length < TILES_PER_EQUATION &&
+          !state.selectedTiles.includes(tileIndex)
+        ) {
           state.selectedTiles.push(tileIndex);
         }
       });
@@ -218,9 +228,12 @@ export const useGameStore = create<GameStoreState>()(
 
           const result = calculateEquation(equation.tiles);
           const equationKey = `${i},${j},${k}`;
-          const isDuplicate = state.foundEquations.includes(equationKey);
-          const isCorrect = result === state.gameState.targetNumber && !isDuplicate;
-          
+          const isDuplicate = state.foundEquations.some(
+            (eq) => eq.key === equationKey,
+          );
+          const isCorrect =
+            result === state.gameState.targetNumber && !isDuplicate;
+
           stopGuessTimer();
 
           set((state) => {
@@ -270,7 +283,7 @@ export const useGameStore = create<GameStoreState>()(
           (p) => p.id === state.guessingPlayerId,
         );
 
-        if (state.foundEquations.includes(equationKey)) {
+        if (state.foundEquations.some((eq) => eq.key === equationKey)) {
           // Deduct point for duplicate equation
           if (player) {
             player.score -= 1;
@@ -280,7 +293,10 @@ export const useGameStore = create<GameStoreState>()(
           if (player) {
             player.score += 1;
           }
-          state.foundEquations.push(equationKey);
+          state.foundEquations.push({
+            key: equationKey,
+            foundBy: state.guessingPlayerId,
+          });
         } else {
           // Deduct point for incorrect equation
           if (player) {
@@ -298,8 +314,11 @@ export const useGameStore = create<GameStoreState>()(
 
       // Check if all equations have been found after updating the state
       const currentState = get();
-      if (currentState.gameState && 
-          currentState.foundEquations.length >= currentState.gameState.validEquations.length) {
+      if (
+        currentState.gameState &&
+        currentState.foundEquations.length >=
+          currentState.gameState.validEquations.length
+      ) {
         // All answers completed - transition to round over
         transitionToRoundOver();
       } else {
@@ -314,19 +333,21 @@ export const useGameStore = create<GameStoreState>()(
         // Save current round to history before moving to next round or ending game
         // (Only if not already saved by transitionToRoundOver)
         if (state.gameState && state.config.currentRound > 0) {
-          const existingRound = state.roundHistory.find(r => r.roundNumber === state.config.currentRound);
-          
+          const existingRound = state.roundHistory.find(
+            (r) => r.roundNumber === state.config.currentRound,
+          );
+
           if (!existingRound) {
             const playerScores: Record<string, number> = {};
-            state.players.forEach(player => {
+            state.players.forEach((player) => {
               playerScores[player.id] = player.score;
             });
-            
+
             state.roundHistory.push({
               roundNumber: state.config.currentRound,
               gameState: { ...state.gameState },
               foundEquations: [...state.foundEquations],
-              playerScores
+              playerScores,
             });
           }
         }
@@ -396,23 +417,25 @@ export const useGameStore = create<GameStoreState>()(
         // Save current round to history when round ends
         if (state.gameState && state.config.currentRound > 0) {
           // Check if this round is already in history (to avoid duplicates)
-          const existingRound = state.roundHistory.find(r => r.roundNumber === state.config.currentRound);
-          
+          const existingRound = state.roundHistory.find(
+            (r) => r.roundNumber === state.config.currentRound,
+          );
+
           if (!existingRound) {
             const playerScores: Record<string, number> = {};
-            state.players.forEach(player => {
+            state.players.forEach((player) => {
               playerScores[player.id] = player.score;
             });
-            
+
             state.roundHistory.push({
               roundNumber: state.config.currentRound,
               gameState: { ...state.gameState },
               foundEquations: [...state.foundEquations],
-              playerScores
+              playerScores,
             });
           }
         }
-        
+
         state.currentState = "roundOver";
       });
     },
@@ -453,7 +476,7 @@ export const useGameStore = create<GameStoreState>()(
             }
           });
           clearInterval(interval);
-          
+
           // Auto-transition back to game after showing wrong effect
           setTimeout(() => {
             set((state) => {
@@ -483,20 +506,20 @@ export const useGameStore = create<GameStoreState>()(
       }
     },
 
-          startResultDelayTimer: () => {
-        const { stopResultDelayTimer } = get();
-        stopResultDelayTimer();
-      },
+    startResultDelayTimer: () => {
+      const { stopResultDelayTimer } = get();
+      stopResultDelayTimer();
+    },
 
-      stopResultDelayTimer: () => {
-        const state = get();
-        if (state.resultDelayInterval) {
-          clearInterval(state.resultDelayInterval);
-          set((state) => {
-            state.resultDelayInterval = null;
-          });
-        }
-      },
+    stopResultDelayTimer: () => {
+      const state = get();
+      if (state.resultDelayInterval) {
+        clearInterval(state.resultDelayInterval);
+        set((state) => {
+          state.resultDelayInterval = null;
+        });
+      }
+    },
 
     resetGame: () => {
       const { stopMainTimer, stopGuessTimer } = get();
@@ -523,9 +546,12 @@ export const useGameStore = create<GameStoreState>()(
       set((state) => {
         state.isAudioEnabled = !state.isAudioEnabled;
         // Persist to localStorage
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
           try {
-            localStorage.setItem('isAudioEnabled', JSON.stringify(state.isAudioEnabled));
+            localStorage.setItem(
+              "isAudioEnabled",
+              JSON.stringify(state.isAudioEnabled),
+            );
           } catch {
             // Ignore localStorage errors
           }
@@ -534,9 +560,9 @@ export const useGameStore = create<GameStoreState>()(
     },
 
     hydrateAudioState: () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         try {
-          const stored = localStorage.getItem('isAudioEnabled');
+          const stored = localStorage.getItem("isAudioEnabled");
           if (stored !== null) {
             const parsedValue = JSON.parse(stored);
             set((state) => {

@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useGameStore } from '@/logic/state/gameStore';
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useGameStore } from "@/logic/state/gameStore";
 
 export interface AudioControls {
   isPlaying: boolean;
@@ -11,13 +11,16 @@ export interface AudioControls {
   isLoaded: boolean;
 }
 
-export function useAudio(src: string, options: {
-  volume?: number;
-  loop?: boolean;
-  autoPlay?: boolean;
-  startTime?: number;
-  endTime?: number;
-} = {}): AudioControls {
+export function useAudio(
+  src: string,
+  options: {
+    volume?: number;
+    loop?: boolean;
+    autoPlay?: boolean;
+    startTime?: number;
+    endTime?: number;
+  } = {},
+): AudioControls {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolumeState] = useState(options.volume ?? 0.5);
@@ -29,25 +32,25 @@ export function useAudio(src: string, options: {
   useEffect(() => {
     const audio = new Audio(src);
     audio.loop = options.loop ?? false;
-    audio.preload = 'auto';
+    audio.preload = "auto";
 
     const handleLoadedData = () => setIsLoaded(true);
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
     const handleEnded = () => setIsPlaying(false);
 
-    audio.addEventListener('loadeddata', handleLoadedData);
-    audio.addEventListener('play', handlePlay);
-    audio.addEventListener('pause', handlePause);
-    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener("loadeddata", handleLoadedData);
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
+    audio.addEventListener("ended", handleEnded);
 
     audioRef.current = audio;
 
     return () => {
-      audio.removeEventListener('loadeddata', handleLoadedData);
-      audio.removeEventListener('play', handlePlay);
-      audio.removeEventListener('pause', handlePause);
-      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener("loadeddata", handleLoadedData);
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("ended", handleEnded);
       audio.pause();
       audioRef.current = null;
     };
@@ -65,7 +68,13 @@ export function useAudio(src: string, options: {
 
   // Handle autoplay (only once, only if user hasn't interacted)
   useEffect(() => {
-    if (options.autoPlay && isLoaded && !userInteractedRef.current && audioRef.current && isAudioEnabled) {
+    if (
+      options.autoPlay &&
+      isLoaded &&
+      !userInteractedRef.current &&
+      audioRef.current &&
+      isAudioEnabled
+    ) {
       if (options.startTime && options.startTime > 0) {
         audioRef.current.currentTime = options.startTime;
       }
@@ -78,7 +87,11 @@ export function useAudio(src: string, options: {
   const play = useCallback(() => {
     if (audioRef.current && isLoaded && isAudioEnabled) {
       userInteractedRef.current = true;
-      if (options.startTime && options.startTime > 0 && audioRef.current.currentTime === 0) {
+      if (
+        options.startTime &&
+        options.startTime > 0 &&
+        audioRef.current.currentTime === 0
+      ) {
         audioRef.current.currentTime = options.startTime;
       }
       audioRef.current.play().catch(() => {
@@ -117,4 +130,4 @@ export function useAudio(src: string, options: {
     setVolume,
     isLoaded,
   };
-} 
+}

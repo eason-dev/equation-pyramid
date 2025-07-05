@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect } from 'react';
-import { useGameStore } from '@/logic/state/gameStore';
-import { useButtonSound } from '@/hooks/useButtonSound';
-import type { AudioControls } from '@/hooks/useAudio';
+import { useEffect } from "react";
+import { useGameStore } from "@/logic/state/gameStore";
+import { useButtonSound } from "@/hooks/useButtonSound";
+import type { AudioControls } from "@/hooks/useAudio";
 
 interface MusicButtonProps {
   audioControls?: AudioControls;
-  trackType?: 'main' | 'game';
+  trackType?: "main" | "game";
 }
 
 export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
@@ -23,14 +23,14 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
 
   const handleToggle = () => {
     playButtonSound();
-    
+
     if (isAudioEnabled) {
       // Audio is currently enabled, so we're turning it off
       toggleAudio(); // This will mute all audio
     } else {
       // Audio is currently disabled, so we're turning it on
       toggleAudio(); // This will unmute all audio
-      
+
       // Also start the specific track if it's not playing
       if (audioControls?.isLoaded && !audioControls.isPlaying) {
         audioControls.play();
@@ -39,8 +39,8 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
   };
 
   const getTrackLabel = () => {
-    if (!trackType) return '';
-    return trackType === 'game' ? 'Game Audio' : 'Menu Audio';
+    if (!trackType) return "";
+    return trackType === "game" ? "Game Audio" : "Menu Audio";
   };
 
   const getTooltip = () => {
@@ -59,11 +59,11 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
       className="w-12 h-12 flex items-center justify-center rounded hover:opacity-80 transition-opacity"
       title={getTooltip()}
     >
-      <img 
-        src={isShowingAsOn ? "/music.svg" : "/music-off.svg"} 
+      <img
+        src={isShowingAsOn ? "/music.svg" : "/music-off.svg"}
         alt={isShowingAsOn ? "Mute audio" : "Unmute audio"}
         className="w-12 h-12"
       />
     </button>
   );
-} 
+}
