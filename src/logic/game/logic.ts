@@ -19,6 +19,7 @@ import {
  */
 function generateConstrainedTiles(): Tile[] {
   const tiles: Tile[] = [];
+  const usedTiles = new Set<string>(); // Track duplicates
   let multiplyCount = 0;
   let divideCount = 0;
   let bigNumberCount = 0;
@@ -40,14 +41,14 @@ function generateConstrainedTiles(): Tile[] {
         // Force small number if we've hit the big number limit
         number = Math.floor(Math.random() * (BIG_NUMBER_THRESHOLD - 1)) + 1; // 1-9
       } else {
-        // Bias towards smaller numbers (70% chance for 1-9, 30% for 10-20)
+        // Bias towards smaller numbers (70% chance for 1-9, 30% for 10-15)
         if (Math.random() < 0.7) {
           number = Math.floor(Math.random() * (BIG_NUMBER_THRESHOLD - 1)) + 1; // 1-9
         } else {
           number =
             Math.floor(
               Math.random() * (MAX_TILE_NUMBER - BIG_NUMBER_THRESHOLD + 1),
-            ) + BIG_NUMBER_THRESHOLD; // 10-20
+            ) + BIG_NUMBER_THRESHOLD; // 10-15
         }
       }
 
@@ -62,12 +63,21 @@ function generateConstrainedTiles(): Tile[] {
       const wouldExceedBigNumber =
         number >= BIG_NUMBER_THRESHOLD &&
         bigNumberCount >= MAX_BIG_NUMBER_TILES;
+      
+      // Check for meaningless tiles
+      const isMeaningless = (operator === "*" && number === 1) || 
+                            (operator === "/" && number === 1);
+      
+      // Check for duplicates
+      const tileKey = `${operator}${number}`;
+      const isDuplicate = usedTiles.has(tileKey);
 
-      if (!wouldExceedMultiply && !wouldExceedDivide && !wouldExceedBigNumber) {
+      if (!wouldExceedMultiply && !wouldExceedDivide && !wouldExceedBigNumber && !isMeaningless && !isDuplicate) {
         // Valid tile, update counters
         if (operator === "*") multiplyCount++;
         if (operator === "/") divideCount++;
         if (number >= BIG_NUMBER_THRESHOLD) bigNumberCount++;
+        usedTiles.add(tileKey);
         break;
       }
 
@@ -75,9 +85,20 @@ function generateConstrainedTiles(): Tile[] {
       if (attempts >= maxAttempts) {
         // Generate a safe tile (+ or - with small number)
         const safeOperator = Math.random() < 0.5 ? "+" : "-";
-        const safeNumber =
-          Math.floor(Math.random() * (BIG_NUMBER_THRESHOLD - 1)) + 1;
-        tile = { operator: safeOperator, number: safeNumber, label };
+        let safeNumber;
+        let safeTileKey;
+        
+        // Try to find a safe number that's not duplicate
+        for (let safeAttempt = 0; safeAttempt < 20; safeAttempt++) {
+          safeNumber = Math.floor(Math.random() * (BIG_NUMBER_THRESHOLD - 1)) + 1;
+          safeTileKey = `${safeOperator}${safeNumber}`;
+          if (!usedTiles.has(safeTileKey)) {
+            break;
+          }
+        }
+        
+        tile = { operator: safeOperator, number: safeNumber!, label };
+        usedTiles.add(safeTileKey!);
         break;
       }
     } while (attempts < maxAttempts);
@@ -203,7 +224,7 @@ function generateValidEquations(tiles: Tile[]): Equation[] {
         const result = calculateEquation(equationTiles);
 
         // Only add valid equations with results in reasonable range
-        if (result !== INVALID_RESULT && result >= 1 && result <= 20) {
+        if (result !== INVALID_RESULT && result >= 1 && result <= 15) {
           equations.push({
             tiles: equationTiles,
             result,
@@ -308,18 +329,32 @@ export function generateGameState(): GameState {
   const validEquations = generateValidEquations(tiles);
 
   if (validEquations.length > 0) {
-    // Pick the first valid equation's result as target
-    const targetEquation = validEquations[0];
-    const targetNumber = targetEquation.result;
-    const targetEquations = validEquations.filter(
-      (eq) => eq.result === targetNumber,
-    );
-
-    return {
-      tiles,
-      targetNumber,
-      validEquations: targetEquations,
-    };
+    // Try to find a target with <= MAX_VALID_EQUATIONS
+    const resultFrequency = new Map<number, Equation[]>();
+    
+    for (const equation of validEquations) {
+      if (!resultFrequency.has(equation.result)) {
+        resultFrequency.set(equation.result, []);
+      }
+      const equations = resultFrequency.get(equation.result);
+      if (equations) {
+        equations.push(equation);
+      }
+    }
+    
+    // Look for a result with valid equation count
+    for (const [result, equations] of resultFrequency.entries()) {
+      if (
+        equations.length >= MIN_VALID_EQUATIONS &&
+        equations.length <= MAX_VALID_EQUATIONS
+      ) {
+        return {
+          tiles,
+          targetNumber: result,
+          validEquations: equations,
+        };
+      }
+    }
   }
 
   // Last resort: return with empty equations (should be very rare)
