@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from 'react';
 import { useGameStore } from '@/logic/state/gameStore';
 import { useButtonSound } from '@/hooks/useButtonSound';
 import type { AudioControls } from '@/hooks/useAudio';
@@ -13,6 +14,12 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
   const { playButtonSound } = useButtonSound();
   const isAudioEnabled = useGameStore((state) => state.isAudioEnabled);
   const toggleAudio = useGameStore((state) => state.toggleAudio);
+  const hydrateAudioState = useGameStore((state) => state.hydrateAudioState);
+
+  // Hydrate audio state from localStorage on mount
+  useEffect(() => {
+    hydrateAudioState();
+  }, [hydrateAudioState]);
 
   const handleToggle = () => {
     playButtonSound();

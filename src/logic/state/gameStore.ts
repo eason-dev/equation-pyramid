@@ -94,12 +94,17 @@ export interface GameStoreState extends GameData {
 
   // Audio actions
   toggleAudio: () => void;
+  hydrateAudioState: () => void;
 }
 
 const initialConfig: GameConfig = {
   numPlayers: INITIAL_PLAYERS,
   numRounds: INITIAL_ROUNDS,
   currentRound: 0,
+};
+
+const getInitialAudioState = (): boolean => {
+  return true; // Default to true for SSR
 };
 
 const initialState: GameData = {
@@ -118,7 +123,7 @@ const initialState: GameData = {
   mainTimerInterval: null,
   guessTimerInterval: null,
   resultDelayInterval: null,
-  isAudioEnabled: true,
+  isAudioEnabled: getInitialAudioState(),
 };
 
 const createInitialPlayers = (numPlayers: number): Player[] => {
@@ -517,7 +522,31 @@ export const useGameStore = create<GameStoreState>()(
     toggleAudio: () => {
       set((state) => {
         state.isAudioEnabled = !state.isAudioEnabled;
+        // Persist to localStorage
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem('isAudioEnabled', JSON.stringify(state.isAudioEnabled));
+          } catch {
+            // Ignore localStorage errors
+          }
+        }
       });
+    },
+
+    hydrateAudioState: () => {
+      if (typeof window !== 'undefined') {
+        try {
+          const stored = localStorage.getItem('isAudioEnabled');
+          if (stored !== null) {
+            const parsedValue = JSON.parse(stored);
+            set((state) => {
+              state.isAudioEnabled = parsedValue;
+            });
+          }
+        } catch {
+          // Ignore localStorage errors
+        }
+      }
     },
   })),
 );
