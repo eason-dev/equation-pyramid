@@ -94,6 +94,7 @@ export function AnswersTile({
                 >
                   {equationText}
                 </Typography>
+                <div className="w-6"></div>
               </div>
             );
           })}
@@ -129,6 +130,7 @@ export function AnswersTile({
                 >
                   {equationText}
                 </Typography>
+                <div className="w-6"></div>
               </div>
             );
           })}
