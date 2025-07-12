@@ -111,9 +111,9 @@ export function useAudio(
     userInteractedRef.current = true;
     if (isPlaying) {
       pause();
-    } else {
-      play();
+      return;
     }
+    play();
   }, [isPlaying, play, pause]);
 
   const setVolume = useCallback((newVolume: number) => {

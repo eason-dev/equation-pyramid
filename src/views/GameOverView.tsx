@@ -75,7 +75,7 @@ export function GameOverView({
   const isSinglePlayer = players.length === 1;
 
   // Determine crown logic for multiplayer
-  const shouldShowCrown = (player: Player, _index: number) => {
+  const shouldShowCrown = (player: Player) => {
     if (isSinglePlayer) {
       return player.score >= 1; // Show crown for single player if score >= 1
     }
@@ -94,9 +94,8 @@ export function GameOverView({
       // If not tied, show crown on the winner if score >= 1
       if (isTied) {
         return highestScore >= 1;
-      } else {
-        return highestScore >= 1; // Single winner gets crown if score >= 1
       }
+      return highestScore >= 1; // Single winner gets crown if score >= 1
     }
 
     return false;
@@ -142,20 +141,20 @@ export function GameOverView({
           <div className="flex flex-col items-center gap-2.5">
             <ScoreCircle
               score={sortedPlayers[0].score}
-              showCrown={shouldShowCrown(sortedPlayers[0], 0)}
+              showCrown={shouldShowCrown(sortedPlayers[0])}
             />
           </div>
         ) : (
           /* Two Player Score Circles */
           <div className="flex items-center gap-14">
-            {sortedPlayers.map((player, index) => (
+            {sortedPlayers.map((player) => (
               <div
                 key={player.id}
                 className="flex flex-col items-center gap-2.5"
               >
                 <ScoreCircle
                   score={player.score}
-                  showCrown={shouldShowCrown(player, index)}
+                  showCrown={shouldShowCrown(player)}
                 />
                 <Typography variant="h2" className="text-white">
                   {player.name}
