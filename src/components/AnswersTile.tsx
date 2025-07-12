@@ -1,6 +1,6 @@
 "use client";
 
-import type { Equation, Tile, Player } from "@/logic/game/types";
+import type { Equation, Player, Tile } from "@/logic/game/types";
 import type { FoundEquation } from "@/logic/state/gameStore";
 import { Block } from "./Block";
 import { Typography } from "./Typography";
@@ -71,27 +71,30 @@ export function AnswersTile({
             const equationKey = createEquationKey(equation);
             const foundEquation = foundEquationMap.get(equationKey);
             const equationText = equation.tiles.map((t) => t.label).join(" ");
-            const playerIndex = foundEquation ? getPlayerIndex(foundEquation.foundBy) : null;
+            const playerIndex = foundEquation
+              ? getPlayerIndex(foundEquation.foundBy)
+              : null;
 
             return (
-              <div key={equationKey} className="flex items-center justify-center gap-2">
+              <div
+                key={equationKey}
+                className="flex items-center justify-center gap-2"
+              >
                 <div className="w-6 flex justify-center">
-                  {foundEquation && (
-                    isSinglePlayer ? (
+                  {foundEquation &&
+                    (isSinglePlayer ? (
                       <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
                         <span className="text-white text-xs font-bold">✓</span>
                       </div>
                     ) : (
                       <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">{playerIndex}</span>
+                        <span className="text-white text-xs font-bold">
+                          {playerIndex}
+                        </span>
                       </div>
-                    )
-                  )}
+                    ))}
                 </div>
-                <Typography
-                  variant="p1"
-                  className="text-center"
-                >
+                <Typography variant="p1" className="text-center">
                   {equationText}
                 </Typography>
                 <div className="w-6"></div>
@@ -116,18 +119,20 @@ export function AnswersTile({
             const playerIndex = getPlayerIndex(foundEquation.foundBy);
 
             return (
-              <div key={foundEquation.key} className="flex items-center justify-center gap-2">
+              <div
+                key={foundEquation.key}
+                className="flex items-center justify-center gap-2"
+              >
                 <div className="w-6 flex justify-center">
                   {!isSinglePlayer && (
                     <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">{playerIndex}</span>
+                      <span className="text-white text-xs font-bold">
+                        {playerIndex}
+                      </span>
                     </div>
                   )}
                 </div>
-                <Typography
-                  variant="p1"
-                  className="text-center"
-                >
+                <Typography variant="p1" className="text-center">
                   {equationText}
                 </Typography>
                 <div className="w-6"></div>

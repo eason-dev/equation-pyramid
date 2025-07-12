@@ -33,7 +33,7 @@ export function DebugPanel({ validEquations, onFinishRound }: DebugPanelProps) {
               onClick={() => setIsOpen(false)}
               className="text-gray-400 hover:text-gray-600"
             >
-              {/* biome-ignore lint/a11y/noSvgWithoutTitle: <explanation> */}
+              {/* biome-ignore lint/a11y/noSvgWithoutTitle: This is a close icon button with aria-label */}
               <svg
                 className="w-4 h-4"
                 fill="currentColor"

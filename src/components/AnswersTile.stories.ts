@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import type { Equation, Tile, Player } from "@/logic/game/types";
+import type { Equation, Player, Tile } from "@/logic/game/types";
 import type { FoundEquation } from "@/logic/state/gameStore";
 import { AnswersTile } from "./AnswersTile";
 

@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect } from "react";
-import { useGameStore } from "@/logic/state/gameStore";
-import { useButtonSound } from "@/hooks/useButtonSound";
 import type { AudioControls } from "@/hooks/useAudio";
+import { useButtonSound } from "@/hooks/useButtonSound";
+import { useGameStore } from "@/logic/state/gameStore";
 
 interface MusicButtonProps {
   audioControls?: AudioControls;
@@ -59,9 +60,11 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
       className="w-12 h-12 flex items-center justify-center rounded hover:opacity-80 transition-opacity"
       title={getTooltip()}
     >
-      <img
+      <Image
         src={isShowingAsOn ? "/music.svg" : "/music-off.svg"}
         alt={isShowingAsOn ? "Mute audio" : "Unmute audio"}
+        width={48}
+        height={48}
         className="w-12 h-12"
       />
     </button>

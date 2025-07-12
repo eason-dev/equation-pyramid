@@ -1,7 +1,7 @@
-import type { GameAppState } from "@/logic/state/gameStore";
-import type { GameState, Tile } from "@/logic/game/types";
-import { GUESS_DURATION } from "@/constants";
 import { fn } from "storybook/test";
+import { GUESS_DURATION } from "@/constants";
+import type { GameState, Tile } from "@/logic/game/types";
+import type { GameAppState } from "@/logic/state/gameStore";
 
 export interface MockGameStoreState {
   currentState: GameAppState;

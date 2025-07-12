@@ -1,9 +1,9 @@
 "use client";
 
-import { PLAYERS_OPTIONS, ROUNDS_OPTIONS } from "@/constants";
-import { Typography } from "@/components/Typography";
-import { RoundButton } from "@/components/RoundButton";
 import { Button } from "@/components/Button";
+import { RoundButton } from "@/components/RoundButton";
+import { Typography } from "@/components/Typography";
+import { PLAYERS_OPTIONS, ROUNDS_OPTIONS } from "@/constants";
 
 interface GameSettingsViewProps {
   numPlayers: number;

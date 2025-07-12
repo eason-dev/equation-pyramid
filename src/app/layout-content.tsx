@@ -1,11 +1,11 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { useAudio } from "@/hooks/useAudio";
-import { usePathname } from "next/navigation";
 import { useGameStore } from "@/logic/state/gameStore";
 
 export default function LayoutContent({

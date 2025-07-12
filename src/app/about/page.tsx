@@ -1,8 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { Typography } from "@/components/Typography";
 import { useButtonSound } from "@/hooks/useButtonSound";
-import Link from "next/link";
 
 export default function AboutPage() {
   const { playButtonSound } = useButtonSound();

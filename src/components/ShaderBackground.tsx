@@ -1,10 +1,10 @@
 "use client";
 
-import * as THREE from "three";
-import { Canvas, useFrame, extend } from "@react-three/fiber";
 import { shaderMaterial } from "@react-three/drei";
+import { Canvas, extend, useFrame } from "@react-three/fiber";
 import { Leva, useControls } from "leva";
 import { useRef } from "react";
+import * as THREE from "three";
 
 // 🔮 Shader Material 定義
 const TrippyMaterial = shaderMaterial(
@@ -51,8 +51,16 @@ const TrippyMaterial = shaderMaterial(
 
 extend({ TrippyMaterial });
 
+// Define the material type for TypeScript
+type TrippyMaterialType = THREE.ShaderMaterial & {
+  u_time: number;
+  u_resolution: THREE.Vector2;
+  u_strength: number;
+  u_color: THREE.Color;
+};
+
 function FullscreenShader({ externalColor }: { externalColor?: string }) {
-  const ref = useRef<any>(null);
+  const ref = useRef<TrippyMaterialType>(null);
   const targetColorRef = useRef(new THREE.Color("#242b3e"));
   const currentColorRef = useRef(new THREE.Color("#242b3e"));
 

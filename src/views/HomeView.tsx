@@ -1,8 +1,8 @@
 "use client";
 
-import { Typography } from "@/components/Typography";
 import { Button } from "@/components/Button";
 import { TileList } from "@/components/TileList";
+import { Typography } from "@/components/Typography";
 import type { Tile } from "@/logic/game/types";
 
 interface HomeViewProps {

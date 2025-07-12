@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Lottie from "lottie-react";
-import logoAnimation from "./logoAnimation.json";
+import { useEffect, useRef } from "react";
 import { useAudio } from "../hooks/useAudio";
+import logoAnimation from "./logoAnimation.json";
 
 interface TransitionOverlayProps {
   onComplete: () => void;

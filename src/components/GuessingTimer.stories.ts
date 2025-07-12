@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-
-import { GuessingTimer } from "./GuessingTimer";
 import { GUESS_DURATION } from "@/constants";
+import { GuessingTimer } from "./GuessingTimer";
 
 const meta = {
   component: GuessingTimer,

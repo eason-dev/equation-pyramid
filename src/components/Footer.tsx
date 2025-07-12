@@ -1,11 +1,11 @@
 "use client";
 
-import { MusicButton } from "./MusicButton";
-import { Typography } from "./Typography";
-import { useButtonSound } from "@/hooks/useButtonSound";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { AudioControls } from "@/hooks/useAudio";
+import { useButtonSound } from "@/hooks/useButtonSound";
+import { MusicButton } from "./MusicButton";
+import { Typography } from "./Typography";
 
 interface FooterProps {
   audioControls?: AudioControls;

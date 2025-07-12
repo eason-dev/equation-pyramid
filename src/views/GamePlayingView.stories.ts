@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { fn } from "storybook/test";
-import type { Player, Tile, GameState } from "@/logic/game/types";
 import { GUESS_DURATION } from "@/constants";
+import type { GameState, Player, Tile } from "@/logic/game/types";
 import { GamePlayingView } from "./GamePlayingView";
 
 const meta = {

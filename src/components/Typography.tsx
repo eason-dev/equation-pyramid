@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, type ElementType } from "react";
+import { forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
 type TypographyVariant = "h1" | "h2" | "label" | "p1" | "p2" | "p3";
@@ -16,7 +16,7 @@ type TypographyTag =
   | "div"
   | "label";
 
-interface TypographyProps {
+interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
   variant: TypographyVariant;
   children?: React.ReactNode;
   className?: string;
@@ -43,11 +43,11 @@ const defaultTags: Record<TypographyVariant, TypographyTag> = {
 
 export const Typography = forwardRef<HTMLElement, TypographyProps>(
   ({ variant, children, className, tag, ...props }, ref) => {
-    const Component = (tag || defaultTags[variant]) as ElementType;
+    const Component = tag || defaultTags[variant];
 
     return (
       <Component
-        ref={ref}
+        ref={ref as React.Ref<HTMLElement>}
         className={cn(variantStyles[variant], className)}
         {...props}
       >

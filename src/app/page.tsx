@@ -1,18 +1,18 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
-import { HomeView } from "@/views/HomeView";
-import { GameSettingsView } from "@/views/GameSettingsView";
-import { GamePlayingView } from "@/views/GamePlayingView";
-import { GameOverView } from "@/views/GameOverView";
-import { Header } from "@/components/Header";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Confetti from "@/components/Confetti";
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import TransitionOverlay from "@/components/TransitionOverlay";
-import Confetti from "@/components/Confetti";
-import { useGameStore, type GameAppState } from "@/logic/state/gameStore";
-import { useAudio } from "@/hooks/useAudio";
 import { useAnswerSounds } from "@/hooks/useAnswerSounds";
+import { useAudio } from "@/hooks/useAudio";
+import { type GameAppState, useGameStore } from "@/logic/state/gameStore";
+import { GameOverView } from "@/views/GameOverView";
+import { GamePlayingView } from "@/views/GamePlayingView";
+import { GameSettingsView } from "@/views/GameSettingsView";
+import { HomeView } from "@/views/HomeView";
 
 export default function AppPage() {
   // Game store state

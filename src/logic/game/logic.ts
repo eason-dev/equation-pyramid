@@ -1,15 +1,15 @@
-import type { Tile, Equation, GameState } from "@/logic/game/types";
 import {
-  OPERATORS,
+  BIG_NUMBER_THRESHOLD,
   INVALID_RESULT,
+  MAX_BIG_NUMBER_TILES,
   MAX_DIVIDE_TILES,
   MAX_MULTIPLY_TILES,
-  MIN_VALID_EQUATIONS,
-  MAX_VALID_EQUATIONS,
   MAX_TILE_NUMBER,
-  MAX_BIG_NUMBER_TILES,
-  BIG_NUMBER_THRESHOLD,
+  MAX_VALID_EQUATIONS,
+  MIN_VALID_EQUATIONS,
+  OPERATORS,
 } from "@/constants";
+import type { Equation, GameState, Tile } from "@/logic/game/types";
 
 /**
  * Generate tiles with human-friendly constraints
@@ -92,8 +92,8 @@ function generateConstrainedTiles(): Tile[] {
       if (attempts >= maxAttempts) {
         // Generate a safe tile (+ or - with small number)
         const safeOperator = Math.random() < 0.5 ? "+" : "-";
-        let safeNumber;
-        let safeTileKey;
+        let safeNumber: number | undefined;
+        let safeTileKey: string | undefined;
 
         // Try to find a safe number that's not duplicate
         for (let safeAttempt = 0; safeAttempt < 20; safeAttempt++) {
@@ -105,8 +105,15 @@ function generateConstrainedTiles(): Tile[] {
           }
         }
 
-        tile = { operator: safeOperator, number: safeNumber!, label };
-        usedTiles.add(safeTileKey!);
+        // At this point, safeNumber and safeTileKey are guaranteed to be defined
+        if (safeNumber === undefined || safeTileKey === undefined) {
+          // Fallback: use a guaranteed unique tile
+          safeNumber = 1;
+          safeTileKey = `${safeOperator}1`;
+        }
+
+        tile = { operator: safeOperator, number: safeNumber, label };
+        usedTiles.add(safeTileKey);
         break;
       }
     } while (attempts < maxAttempts);

@@ -1,8 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useAudio } from "../hooks/useAudio";
 
-type ConfettiProps = {};
-
 export default function Confetti() {
   const animationRef = useRef<number | null>(null);
   const hasStartedRef = useRef(false);

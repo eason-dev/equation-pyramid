@@ -1,18 +1,18 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import type { GameState, Player } from "@/logic/game/types";
-import { generateGameState, calculateEquation } from "@/logic/game/logic";
 import {
-  MAX_PLAYERS,
-  MIN_PLAYERS,
-  MAX_ROUNDS,
-  MIN_ROUNDS,
+  GUESS_DURATION,
   INITIAL_PLAYERS,
   INITIAL_ROUNDS,
+  MAX_PLAYERS,
+  MAX_ROUNDS,
+  MIN_PLAYERS,
+  MIN_ROUNDS,
   ROUND_DURATION,
-  GUESS_DURATION,
   TILES_PER_EQUATION,
 } from "@/constants";
+import { calculateEquation, generateGameState } from "@/logic/game/logic";
+import type { GameState, Player } from "@/logic/game/types";
 
 export type GameAppState =
   | "menu"

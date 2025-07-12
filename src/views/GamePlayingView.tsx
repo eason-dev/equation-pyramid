@@ -1,20 +1,19 @@
 "use client";
 
-import { TileList } from "@/components/TileList";
-import { Timer } from "@/components/Timer";
+import { AnswerButton } from "@/components/AnswerButton";
+import { AnswersTile } from "@/components/AnswersTile";
+import { DebugPanel } from "@/components/DebugPanel";
+import { FloatingButton } from "@/components/FloatingButton";
+import { GuessingState } from "@/components/GuessingState";
 import { RoundStepper } from "@/components/RoundStepper";
 import { TargetTile } from "@/components/TargetTile";
-import { AnswersTile } from "@/components/AnswersTile";
-import { AnswerButton } from "@/components/AnswerButton";
-import { GuessingState } from "@/components/GuessingState";
-import { DebugPanel } from "@/components/DebugPanel";
+import { TileList } from "@/components/TileList";
+import { Timer } from "@/components/Timer";
 import { Typography } from "@/components/Typography";
-import { FloatingButton } from "@/components/FloatingButton";
-
-import { type GameStoreState, useGameStore } from "@/logic/state/gameStore";
-import type { Player, Tile as TileType } from "@/logic/game/types";
 import { GUESS_DURATION } from "@/constants";
 import { mergeWithConfig } from "@/lib/utils";
+import type { Player, Tile as TileType } from "@/logic/game/types";
+import { type GameStoreState, useGameStore } from "@/logic/state/gameStore";
 
 interface GamePlayingViewProps {
   tiles: TileType[];
@@ -118,7 +117,6 @@ export function GamePlayingView({
                 playerName={isSinglePlayer ? undefined : selectedPlayer.name}
                 tiles={tiles}
                 selectedTiles={selectedTiles}
-                targetNumber={gameState.targetNumber}
                 countdownSeconds={guessTimer}
                 countdownTotalSeconds={GUESS_DURATION}
                 state={

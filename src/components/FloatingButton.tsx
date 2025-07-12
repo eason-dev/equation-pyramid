@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { RoundButton } from "./RoundButton";
 
 interface FloatingButtonProps {
@@ -39,14 +39,14 @@ export function FloatingButton({ onClick, children }: FloatingButtonProps) {
     };
 
     // Hide cursor globally when FloatingButton is mounted
-    document.documentElement.classList.add('hide-cursor');
+    document.documentElement.classList.add("hide-cursor");
 
     window.addEventListener("mousemove", handleMouseMove);
     animateButton();
 
     return () => {
       // Restore cursor when FloatingButton is unmounted
-      document.documentElement.classList.remove('hide-cursor');
+      document.documentElement.classList.remove("hide-cursor");
       window.removeEventListener("mousemove", handleMouseMove);
       if (animationRef.current !== undefined) {
         cancelAnimationFrame(animationRef.current);

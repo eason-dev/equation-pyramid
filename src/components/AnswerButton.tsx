@@ -1,9 +1,9 @@
 "use client";
 
 import { type ButtonHTMLAttributes, forwardRef } from "react";
+import { useButtonSound } from "@/hooks/useButtonSound";
 import { cn } from "@/lib/utils";
 import { Typography } from "./Typography";
-import { useButtonSound } from "@/hooks/useButtonSound";
 
 interface AnswerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   playerName: string;
@@ -72,7 +72,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         ref={ref}
         type="button"
         disabled={isDisabled}
-        onClick={(e) => {
+        onClick={(_e) => {
           if (!isDisabled) {
             playButtonSound();
             onClick();

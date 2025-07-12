@@ -1,17 +1,16 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import type { Tile as TileType } from "@/logic/game/types";
+import { Block } from "./Block";
 import { GuessingTimer } from "./GuessingTimer";
 import { Tile } from "./Tile";
-import { Block } from "./Block";
 import { Typography } from "./Typography";
-import type { Tile as TileType } from "@/logic/game/types";
-import { cn } from "@/lib/utils";
 
 interface GuessingStateProps {
   playerName?: string;
   tiles: TileType[];
   selectedTiles: number[];
-  targetNumber: number;
   countdownSeconds: number;
   countdownTotalSeconds: number;
   state: "guessing" | "correct" | "wrong";
@@ -22,7 +21,6 @@ export function GuessingState({
   playerName,
   tiles,
   selectedTiles,
-  targetNumber,
   countdownSeconds,
   countdownTotalSeconds,
   state,
@@ -76,7 +74,6 @@ export function GuessingState({
                     <Tile
                       tile={tile}
                       isSelected={false}
-                      onClick={() => {}}
                       disabled
                       isFirstSelected={isFirstSelected}
                     />

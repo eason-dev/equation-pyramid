@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import type { Player } from "@/logic/game/types";
-import { Typography } from "@/components/Typography";
+import { useEffect, useState } from "react";
+import { AnswersTile } from "@/components/AnswersTile";
 import { Button } from "@/components/Button";
 import { RoundStepper } from "@/components/RoundStepper";
-import { TileList } from "@/components/TileList";
-import { AnswersTile } from "@/components/AnswersTile";
-import { TargetTile } from "@/components/TargetTile";
 import { ScoreCircle } from "@/components/ScoreCircle";
-import { useGameStore, type GameStoreState } from "@/logic/state/gameStore";
+import { TargetTile } from "@/components/TargetTile";
+import { TileList } from "@/components/TileList";
+import { Typography } from "@/components/Typography";
 import { mergeWithConfig } from "@/lib/utils";
+import type { Player } from "@/logic/game/types";
+import { type GameStoreState, useGameStore } from "@/logic/state/gameStore";
 
 interface GameOverViewProps {
   players: Player[];
@@ -75,7 +75,7 @@ export function GameOverView({
   const isSinglePlayer = players.length === 1;
 
   // Determine crown logic for multiplayer
-  const shouldShowCrown = (player: Player, index: number) => {
+  const shouldShowCrown = (player: Player, _index: number) => {
     if (isSinglePlayer) {
       return player.score >= 1; // Show crown for single player if score >= 1
     }

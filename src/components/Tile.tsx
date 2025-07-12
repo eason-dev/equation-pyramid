@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
-import type { Operator, Tile as TileType } from "@/logic/game/types";
+import { useEffect, useRef } from "react";
 import { useButtonSound } from "@/hooks/useButtonSound";
+import type { Operator, Tile as TileType } from "@/logic/game/types";
 
 interface TileProps {
   tile: TileType;

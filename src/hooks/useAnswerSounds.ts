@@ -1,6 +1,6 @@
 import { useCallback } from "react";
-import { useAudio } from "./useAudio";
 import { useGameStore } from "@/logic/state/gameStore";
+import { useAudio } from "./useAudio";
 
 export function useAnswerSounds() {
   const isAudioEnabled = useGameStore((state) => state.isAudioEnabled);

@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-
-import { GuessingState } from "./GuessingState";
 import { GUESS_DURATION } from "@/constants";
+import { GuessingState } from "./GuessingState";
 
 const meta = {
   component: GuessingState,
@@ -40,7 +39,6 @@ export const InitialState: Story = {
     playerName: "Player 1",
     tiles: mockTiles,
     selectedTiles: [],
-    targetNumber: 10,
     countdownSeconds: GUESS_DURATION,
     countdownTotalSeconds: GUESS_DURATION,
     state: "guessing",
@@ -52,7 +50,6 @@ export const SinglePlayerMode: Story = {
     // No playerName provided for single player mode
     tiles: mockTiles,
     selectedTiles: [],
-    targetNumber: 10,
     countdownSeconds: GUESS_DURATION,
     countdownTotalSeconds: GUESS_DURATION,
     state: "guessing",
