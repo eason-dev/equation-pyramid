@@ -71,7 +71,7 @@ export function GamePlayingView({
   const shouldShowCompletion = !!isOver || allEquationsFound;
 
   return (
-    <div className="flex flex-col">
+    <div className="min-h-screen flex flex-col items-center justify-center">
       {/* Timer and Round Stepper Section */}
       <div className="flex flex-col items-center gap-10">
         {config.numRounds > 1 && (

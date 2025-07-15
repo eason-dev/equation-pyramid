@@ -124,26 +124,22 @@ export function GameOverView({
   ]);
 
   return (
-    <div className="flex flex-col items-center justify-center relative z-10">
-      {/* Title */}
-      <Typography variant="h1" className="text-white text-center mb-4">
-        Equation Pyramid
-      </Typography>
-
+    <div className="min-h-screen flex flex-col items-center justify-center relative z-10">
       {/* Score Section */}
       <div className="flex flex-col items-center gap-5 mb-16">
-        <Typography variant="h2" className="text-white text-center">
-          YOUR SCORE IS
-        </Typography>
-
         {isSinglePlayer ? (
           /* Single Player Score Circle */
-          <div className="flex flex-col items-center gap-2.5">
-            <ScoreCircle
-              score={sortedPlayers[0].score}
-              showCrown={shouldShowCrown(sortedPlayers[0])}
-            />
-          </div>
+          <>
+            <Typography variant="h2" className="text-white text-center">
+              YOUR SCORE IS
+            </Typography>
+            <div className="flex flex-col items-center gap-2.5">
+              <ScoreCircle
+                score={sortedPlayers[0].score}
+                showCrown={shouldShowCrown(sortedPlayers[0])}
+              />
+            </div>
+          </>
         ) : (
           /* Two Player Score Circles */
           <div className="flex items-center gap-14">

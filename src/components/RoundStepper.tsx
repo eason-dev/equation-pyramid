@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { Typography } from "./Typography";
 
 interface RoundStepperProps {
   currentRound: number;
@@ -21,22 +20,22 @@ export function RoundStepper({
           <button
             type="button"
             className={cn(
-              "w-8 h-8 rounded-full border border-white/20 transition-colors flex items-center justify-center",
-              "bg-black/60 hover:bg-black/80",
-              round === (selectedRound || currentRound)
-                ? "text-white"
-                : "text-[#969696]",
               onRoundClick && "cursor-pointer",
             )}
             onClick={() => onRoundClick?.(round)}
             disabled={!onRoundClick}
           >
-            <Typography variant="p3" tag="span">
-              R{round}
-            </Typography>
+            <div
+              className={cn(
+                "w-2 h-2 rounded-full transition-colors",
+                round === (selectedRound || currentRound)
+                  ? "bg-white/60"
+                  : "bg-white/20",
+              )}
+            />
           </button>
           {round < totalRounds && (
-            <div className="w-6 h-0 border-t-2 border-white/20" />
+            <div className="w-6 h-0 border-t-1 border-white/20" />
           )}
         </div>
       ))}

@@ -123,11 +123,11 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         {/* Player Name - hidden in single player mode */}
         {!isSinglePlayer && <Typography variant="h2">{playerName}</Typography>}
 
-        {/* Call to Action - only show when not in over state */}
-        {!isOver && <Typography variant="h2">Press Here to Answer!</Typography>}
+        {/* Call to Action - only show when not in over state and in single player mode */}
+        {!isOver && isSinglePlayer && <Typography variant="h2">Press Here to Answer!</Typography>}
 
-        {/* Score text - only show when round is over */}
-        {isOver && <Typography variant="h2">Score</Typography>}
+        {/* Score text - only show when round is over and in single player mode */}
+        {isOver && isSinglePlayer && <Typography variant="h2">Score</Typography>}
 
         {/* Score Badge */}
         <div

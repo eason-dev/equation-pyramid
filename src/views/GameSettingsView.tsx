@@ -19,14 +19,11 @@ export function GameSettingsView({
   onStartGame,
 }: GameSettingsViewProps) {
   return (
-    <div className="flex flex-col items-center gap-20">
+    <div className="min-h-screen flex flex-col items-center justify-center gap-16">
       {/* Header Section */}
       <div className="flex flex-col items-center gap-6">
         <Typography variant="h1" className="text-center">
           Game Setup
-        </Typography>
-        <Typography variant="p1" className="text-center">
-          Choose number of player and round
         </Typography>
       </div>
 
