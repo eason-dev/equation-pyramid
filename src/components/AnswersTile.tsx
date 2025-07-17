@@ -2,7 +2,6 @@
 
 import type { Equation, Player, Tile } from "@/logic/game/types";
 import type { FoundEquation } from "@/logic/state/gameStore";
-import { Block } from "./Block";
 import { Typography } from "./Typography";
 
 interface AnswersTileProps {
@@ -62,11 +61,8 @@ export function AnswersTile({
     });
 
     return (
-      <Block className="text-center">
-        <Typography variant="h2" className="mb-4">
-          Answers
-        </Typography>
-        <div className="space-y-4">
+      <div className="p-4">
+        <div className="space-y-2">
           {sortedEquations.map((equation) => {
             const equationKey = createEquationKey(equation);
             const foundEquation = foundEquationMap.get(equationKey);
@@ -78,40 +74,36 @@ export function AnswersTile({
             return (
               <div
                 key={equationKey}
-                className="flex items-center justify-center gap-2"
+                className="flex items-center gap-3 border border-white/20 rounded-lg px-3 py-2"
               >
-                <div className="w-6 flex justify-center">
-                  {foundEquation &&
-                    (isSinglePlayer ? (
-                      <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">✓</span>
-                      </div>
-                    ) : (
-                      <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">
-                          {playerIndex}
-                        </span>
-                      </div>
-                    ))}
+                <div className="flex items-center justify-center w-6">
+                  {foundEquation ? (
+                    <span className="font-bold text-lg">v</span>
+                  ) : (
+                    <span className="font-bold text-lg">x</span>
+                  )}
                 </div>
-                <Typography variant="p1" className="text-center">
+                <Typography variant="p1" className="flex-1 text-center">
                   {equationText}
                 </Typography>
-                <div className="w-6"></div>
+                {!isSinglePlayer && foundEquation && (
+                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">
+                      {playerIndex}
+                    </span>
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
-      </Block>
+      </div>
     );
   } else {
     // For GamePlayingView: Show only found equations
     return (
-      <Block className="text-center">
-        <Typography variant="h2" className="mb-4">
-          Answers
-        </Typography>
-        <div className="space-y-4">
+      <div className="p-4">
+        <div className="space-y-2">
           {foundEquations.map((foundEquation) => {
             const [i, j, k] = foundEquation.key.split(",").map(Number);
             const equationTiles = [tiles[i], tiles[j], tiles[k]];
@@ -121,26 +113,26 @@ export function AnswersTile({
             return (
               <div
                 key={foundEquation.key}
-                className="flex items-center justify-center gap-2"
+                className="flex items-center gap-3 border border-white/20 rounded-lg px-3 py-2"
               >
-                <div className="w-6 flex justify-center">
-                  {!isSinglePlayer && (
-                    <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">
-                        {playerIndex}
-                      </span>
-                    </div>
-                  )}
+                <div className="flex items-center justify-center w-6">
+                  <span className="text-green-600 font-bold text-lg">v</span>
                 </div>
-                <Typography variant="p1" className="text-center">
+                <Typography variant="p1" className="flex-1 text-center">
                   {equationText}
                 </Typography>
-                <div className="w-6"></div>
+                {!isSinglePlayer && (
+                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+                    <span className="text-white text-xs font-bold">
+                      {playerIndex}
+                    </span>
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
-      </Block>
+      </div>
     );
   }
 }
