@@ -124,7 +124,7 @@ export function GameOverView({
   ]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start pt-20 relative z-10">
+    <div className="h-full flex flex-col items-center justify-start pt-20 relative z-10">
       {/* Score Section */}
       <div className="flex flex-col items-center gap-5 mb-16">
         {isSinglePlayer ? (
