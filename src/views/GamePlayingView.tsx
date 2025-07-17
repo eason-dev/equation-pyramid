@@ -207,14 +207,6 @@ export function GamePlayingView({
           </div>
         )}
 
-        {/* Round Over Text */}
-        {shouldShowCompletion && (
-          <div className="flex justify-center">
-            <Typography variant="h1" className="text-white">
-              Answers Completed
-            </Typography>
-          </div>
-        )}
       </div>
 
       {/* Debug Panel */}
