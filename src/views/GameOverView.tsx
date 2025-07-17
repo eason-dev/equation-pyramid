@@ -204,7 +204,7 @@ export function GameOverView({
       {/* Action Buttons */}
       <div className="flex items-center gap-10">
         <Button variant="primary" onClick={onNewGame}>
-          Start Again
+          Again
         </Button>
         <Button variant="primary" onClick={() => {}}>
           Share

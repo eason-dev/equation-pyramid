@@ -3,14 +3,14 @@
 import { AnswerButton } from "@/components/AnswerButton";
 import { AnswersTile } from "@/components/AnswersTile";
 import { DebugPanel } from "@/components/DebugPanel";
-import { FloatingButton } from "@/components/FloatingButton";
+import { FloatingButtonWithProgress } from "@/components/FloatingButtonWithProgress";
 import { GuessingState } from "@/components/GuessingState";
 import { RoundStepper } from "@/components/RoundStepper";
 import { TargetTile } from "@/components/TargetTile";
 import { TileList } from "@/components/TileList";
 import { Timer } from "@/components/Timer";
 import { Typography } from "@/components/Typography";
-import { GUESS_DURATION } from "@/constants";
+import { GUESS_DURATION, ROUND_DURATION } from "@/constants";
 import { mergeWithConfig } from "@/lib/utils";
 import type { Player, Tile as TileType } from "@/logic/game/types";
 import { type GameStoreState, useGameStore } from "@/logic/state/gameStore";
@@ -69,6 +69,12 @@ export function GamePlayingView({
     ? foundEquations.length >= gameState.validEquations.length
     : false;
   const shouldShowCompletion = !!isOver || allEquationsFound;
+
+  // Calculate progress for the floating button
+  const timeProgress = 1 - (timeRemaining / ROUND_DURATION);
+  const answersProgress = gameState
+    ? foundEquations.length / gameState.validEquations.length
+    : 0;
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -219,11 +225,16 @@ export function GamePlayingView({
         />
       )}
 
-      {/* Floating Next Round Button */}
+      {/* Floating Button - Only visible when round is complete */}
       {shouldShowCompletion && (
-        <FloatingButton onClick={nextRound}>
+        <FloatingButtonWithProgress 
+          onClick={nextRound}
+          progress={1}
+          showCompletionText={true}
+          completionText={allEquationsFound ? "All Answers Completed" : "Time's Up!"}
+        >
           {config.currentRound >= config.numRounds ? "End Game" : "Next Round"}
-        </FloatingButton>
+        </FloatingButtonWithProgress>
       )}
     </div>
   );

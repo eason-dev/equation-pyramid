@@ -27,3 +27,8 @@
   align-items: center;
   justify-content: center;
 }
+
+/* Origin center for rotating elements */
+.origin-center {
+  transform-origin: center center;
+}
