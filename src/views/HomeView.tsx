@@ -46,7 +46,7 @@ export function HomeView({ onStart, onTutorialClick }: HomeViewProps) {
 
       {/* Buttons Section */}
       <div className="flex flex-col items-center gap-8">
-        <Button variant="primary" onClick={onStart}>
+        <Button variant="primary" onClick={onStart} className="w-[200px]">
           Start Game
         </Button>
         <Button variant="secondary" onClick={onTutorialClick}>
