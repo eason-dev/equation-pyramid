@@ -211,7 +211,7 @@ export function GamePlayingView({
         {shouldShowCompletion && (
           <div className="flex justify-center">
             <Typography variant="h1" className="text-white">
-              All Answers Completed
+              Answers Completed
             </Typography>
           </div>
         )}
@@ -231,7 +231,7 @@ export function GamePlayingView({
           onClick={nextRound}
           progress={1}
           showCompletionText={true}
-          completionText={allEquationsFound ? "All Answers Completed" : "Time's Up!"}
+          completionText={allEquationsFound ? "Answers Completed" : "Time's Up!"}
         >
           {config.currentRound >= config.numRounds ? "End Game" : "Next Round"}
         </FloatingButtonWithProgress>

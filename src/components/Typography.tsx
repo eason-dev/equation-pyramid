@@ -123,6 +123,11 @@ export const Typography = forwardRef<HTMLElement, TypographyProps>(
                 fill="currentColor"
                 fontSize={fontSize}
                 className={variantStyles[variant]}
+                style={{ 
+                  letterSpacing: textContent === "Time's Up!" ? "0.55em" : 
+                                textContent === "Answers Completed" ? "0.60em" : 
+                                "0.45em" 
+                }}
               >
                 <textPath href="#curved-text-path" startOffset="0%">
                   {repeatedText}
