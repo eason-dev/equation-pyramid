@@ -76,9 +76,13 @@ export function AnswersTile({
                 key={equationKey}
                 className="flex items-center gap-3 border border-white/20 rounded-lg px-3 py-2"
               >
-                <div className="flex items-center justify-center w-6">
+                <div className="flex items-center justify-center w-8">
                   {foundEquation ? (
-                    <span className="font-bold text-lg">v</span>
+                    isSinglePlayer ? (
+                      <span className="font-bold text-lg">v</span>
+                    ) : (
+                      <span className="font-bold text-lg">P{playerIndex}</span>
+                    )
                   ) : (
                     <span className="font-bold text-lg">x</span>
                   )}
@@ -86,13 +90,6 @@ export function AnswersTile({
                 <Typography variant="p1" className="flex-1 text-center">
                   {equationText}
                 </Typography>
-                {!isSinglePlayer && foundEquation && (
-                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">
-                      {playerIndex}
-                    </span>
-                  </div>
-                )}
               </div>
             );
           })}
@@ -115,19 +112,16 @@ export function AnswersTile({
                 key={foundEquation.key}
                 className="flex items-center gap-3 border border-white/20 rounded-lg px-3 py-2"
               >
-                <div className="flex items-center justify-center w-6">
-                  <span className="text-green-600 font-bold text-lg">v</span>
+                <div className="flex items-center justify-center w-8">
+                  {isSinglePlayer ? (
+                    <span className="font-bold text-lg">v</span>
+                  ) : (
+                    <span className="font-bold text-lg">P{playerIndex}</span>
+                  )}
                 </div>
                 <Typography variant="p1" className="flex-1 text-center">
                   {equationText}
                 </Typography>
-                {!isSinglePlayer && (
-                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">
-                      {playerIndex}
-                    </span>
-                  </div>
-                )}
               </div>
             );
           })}
