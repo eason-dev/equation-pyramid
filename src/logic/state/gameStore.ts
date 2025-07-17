@@ -328,7 +328,7 @@ export const useGameStore = create<GameStoreState>()(
     },
 
     nextRound: () => {
-      const { startMainTimer, stopMainTimer, stopGuessTimer } = get();
+      const { startMainTimer } = get();
       set((state) => {
         // Save current round to history before moving to next round or ending game
         // (Only if not already saved by transitionToRoundOver)
@@ -352,26 +352,29 @@ export const useGameStore = create<GameStoreState>()(
           }
         }
 
+        // First, just change the state to trigger transition
         if (state.config.currentRound >= state.config.numRounds) {
           state.currentState = "gameOver";
         } else {
-          state.config.currentRound += 1;
           state.currentState = "game";
-          state.gameState = generateGameState();
-          state.selectedTiles = [];
-          state.foundEquations = [];
-          state.mainTimer = ROUND_DURATION;
-          state.guessTimer = GUESS_DURATION;
-          state.guessingPlayerId = null;
+          // Don't update anything else yet
         }
       });
 
+      // If transitioning to game, update the round data after a delay
       if (get().currentState === "game") {
-        startMainTimer();
-      } else if (get().currentState === "gameOver") {
-        // Stop all timers when game is over
-        stopMainTimer();
-        stopGuessTimer();
+        setTimeout(() => {
+          set((state) => {
+            state.config.currentRound += 1;
+            state.gameState = generateGameState();
+            state.selectedTiles = [];
+            state.foundEquations = [];
+            state.mainTimer = ROUND_DURATION;
+            state.guessTimer = GUESS_DURATION;
+            state.guessingPlayerId = null;
+          });
+          startMainTimer();
+        }, 600); // Delay to match when transition overlay reaches center
       }
     },
 

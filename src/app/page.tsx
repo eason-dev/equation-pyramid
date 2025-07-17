@@ -277,7 +277,7 @@ export default function AppPage() {
 
   // Separate effect to handle display state updates
   useEffect(() => {
-    if (currentState !== displayState) {
+    if (currentState !== displayState && !showTransition) {
       // Only show transition for specific state changes
       const shouldShowTransition =
         (displayState === "config" && currentState === "game") ||
@@ -293,7 +293,7 @@ export default function AppPage() {
         setDisplayState(currentState);
       }
     }
-  }, [currentState, displayState]);
+  }, [currentState, displayState, showTransition]);
 
   // Get the currently active audio controls for the Footer
   const activeAudioControls =
