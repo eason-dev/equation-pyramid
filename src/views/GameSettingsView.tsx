@@ -19,22 +19,22 @@ export function GameSettingsView({
   onStartGame,
 }: GameSettingsViewProps) {
   return (
-    <div className="h-full flex flex-col items-center justify-start pt-20 gap-16">
+    <div className="h-full flex flex-col items-center justify-start px-4 md:px-6 pt-12 md:pt-16 lg:pt-20 gap-12 md:gap-14 lg:gap-16">
       {/* Header Section */}
-      <div className="flex flex-col items-center gap-6">
-        <Typography variant="h1" className="text-center">
+      <div className="flex flex-col items-center gap-4 md:gap-5 lg:gap-6">
+        <Typography variant="h1" className="text-center text-2xl md:text-3xl lg:text-4xl">
           Game Setup
         </Typography>
       </div>
 
       {/* Button Groups */}
-      <div className="flex flex-col items-center gap-20">
+      <div className="flex flex-col items-center gap-12 md:gap-16 lg:gap-20">
         {/* Number of Players */}
-        <div className="flex flex-col items-center gap-6">
-          <Typography variant="h2" className="text-center">
+        <div className="flex flex-col items-center gap-4 md:gap-5 lg:gap-6">
+          <Typography variant="h2" className="text-center text-xl md:text-2xl lg:text-3xl">
             Number of Player
           </Typography>
-          <div className="flex items-center justify-center gap-[72px]">
+          <div className="flex items-center justify-center gap-8 md:gap-12 lg:gap-[72px]">
             {PLAYERS_OPTIONS.map((option) => (
               <RoundButton
                 key={option}
@@ -48,15 +48,14 @@ export function GameSettingsView({
         </div>
 
         {/* Number of Rounds */}
-        <div className="flex flex-col items-center gap-6">
-          <Typography variant="h2">Number of Round</Typography>
-          <div className="flex items-center justify-center gap-[72px] p-2.5">
+        <div className="flex flex-col items-center gap-4 md:gap-5 lg:gap-6">
+          <Typography variant="h2" className="text-center text-xl md:text-2xl lg:text-3xl">Number of Round</Typography>
+          <div className="flex items-center justify-center gap-8 md:gap-12 lg:gap-[72px] p-2.5">
             {ROUNDS_OPTIONS.map((option) => (
               <RoundButton
                 key={option}
                 onClick={() => onConfigUpdate({ numRounds: option })}
                 isActive={numRounds === option}
-                // style={{ width: "136px", height: "136px" }}
               >
                 {option}
               </RoundButton>
@@ -66,9 +65,11 @@ export function GameSettingsView({
       </div>
 
       {/* Start Button */}
-      <Button onClick={onStartGame} variant="primary">
-        Start
-      </Button>
+      <div className="w-full max-w-xs md:max-w-sm pb-8">
+        <Button onClick={onStartGame} variant="primary">
+          Start
+        </Button>
+      </div>
     </div>
   );
 }

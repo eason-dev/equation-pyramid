@@ -40,14 +40,14 @@ export function GuessingState({
   };
 
   return (
-    <div className="flex flex-col items-center gap-5">
+    <div className="flex flex-col items-center gap-3 md:gap-4 lg:gap-5">
       {/* Main horizontal layout */}
-      <div className="flex items-center gap-10 min-h-[120px]">
+      <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 lg:gap-10 min-h-[80px] md:min-h-[100px] lg:min-h-[120px]">
         {/* Timer - centered when no tiles selected, left when tiles selected */}
         <div
           className={cn(
             "flex items-center justify-center transition-all duration-300",
-            hasSelectedTiles ? "order-1" : "order-2 mx-auto",
+            hasSelectedTiles ? "md:order-1" : "md:order-2 mx-auto",
           )}
         >
           <GuessingTimer
@@ -60,17 +60,16 @@ export function GuessingState({
         {/* Selected Tiles Display - center when tiles are selected */}
         {hasSelectedTiles && (
           <div className="order-2">
-            {/* Fixed width container to allocate space for 3 tiles */}
+            {/* Responsive container for tiles */}
             <div
-              className="flex items-center gap-2.5"
-              style={{ width: "326px", height: "102px" }}
+              className="flex items-center gap-2 md:gap-2.5 w-full md:w-[280px] lg:w-[326px] h-[80px] md:h-[90px] lg:h-[102px] justify-center"
             >
               {/* Render selected tiles, left-aligned */}
               {selectedTiles.map((tileIndex, arrayIndex) => {
                 const tile = tiles[tileIndex];
                 const isFirstSelected = arrayIndex === 0; // First tile in the selected array
                 return (
-                  <div key={tileIndex} className="w-[102px]">
+                  <div key={tileIndex} className="w-[70px] md:w-[85px] lg:w-[102px]">
                     <Tile
                       tile={tile}
                       isSelected={false}
@@ -90,20 +89,21 @@ export function GuessingState({
             {hasThreeTiles ? (
               <Block
                 className={cn(
-                  "w-[120px] h-[120px] flex flex-col items-center justify-center gap-2.5 border-2",
+                  "w-[90px] h-[90px] md:w-[110px] md:h-[110px] lg:w-[120px] lg:h-[120px] flex flex-col items-center justify-center gap-1.5 md:gap-2 lg:gap-2.5 border-2",
                   getResultBorderStyle(),
                 )}
               >
-                <Typography variant="h2">Result</Typography>
-                <div className="relative w-full text-center min-h-[1.5rem] flex items-center justify-center">
+                <Typography variant="h2" className="text-base md:text-lg lg:text-xl">Result</Typography>
+                <div className="relative w-full text-center min-h-[1.2rem] md:min-h-[1.4rem] lg:min-h-[1.5rem] flex items-center justify-center">
                   <Typography
                     variant="p1"
-                    className={
+                    className={cn(
+                      "text-lg md:text-xl lg:text-2xl",
                       calculatedResult === null ||
                       calculatedResult === undefined
                         ? "invisible"
                         : ""
-                    }
+                    )}
                   >
                     =
                     {calculatedResult !== null && calculatedResult !== undefined
@@ -114,7 +114,7 @@ export function GuessingState({
               </Block>
             ) : (
               /* Empty placeholder to maintain layout spacing */
-              <div className="min-w-[120px] min-h-[120px]" />
+              <div className="min-w-[90px] min-h-[90px] md:min-w-[110px] md:min-h-[110px] lg:min-w-[120px] lg:min-h-[120px]" />
             )}
           </div>
         )}
@@ -122,7 +122,7 @@ export function GuessingState({
 
       {/* Player Name - only show if provided */}
       {playerName && (
-        <Typography variant="h2" className="text-white">
+        <Typography variant="h2" className="text-white text-lg md:text-xl lg:text-2xl">
           {playerName}
         </Typography>
       )}

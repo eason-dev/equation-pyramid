@@ -73,15 +73,16 @@ export const RoundButton = forwardRef<HTMLButtonElement, RoundButtonProps>(
         className={cn(
           // Base styles
           "relative inline-flex items-center justify-center",
-          "font-inter font-bold text-2xl leading-[1.21]",
+          // Responsive font sizes
+          "font-inter font-bold text-xl md:text-2xl leading-[1.21]",
           "transition-all duration-200",
+          // Responsive dimensions
+          "w-[100px] h-[100px] md:w-[120px] md:h-[120px] lg:w-[160px] lg:h-[160px]",
+          "rounded-full",
           disabled ? "cursor-not-allowed" : "cursor-pointer",
           className,
         )}
         style={{
-          width: "160px",
-          height: "160px",
-          borderRadius: "80px",
           background: styles.background,
           border: styles.border,
           color: styles.color,

@@ -18,7 +18,7 @@ export function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between p-6">
+    <header className="flex items-center justify-between p-4 md:p-6">
       {/* Logo */}
       <Link href="/" onClick={handleLogoClick} className="cursor-pointer">
         <Image
@@ -26,7 +26,7 @@ export function Header() {
           alt="Logo"
           width={120}
           height={32}
-          className="h-8 w-auto"
+          className="h-6 w-auto md:h-8"
         />
       </Link>
 
@@ -34,7 +34,7 @@ export function Header() {
       <div className="flex-1" />
 
       {/* Right - Empty space */}
-      <div className="w-[60px]" />
+      <div className="w-[40px] md:w-[60px]" />
     </header>
   );
 }

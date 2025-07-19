@@ -1,8 +1,71 @@
 @import "tailwindcss";
 
+/* Responsive breakpoints for reference:
+   - Mobile: < 768px
+   - Tablet: 768px - 1023px
+   - Desktop: >= 1024px
+*/
+
+/* Landscape orientation adjustments for mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+  /* Reduce vertical spacing in landscape */
+  .min-h-screen {
+    min-height: auto;
+  }
+  
+  /* Adjust padding for landscape */
+  .pt-12 {
+    padding-top: 2rem;
+  }
+  
+  .pb-8 {
+    padding-bottom: 2rem;
+  }
+  
+  /* Scale down tiles slightly in landscape */
+  .landscape\:scale-90 {
+    transform: scale(0.9);
+  }
+  
+  /* Adjust gaps for landscape */
+  .gap-8 {
+    gap: 1.5rem;
+  }
+  
+  .gap-6 {
+    gap: 1rem;
+  }
+}
+
 /* Hide cursor globally when floating button is active */
 .hide-cursor * {
   cursor: none !important;
+}
+
+/* Touch-friendly tap highlight */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  button:hover,
+  a:hover {
+    background-color: inherit !important;
+    box-shadow: inherit !important;
+  }
+  
+  /* Add tap highlight for better feedback */
+  button,
+  a,
+  [role="button"] {
+    -webkit-tap-highlight-color: rgba(169, 199, 255, 0.2);
+    touch-action: manipulation;
+  }
+  
+  /* Active state for touch feedback */
+  button:active,
+  a:active,
+  [role="button"]:active {
+    transform: scale(0.95);
+    transition: transform 0.1s ease-out;
+  }
 }
 
 /* Transition Overlay Styles */

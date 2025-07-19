@@ -21,13 +21,15 @@ export function RoundStepper({
             type="button"
             className={cn(
               onRoundClick && "cursor-pointer",
+              // Add touch-friendly tap target size
+              "p-1 md:p-0.5 -m-1 md:-m-0.5",
             )}
             onClick={() => onRoundClick?.(round)}
             disabled={!onRoundClick}
           >
             <div
               className={cn(
-                "w-2 h-2 rounded-full transition-colors",
+                "w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-colors",
                 round === (selectedRound || currentRound)
                   ? "bg-white/60"
                   : "bg-white/20",
@@ -35,7 +37,7 @@ export function RoundStepper({
             />
           </button>
           {round < totalRounds && (
-            <div className="w-6 h-0 border-t-1 border-white/20" />
+            <div className="w-4 md:w-5 lg:w-6 h-0 border-t-1 border-white/20" />
           )}
         </div>
       ))}

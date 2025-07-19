@@ -49,7 +49,7 @@ export function GamePlayingView({
     gameState,
     guessTimer,
     startGuessing,
-    foundEquations,
+    foundEquations = [],
     config,
     transitionToRoundOver,
     nextRound,
@@ -77,9 +77,9 @@ export function GamePlayingView({
     : 0;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
+    <div className="min-h-screen flex flex-col items-center justify-start md:justify-center px-4 md:px-6 py-4 md:py-6 landscape:py-2">
       {/* Timer and Round Stepper Section */}
-      <div className="flex flex-col items-center gap-10">
+      <div className="flex flex-col items-center gap-4 md:gap-6 lg:gap-10 landscape:gap-2">
         {config.numRounds > 1 && (
           <RoundStepper
             currentRound={config.currentRound}
@@ -90,11 +90,40 @@ export function GamePlayingView({
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col items-center gap-14 p-6">
-        {/* Game Content */}
-        <div className="flex items-start gap-10 w-full max-w-[1100px]">
-          {/* Left Column: Answers tile */}
-          <div className="flex-shrink-0 w-[200px]">
+      <div className="flex-1 flex flex-col items-center gap-6 md:gap-10 lg:gap-14 w-full">
+        {/* Mobile: Show compact answer badges at top */}
+        <div className="md:hidden flex items-center gap-2 h-8">
+          {gameState && foundEquations && foundEquations.length > 0 && (
+            <div className="flex items-center gap-2 overflow-x-auto">
+              {foundEquations.map((foundEq, idx) => {
+                // Parse the key to get tile indices
+                const tileIndices = foundEq.key.split(',').map(Number);
+                // Get the actual equation from validEquations
+                const equation = gameState.validEquations.find(eq => {
+                  const eqIndices = eq.tiles.map((eqTile) =>
+                    tiles.findIndex(
+                      (tile) => tile.number === eqTile.number && tile.label === eqTile.label,
+                    ),
+                  );
+                  return eqIndices.join(',') === foundEq.key;
+                });
+                
+                if (!equation) return null;
+                
+                return (
+                  <div key={idx} className="text-xs font-semibold text-white/80 whitespace-nowrap">
+                    {equation.result === gameState.targetNumber ? "✓" : "✗"} {tileIndices.map(i => tiles[i]?.label || "").join("")}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Game Content - 3 column on desktop, stacked on mobile */}
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 lg:gap-10 w-full max-w-[1100px]">
+          {/* Left Column: Answers tile - Hidden on mobile */}
+          <div className="hidden md:block flex-shrink-0 w-[160px] lg:w-[200px]">
             {gameState &&
               (foundEquations.length > 0 || shouldShowCompletion) && (
                 <AnswersTile
@@ -108,7 +137,7 @@ export function GamePlayingView({
           </div>
 
           {/* Center Column: Game content */}
-          <div className="flex-1 flex flex-col items-center gap-8">
+          <div className="flex-1 flex flex-col items-center gap-4 md:gap-6 lg:gap-8 order-2 md:order-1">
             {/* Tile Pyramid */}
             <TileList
               tiles={tiles}
@@ -141,8 +170,8 @@ export function GamePlayingView({
             )}
           </div>
 
-          {/* Right Column: Target tile */}
-          <div className="flex-shrink-0 w-[200px] flex justify-end">
+          {/* Right Column: Target tile - Different position on mobile */}
+          <div className="flex-shrink-0 w-auto md:w-[160px] lg:w-[200px] flex justify-center md:justify-end order-1 md:order-2">
             {gameState && <TargetTile targetNumber={gameState.targetNumber} />}
           </div>
         </div>
@@ -161,7 +190,7 @@ export function GamePlayingView({
               />
             ) : (
               /* Multi-Player Buttons */
-              <div className="flex items-center gap-24">
+              <div className="flex flex-col md:flex-row items-center gap-4 md:gap-12 lg:gap-24">
                 {players.map((player) => (
                   <AnswerButton
                     key={player.id}
@@ -191,7 +220,7 @@ export function GamePlayingView({
               />
             ) : (
               /* Multi-Player Buttons - Disabled */
-              <div className="flex items-center gap-24">
+              <div className="flex flex-col md:flex-row items-center gap-4 md:gap-12 lg:gap-24">
                 {players.map((player) => (
                   <AnswerButton
                     key={player.id}

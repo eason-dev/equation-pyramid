@@ -32,13 +32,13 @@ interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 const variantStyles: Record<TypographyVariant, string> = {
-  h1: "font-inter font-bold text-[32px]",
-  h2: "font-inter font-bold text-[24px]",
-  label: "font-inter font-bold text-[16px]",
-  p1: "font-inter font-normal text-[24px]",
-  p2: "font-inter font-normal text-[20px]",
-  p3: "font-inter font-normal text-[16px]",
-  curved: "font-inter font-semibold text-[16px] uppercase tracking-[3px]",
+  h1: "font-inter font-bold text-2xl md:text-3xl lg:text-[32px]",
+  h2: "font-inter font-bold text-lg md:text-xl lg:text-[24px]",
+  label: "font-inter font-bold text-sm md:text-base lg:text-[16px]",
+  p1: "font-inter font-normal text-lg md:text-xl lg:text-[24px]",
+  p2: "font-inter font-normal text-base md:text-lg lg:text-[20px]",
+  p3: "font-inter font-normal text-sm md:text-base lg:text-[16px]",
+  curved: "font-inter font-semibold text-sm md:text-base lg:text-[16px] uppercase tracking-[3px]",
 };
 
 const defaultTags: Record<TypographyVariant, TypographyTag> = {

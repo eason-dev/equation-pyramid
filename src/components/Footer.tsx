@@ -25,13 +25,13 @@ export function Footer({ audioControls, trackType }: FooterProps) {
 
   return (
     <footer className="relative">
-      <div className="fixed bottom-6 right-6 z-50">
-        <div className="flex items-center gap-4">
+      <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50">
+        <div className="flex items-center gap-3 md:gap-4">
           {showAboutButton && (
             <Link href="/about" onClick={handleAboutClick}>
               <Typography
                 variant="p2"
-                className="text-white font-bold cursor-pointer hover:text-gray-300 transition-colors"
+                className="text-white font-bold cursor-pointer hover:text-gray-300 transition-colors text-sm md:text-base"
               >
                 About
               </Typography>

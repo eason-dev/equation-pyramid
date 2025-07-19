@@ -23,15 +23,12 @@ export function TileList({
   ];
 
   return (
-    <div className="flex flex-col items-center gap-4 py-8">
+    <div className="flex flex-col items-center gap-2 md:gap-3 lg:gap-4 py-4 md:py-6 lg:py-8">
       {pyramidRows.map((rowTiles, rowIndex) => (
         <div
           // biome-ignore lint/suspicious/noArrayIndexKey: pyramid structure is static
           key={`row-${rowIndex}`}
-          className="flex justify-center items-center"
-          style={{
-            gap: "2.5rem", // Space between tiles in a row
-          }}
+          className="flex justify-center items-center gap-3 md:gap-6 lg:gap-10"
         >
           {rowTiles.map((tile, tileIndex) => {
             // Calculate the original index in the tiles array

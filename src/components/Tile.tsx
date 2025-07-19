@@ -124,13 +124,13 @@ export function Tile({
       }}
       disabled={disabled}
       className={`
-        w-[72px] h-[72px]
+        w-[48px] h-[48px] md:w-[56px] md:h-[56px] lg:w-[72px] lg:h-[72px]
         rotate-45
-        rounded-lg
+        rounded-[8px] md:rounded-[10px] lg:rounded-[12px]
         transition-all duration-200
         flex flex-col items-center justify-center
-        gap-2.5
-        px-[15px] py-[7px]
+        gap-1.5 md:gap-2 lg:gap-2.5
+        px-[10px] py-[5px] md:px-[12px] md:py-[6px] lg:px-[15px] lg:py-[7px]
         font-inter
         relative
         overflow-hidden
@@ -162,15 +162,15 @@ export function Tile({
         className="absolute inset-0 pointer-events-none"
       />
 
-      <div className="-rotate-45 flex flex-col items-center justify-center gap-1.5 w-full max-w-[50px]">
+      <div className="-rotate-45 flex flex-col items-center justify-center gap-1 md:gap-1.5 w-full max-w-[35px] md:max-w-[40px] lg:max-w-[50px]">
         <div
-          className="text-[16px] font-normal leading-tight text-center w-full"
+          className="text-[12px] md:text-[14px] lg:text-[16px] font-normal leading-tight text-center w-full"
           style={{ color: "rgba(198, 197, 215, 0.8)" }}
         >
           {tile.label}
         </div>
         <div
-          className="text-[22px] font-bold leading-tight text-center text-white relative w-full overflow-hidden"
+          className="text-[16px] md:text-[18px] lg:text-[22px] font-bold leading-tight text-center text-white relative w-full overflow-hidden"
           style={{
             whiteSpace: "nowrap",
           }}

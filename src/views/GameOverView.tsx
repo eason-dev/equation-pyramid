@@ -29,7 +29,10 @@ export function GameOverView({
   // Use clean merge utility to handle nested objects properly
   const mergedStore = mergeWithConfig(hookStore, storeOverrides);
 
-  const { config, gameState, foundEquations, roundHistory } = mergedStore;
+  const { config, gameState, foundEquations = [], roundHistory = [] } = mergedStore;
+
+  // Mobile pagination state
+  const [mobileView, setMobileView] = useState<"score" | "answers">("score");
 
   // State to track which round is currently being viewed
   // Always start with the most recent round that actually exists in history
@@ -124,91 +127,227 @@ export function GameOverView({
   ]);
 
   return (
-    <div className="h-full flex flex-col items-center justify-start pt-20 relative z-10">
-      {/* Score Section */}
-      <div className="flex flex-col items-center gap-5 mb-16">
-        {isSinglePlayer ? (
-          /* Single Player Score Circle */
-          <>
-            <Typography variant="h2" className="text-white text-center">
-              YOUR SCORE IS
-            </Typography>
-            <div className="flex flex-col items-center gap-2.5">
-              <ScoreCircle
-                score={sortedPlayers[0].score}
-                showCrown={shouldShowCrown(sortedPlayers[0])}
-              />
+    <div className="h-full flex flex-col items-center justify-start px-4 md:px-6 pt-12 md:pt-16 lg:pt-20 relative z-10">
+      {/* Mobile Pagination Dots */}
+      <div className="md:hidden flex items-center gap-2 mb-8">
+        <button
+          type="button"
+          onClick={() => setMobileView("score")}
+          className={`w-2 h-2 rounded-full transition-colors ${
+            mobileView === "score" ? "bg-white" : "bg-white/30"
+          }`}
+          aria-label="View scores"
+        />
+        <button
+          type="button"
+          onClick={() => setMobileView("answers")}
+          className={`w-2 h-2 rounded-full transition-colors ${
+            mobileView === "answers" ? "bg-white" : "bg-white/30"
+          }`}
+          aria-label="View answers"
+        />
+      </div>
+
+      {/* Mobile View - Score or Answers */}
+      <div className="md:hidden w-full">
+        {mobileView === "score" ? (
+          /* Mobile Score View */
+          <div className="flex flex-col items-center gap-8">
+            {/* Score Section */}
+            <div className="flex flex-col items-center gap-5">
+              {isSinglePlayer ? (
+                /* Single Player Score Circle */
+                <>
+                  <Typography variant="h2" className="text-white text-center text-xl">
+                    YOUR SCORE IS
+                  </Typography>
+                  <div className="flex flex-col items-center gap-2.5">
+                    <ScoreCircle
+                      score={sortedPlayers[0].score}
+                      showCrown={shouldShowCrown(sortedPlayers[0])}
+                    />
+                  </div>
+                </>
+              ) : (
+                /* Two Player Score Circles */
+                <div className="flex items-center gap-14">
+                  {sortedPlayers.map((player) => (
+                    <div
+                      key={player.id}
+                      className="flex flex-col items-center gap-2.5"
+                    >
+                      <ScoreCircle
+                        score={player.score}
+                        showCrown={shouldShowCrown(player)}
+                      />
+                      <Typography variant="h2" className="text-white text-lg">
+                        {player.name}
+                      </Typography>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-          </>
+            
+            {/* See Answers Button - Mobile Only */}
+            <Button
+              variant="primary"
+              onClick={() => setMobileView("answers")}
+              className="w-full max-w-xs"
+            >
+              See Answers
+            </Button>
+
+            {/* Action Buttons - Mobile */}
+            <div className="flex gap-4 w-full max-w-xs">
+              <Button variant="primary" onClick={onNewGame} className="flex-1">
+                Again
+              </Button>
+              <Button variant="primary" onClick={() => {}} className="flex-1">
+                Share
+              </Button>
+            </div>
+          </div>
         ) : (
-          /* Two Player Score Circles */
-          <div className="flex items-center gap-14">
-            {sortedPlayers.map((player) => (
-              <div
-                key={player.id}
-                className="flex flex-col items-center gap-2.5"
-              >
-                <ScoreCircle
-                  score={player.score}
-                  showCrown={shouldShowCrown(player)}
-                />
-                <Typography variant="h2" className="text-white">
-                  {player.name}
-                </Typography>
-              </div>
-            ))}
+          /* Mobile Answers View */
+          <div className="flex flex-col items-center gap-6">
+            {displayGameState && (
+              <>
+                {/* Round Stepper */}
+                {config.numRounds > 1 && (
+                  <RoundStepper
+                    currentRound={config.currentRound}
+                    totalRounds={config.numRounds}
+                    selectedRound={selectedRound}
+                    onRoundClick={setSelectedRound}
+                  />
+                )}
+
+                {/* Target and Pyramid */}
+                <div className="flex flex-col items-center gap-4">
+                  <TargetTile targetNumber={displayGameState.targetNumber} />
+                  <div className="scale-75">
+                    <TileList
+                      tiles={displayGameState.tiles}
+                      selectedTiles={[]}
+                      onTileClick={() => {}}
+                      isGuessing={false}
+                    />
+                  </div>
+                </div>
+
+                {/* Answers List */}
+                <div className="w-full max-w-sm">
+                  <AnswersTile
+                    foundEquations={displayFoundEquations}
+                    validEquations={displayGameState.validEquations}
+                    tiles={displayGameState.tiles}
+                    players={players}
+                    showAllAnswers={true}
+                  />
+                </div>
+
+                {/* Back to Score Button */}
+                <Button
+                  variant="primary"
+                  onClick={() => setMobileView("score")}
+                  className="w-full max-w-xs"
+                >
+                  Back to Score
+                </Button>
+              </>
+            )}
           </div>
         )}
       </div>
 
-      {/* Game Summary Section */}
-      {displayGameState && (
-        <div className="flex flex-col items-center gap-3 mb-16">
-          {/* Round Stepper - show rounds based on total rounds from store */}
-          {config.numRounds > 1 && (
-            <RoundStepper
-              currentRound={config.currentRound}
-              totalRounds={config.numRounds}
-              selectedRound={selectedRound}
-              onRoundClick={setSelectedRound}
-            />
-          )}
-
-          {/* Game Content */}
-          <div className="flex items-start gap-6 h-[360px]">
-            {/* Answers - show content from selected round */}
-            <AnswersTile
-              foundEquations={displayFoundEquations}
-              validEquations={displayGameState.validEquations}
-              tiles={displayGameState.tiles}
-              players={players}
-              showAllAnswers={true}
-            />
-
-            {/* Pyramid - show tiles from selected round */}
-            <div className="scale-75 origin-center">
-              <TileList
-                tiles={displayGameState.tiles}
-                selectedTiles={[]}
-                onTileClick={() => {}}
-                isGuessing={false}
-              />
+      {/* Desktop/Tablet View - Original Layout */}
+      <div className="hidden md:flex md:flex-col md:items-center">
+        {/* Score Section */}
+        <div className="flex flex-col items-center gap-5 mb-8 md:mb-12 lg:mb-16">
+          {isSinglePlayer ? (
+            /* Single Player Score Circle */
+            <>
+              <Typography variant="h2" className="text-white text-center">
+                YOUR SCORE IS
+              </Typography>
+              <div className="flex flex-col items-center gap-2.5">
+                <ScoreCircle
+                  score={sortedPlayers[0].score}
+                  showCrown={shouldShowCrown(sortedPlayers[0])}
+                />
+              </div>
+            </>
+          ) : (
+            /* Two Player Score Circles */
+            <div className="flex items-center gap-14">
+              {sortedPlayers.map((player) => (
+                <div
+                  key={player.id}
+                  className="flex flex-col items-center gap-2.5"
+                >
+                  <ScoreCircle
+                    score={player.score}
+                    showCrown={shouldShowCrown(player)}
+                  />
+                  <Typography variant="h2" className="text-white">
+                    {player.name}
+                  </Typography>
+                </div>
+              ))}
             </div>
-
-            {/* Target - show target number from selected round */}
-            <TargetTile targetNumber={displayGameState.targetNumber} />
-          </div>
+          )}
         </div>
-      )}
 
-      {/* Action Buttons */}
-      <div className="flex items-center gap-10">
-        <Button variant="primary" onClick={onNewGame}>
-          Again
-        </Button>
-        <Button variant="primary" onClick={() => {}}>
-          Share
-        </Button>
+        {/* Game Summary Section */}
+        {displayGameState && (
+          <div className="flex flex-col items-center gap-3 mb-8 md:mb-12 lg:mb-16">
+            {/* Round Stepper - show rounds based on total rounds from store */}
+            {config.numRounds > 1 && (
+              <RoundStepper
+                currentRound={config.currentRound}
+                totalRounds={config.numRounds}
+                selectedRound={selectedRound}
+                onRoundClick={setSelectedRound}
+              />
+            )}
+
+            {/* Game Content */}
+            <div className="flex items-start gap-4 md:gap-5 lg:gap-6 h-[300px] md:h-[330px] lg:h-[360px]">
+              {/* Answers - show content from selected round */}
+              <AnswersTile
+                foundEquations={displayFoundEquations}
+                validEquations={displayGameState.validEquations}
+                tiles={displayGameState.tiles}
+                players={players}
+                showAllAnswers={true}
+              />
+
+              {/* Pyramid - show tiles from selected round */}
+              <div className="scale-[0.65] md:scale-[0.7] lg:scale-75 origin-center">
+                <TileList
+                  tiles={displayGameState.tiles}
+                  selectedTiles={[]}
+                  onTileClick={() => {}}
+                  isGuessing={false}
+                />
+              </div>
+
+              {/* Target - show target number from selected round */}
+              <TargetTile targetNumber={displayGameState.targetNumber} />
+            </div>
+          </div>
+        )}
+
+        {/* Action Buttons - Desktop/Tablet */}
+        <div className="flex items-center gap-6 md:gap-8 lg:gap-10">
+          <Button variant="primary" onClick={onNewGame}>
+            Again
+          </Button>
+          <Button variant="primary" onClick={() => {}}>
+            Share
+          </Button>
+        </div>
       </div>
     </div>
   );

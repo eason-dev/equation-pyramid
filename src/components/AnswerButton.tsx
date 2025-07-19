@@ -82,8 +82,10 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
           // Base styles
           "flex flex-col items-center justify-center",
           "rounded-xl transition-all duration-200",
-          "gap-4 p-5",
-          "min-w-[200px] min-h-[200px]",
+          "gap-3 p-4 md:gap-3.5 md:p-4.5 lg:gap-4 lg:p-5",
+          // Responsive sizing
+          "min-w-full md:min-w-[180px] lg:min-w-[200px]",
+          "min-h-[140px] md:min-h-[170px] lg:min-h-[200px]",
           isDisabled ? "cursor-not-allowed" : "cursor-pointer",
           className,
         )}
@@ -121,26 +123,24 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         {...props}
       >
         {/* Player Name - hidden in single player mode */}
-        {!isSinglePlayer && <Typography variant="h2">{playerName}</Typography>}
+        {!isSinglePlayer && <Typography variant="h2" className="text-lg md:text-xl lg:text-2xl">{playerName}</Typography>}
 
         {/* Call to Action - only show when not in over state and in single player mode */}
-        {!isOver && isSinglePlayer && <Typography variant="h2">Press Here to Answer!</Typography>}
+        {!isOver && isSinglePlayer && <Typography variant="h2" className="text-base md:text-lg lg:text-xl text-center">Press Here to Answer!</Typography>}
 
         {/* Score text - only show when round is over and in single player mode */}
-        {isOver && isSinglePlayer && <Typography variant="h2">Score</Typography>}
+        {isOver && isSinglePlayer && <Typography variant="h2" className="text-lg md:text-xl lg:text-2xl">Score</Typography>}
 
         {/* Score Badge */}
         <div
-          className="flex items-center justify-center rounded-full"
+          className="flex items-center justify-center rounded-full w-[60px] h-[60px] md:w-[70px] md:h-[70px] lg:w-[80px] lg:h-[80px]"
           style={{
-            width: "80px",
-            height: "80px",
             background: "rgba(71, 71, 71, 0.15)",
             border: "1px solid rgba(169, 199, 255, 0.75)",
             boxShadow: "4px 4px 20px 0px rgba(99, 99, 99, 0.25)",
           }}
         >
-          <Typography variant="h2">{score}</Typography>
+          <Typography variant="h2" className="text-xl md:text-2xl lg:text-3xl">{score}</Typography>
         </div>
       </button>
     );

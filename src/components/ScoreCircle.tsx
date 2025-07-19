@@ -12,11 +12,10 @@ export function ScoreCircle({ score, showCrown = false }: ScoreCircleProps) {
     <div className="relative">
       {/* Crown for winner */}
       {showCrown && (
-        <div className="absolute -top-7 right-0 w-16 h-16 z-10">
+        <div className="absolute -top-5 md:-top-6 lg:-top-7 right-0 w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 z-10">
           {/* Crown SVG - using Crown.svg with -35 degree tilt */}
           <svg
-            width="64"
-            height="64"
+            className="w-full h-full"
             viewBox="0 0 57 57"
             fill="none"
             style={{ transform: "rotate(30deg)" }}
@@ -32,16 +31,14 @@ export function ScoreCircle({ score, showCrown = false }: ScoreCircleProps) {
       )}
 
       <div
-        className="flex items-center justify-center rounded-full border"
+        className="flex items-center justify-center rounded-full border w-[100px] h-[100px] md:w-[120px] md:h-[120px] lg:w-[140px] lg:h-[140px]"
         style={{
-          width: "140px",
-          height: "140px",
           background: "rgba(11, 11, 11, 0.8)",
           border: "1px solid rgba(169, 199, 255, 0.75)",
           boxShadow: "4px 4px 20px 0px rgba(163, 163, 163, 0.15)",
         }}
       >
-        <Typography variant="h1" className="text-white">
+        <Typography variant="h1" className="text-white text-4xl md:text-5xl lg:text-6xl">
           {score}
         </Typography>
       </div>

@@ -12,7 +12,7 @@ export const Block = forwardRef<HTMLDivElement, BlockProps>(
       <div
         ref={ref}
         className={cn(
-          "rounded-xl p-5 backdrop-blur-[24px] border border-white/20 bg-[#0B0B0B]/60",
+          "rounded-lg md:rounded-xl p-3 md:p-4 lg:p-5 backdrop-blur-[24px] border border-white/20 bg-[#0B0B0B]/60",
           className,
         )}
         {...props}

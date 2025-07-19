@@ -101,10 +101,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           // Base styles
           "relative inline-flex items-center justify-center",
-          "font-inter font-bold text-2xl leading-[1.21]",
-          "rounded-lg transition-all duration-200",
-          "w-[160px] h-[64px]",
-          "px-6 py-3",
+          // Responsive font sizes
+          "font-inter font-bold text-lg md:text-xl lg:text-2xl leading-[1.21]",
+          // Responsive border radius
+          "rounded-[8px] md:rounded-[10px] transition-all duration-200",
+          // Responsive dimensions
+          "w-[128px] md:w-[160px] lg:w-[200px]",
+          "h-[48px] md:h-[56px] lg:h-[64px]",
+          // Responsive padding
+          "px-4 py-2 md:px-5 md:py-2.5 lg:px-6 lg:py-3",
           disabled ? "cursor-not-allowed" : "cursor-pointer",
           className,
         )}
