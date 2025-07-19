@@ -87,6 +87,8 @@ export const RoundButton = forwardRef<HTMLButtonElement, RoundButtonProps>(
           border: styles.border,
           color: styles.color,
           boxShadow: styles.boxShadow,
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
         }}
         onMouseEnter={(e) => {
           if (!disabled) {

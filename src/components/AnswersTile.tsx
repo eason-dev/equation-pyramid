@@ -75,6 +75,11 @@ export function AnswersTile({
               <div
                 key={equationKey}
                 className="flex items-center gap-3 border border-white/20 rounded-lg px-3 py-2"
+                style={{
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  background: "rgba(11, 11, 11, 0.6)",
+                }}
               >
                 <div className="flex items-center justify-center w-8">
                   {foundEquation ? (
@@ -111,6 +116,11 @@ export function AnswersTile({
               <div
                 key={foundEquation.key}
                 className="flex items-center gap-3 sm:gap-1 md:gap-3 border border-white/20 rounded-lg px-3 sm:px-1 md:px-3 py-2 sm:py-0.5 sm:h-8 md:py-2 md:h-auto"
+                style={{
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  background: "rgba(11, 11, 11, 0.6)",
+                }}
               >
                 <div className="flex items-center justify-center w-8 sm:w-6 md:w-8">
                   {isSinglePlayer ? (

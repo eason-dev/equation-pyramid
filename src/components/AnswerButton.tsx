@@ -93,6 +93,8 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
           background: styles.background,
           border: styles.border,
           color: styles.color,
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
         }}
         onMouseEnter={(e) => {
           if (!isDisabled) {
@@ -138,6 +140,8 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
             background: "rgba(71, 71, 71, 0.15)",
             border: "1px solid rgba(169, 199, 255, 0.75)",
             boxShadow: "4px 4px 20px 0px rgba(99, 99, 99, 0.25)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
           }}
         >
           <Typography variant="h2" className="text-xl md:text-2xl lg:text-3xl">{score}</Typography>

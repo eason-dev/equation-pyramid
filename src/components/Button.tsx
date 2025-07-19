@@ -117,6 +117,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           background: styles.background,
           border: styles.border,
           color: styles.color,
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
         }}
         onMouseEnter={(e) => {
           if (!disabled) {

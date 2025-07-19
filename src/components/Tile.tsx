@@ -140,6 +140,8 @@ export function Tile({
         background: styles.background,
         border: styles.border,
         boxShadow: styles.shadow,
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
       }}
       onMouseEnter={(e) => {
         if (!disabled) {

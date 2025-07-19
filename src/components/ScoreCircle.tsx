@@ -36,6 +36,8 @@ export function ScoreCircle({ score, showCrown = false }: ScoreCircleProps) {
           background: "rgba(11, 11, 11, 0.8)",
           border: "1px solid rgba(169, 199, 255, 0.75)",
           boxShadow: "4px 4px 20px 0px rgba(163, 163, 163, 0.15)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
         }}
       >
         <Typography variant="h1" className="text-white text-4xl md:text-5xl lg:text-6xl">
