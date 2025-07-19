@@ -110,7 +110,7 @@ export function AnswersTile({
             return (
               <div
                 key={foundEquation.key}
-                className="flex items-center gap-3 sm:gap-1 md:gap-3 border border-white/20 rounded-lg px-3 sm:px-1 md:px-3 py-2 sm:py-0.5 sm:h-[2.5rem] md:py-2 md:h-auto"
+                className="flex items-center gap-3 sm:gap-1 md:gap-3 border border-white/20 rounded-lg px-3 sm:px-1 md:px-3 py-2 sm:py-0.5 sm:h-8 md:py-2 md:h-auto"
               >
                 <div className="flex items-center justify-center w-8 sm:w-6 md:w-8">
                   {isSinglePlayer ? (
@@ -119,7 +119,7 @@ export function AnswersTile({
                     <span className="font-bold text-lg sm:text-sm md:text-lg">P{playerIndex}</span>
                   )}
                 </div>
-                <Typography variant="p1" className="flex-1 text-center sm:text-xs md:text-base">
+                <Typography variant="p1" className="flex-1 text-center">
                   {equationText}
                 </Typography>
               </div>
