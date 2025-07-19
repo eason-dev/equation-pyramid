@@ -63,6 +63,7 @@ function FullscreenShader({ externalColor }: { externalColor?: string }) {
   const ref = useRef<TrippyMaterialType>(null);
   const targetColorRef = useRef(new THREE.Color("#242b3e"));
   const currentColorRef = useRef(new THREE.Color("#242b3e"));
+  const timeOffsetRef = useRef(Math.random() * 100);
 
   const { strength, color } = useControls({
     strength: { value: 0.6, min: 0.1, max: 2.0, step: 0.1 },
@@ -71,7 +72,7 @@ function FullscreenShader({ externalColor }: { externalColor?: string }) {
 
   useFrame(({ clock, size }) => {
     if (ref.current) {
-      ref.current.u_time = clock.getElapsedTime() * 0.1;
+      ref.current.u_time = (clock.getElapsedTime() + timeOffsetRef.current) * 0.1;
       ref.current.u_resolution = new THREE.Vector2(size.width, size.height);
       ref.current.u_strength = strength;
 
