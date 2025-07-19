@@ -24,8 +24,8 @@ export function Footer({ audioControls, trackType }: FooterProps) {
   const showAboutButton = pathname === "/";
 
   return (
-    <footer className="relative">
-      <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50">
+    <footer className="relative md:fixed md:bottom-0 md:right-0">
+      <div className="flex justify-end p-4 md:fixed md:bottom-6 md:right-6 md:p-0 z-50">
         <div className="flex items-center gap-3 md:gap-4">
           {showAboutButton && (
             <Link href="/about" onClick={handleAboutClick}>

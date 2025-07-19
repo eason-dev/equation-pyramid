@@ -114,10 +114,10 @@ export function GamePlayingView({
                 return (
                   <div 
                     key={idx} 
-                    className="flex items-center justify-center min-w-[98px] h-10 border border-white/20 rounded-lg bg-black/20 px-3"
+                    className="flex items-center justify-center w-[60px] h-[24px] sm:min-w-[98px] sm:h-10 border border-white/20 rounded-lg bg-black/20 px-1 sm:px-3"
                   >
-                    <span className="text-sm font-semibold text-white/90 whitespace-nowrap">
-                      ✓ {equationText}
+                    <span className="text-[10px] sm:text-sm font-semibold text-white/90 whitespace-nowrap">
+                      v {equationText}
                     </span>
                   </div>
                 );
@@ -154,7 +154,7 @@ export function GamePlayingView({
               />
               
               {/* Target tile positioned at right top corner of TileList on mobile/tablet */}
-              <div className="md:hidden absolute -top-2 -right-20 sm:-right-24">
+              <div className="md:hidden absolute top-0 right-0 sm:-top-2 sm:-right-24">
                 {gameState && <TargetTile targetNumber={gameState.targetNumber} />}
               </div>
             </div>
