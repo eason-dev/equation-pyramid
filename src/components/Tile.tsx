@@ -124,7 +124,7 @@ export function Tile({
       }}
       disabled={disabled}
       className={`
-        w-[48px] h-[48px] md:w-[56px] md:h-[56px] lg:w-[72px] lg:h-[72px]
+        w-[56px] h-[56px] md:w-[64px] md:h-[64px] lg:w-[72px] lg:h-[72px]
         rotate-45
         rounded-[8px] md:rounded-[10px] lg:rounded-[12px]
         transition-all duration-200
