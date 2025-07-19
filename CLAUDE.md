@@ -9,6 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm build` - Build production bundle
 - `pnpm start` - Start production server
 - `pnpm storybook` - Run Storybook for component development
+- `pnpm build-storybook` - Build static Storybook for deployment
 
 ### Code Quality
 - `pnpm lint` - Run Biome linter checks
@@ -30,33 +31,36 @@ Menu → Config → Game → Guessing → ShowingResult → RoundOver → GameOv
 
 ### Core Systems
 
-**State Management**: Zustand store at `src/logic/state/game-state.tsx` with Immer middleware for immutable updates. Game state includes:
+**State Management**: Zustand store at `src/logic/state/gameStore.ts` with Immer middleware for immutable updates. Game state includes:
 - Player configurations and scores
 - Current game phase and round
 - Selected tiles and equation validation
 - Sound settings
 
 **Game Logic**: Located in `src/logic/game/` with:
-- `equation-builder.ts` - Core equation validation and scoring
-- `tile-generator.ts` - Generates number and operator tiles
-- `game-types.ts` - TypeScript types for game entities
+- `logic.ts` - Core equation validation, scoring, and game logic
+- `types.ts` - TypeScript types for game entities
 
 **Audio System**: Custom hooks in `src/hooks/` manage different audio tracks:
-- `useAudioManager` - Coordinates all game audio
-- Separate hooks for menu, game, and result music
+- `useAudio.ts` - Core audio playback hook
+- `useAnswerSounds.ts` - Manages correct/incorrect answer sounds
+- `useButtonSound.ts` - Handles button click sounds
 - Fade transitions between tracks
 
 **Visual Components**: 
 - Views in `src/views/` correspond to game states
 - Components in `src/components/` with Storybook stories
-- WebGL background shader effects
-- GSAP animations for transitions
+- WebGL background shader effects via `ShaderBackground`
+- GSAP animations for transitions with `TransitionOverlay`
+- Celebration effects with `Confetti` component
+- About page at `/about` with game information
 
 ### Testing Strategy
 - Component tests use React Testing Library
 - Game logic has unit tests
 - Storybook for visual testing
-- Mock Zustand store for isolated testing
+- Mock Zustand store for isolated testing (see `docs/STORYBOOK_ZUSTAND_MOCKING.md`)
+- TypeScript excludes story files from compilation
 
 ## Key Patterns
 
