@@ -34,8 +34,7 @@ export function FloatingButtonWithProgress({
     // Check if device supports touch
     const checkTouchDevice = () => {
       return ('ontouchstart' in window) || 
-             (navigator.maxTouchPoints > 0) ||
-             (window.matchMedia("(max-width: 768px)").matches);
+             (navigator.maxTouchPoints > 0);
     };
     
     setIsTouchDevice(checkTouchDevice());

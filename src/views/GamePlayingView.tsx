@@ -90,9 +90,9 @@ export function GamePlayingView({
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col items-center gap-6 md:gap-10 lg:gap-14 w-full md:mt-6 lg:mt-8">
+      <div className="flex-1 flex flex-col items-center gap-6 md:gap-10 lg:gap-14 w-full mt-8 md:mt-10 lg:mt-12">
         {/* Mobile: Show compact answer badges at top */}
-        <div className="md:hidden flex items-center gap-2 h-8">
+        <div className="sm:hidden flex items-center gap-4 h-8">
           {gameState && foundEquations && foundEquations.length > 0 && (
             <div className="flex items-center gap-2 overflow-x-auto">
               {foundEquations.map((foundEq, idx) => {
@@ -120,10 +120,10 @@ export function GamePlayingView({
           )}
         </div>
 
-        {/* Game Content - 3 column on desktop, stacked on mobile */}
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 lg:gap-10 w-full max-w-[1100px]">
-          {/* Left Column: Answers tile - Hidden on mobile */}
-          <div className="hidden md:block flex-shrink-0 w-[160px] lg:w-[200px]">
+        {/* Game Content - 3 column layout on tablet/desktop, stacked on mobile */}
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-0 md:gap-8 lg:gap-10 w-full max-w-[1100px]">
+          {/* Left Column: Answers tile - Hidden on mobile, visible on tablet/desktop */}
+          <div className="hidden sm:block flex-shrink-0 sm:w-[98px] md:w-[160px] lg:w-[200px]">
             {gameState &&
               (foundEquations.length > 0 || shouldShowCompletion) && (
                 <AnswersTile
@@ -137,14 +137,21 @@ export function GamePlayingView({
           </div>
 
           {/* Center Column: Game content */}
-          <div className="flex-1 flex flex-col items-center gap-4 md:gap-6 lg:gap-8 order-2 md:order-1">
-            {/* Tile Pyramid */}
-            <TileList
-              tiles={tiles}
-              selectedTiles={selectedTiles}
-              onTileClick={onTileClick}
-              isGuessing={isGuessing || isShowingResult}
-            />
+          <div className="flex-1 flex flex-col items-center gap-4 md:gap-6 lg:gap-8 order-2 sm:order-1">
+            {/* Tile Pyramid with Target for mobile/tablet */}
+            <div className="relative inline-block">
+              <TileList
+                tiles={tiles}
+                selectedTiles={selectedTiles}
+                onTileClick={onTileClick}
+                isGuessing={isGuessing || isShowingResult}
+              />
+              
+              {/* Target tile positioned at right top corner of TileList on mobile/tablet */}
+              <div className="md:hidden absolute -top-2 -right-20 sm:-right-24">
+                {gameState && <TargetTile targetNumber={gameState.targetNumber} />}
+              </div>
+            </div>
 
             {/* Guessing State UI */}
             {(isGuessing || isShowingResult) && selectedPlayer && gameState && (
@@ -170,8 +177,8 @@ export function GamePlayingView({
             )}
           </div>
 
-          {/* Right Column: Target tile - Different position on mobile */}
-          <div className="flex-shrink-0 w-auto md:w-[160px] lg:w-[200px] flex justify-center md:justify-end order-1 md:order-2">
+          {/* Right Column: Target tile - Desktop only */}
+          <div className="hidden md:flex flex-shrink-0 w-auto md:w-[160px] lg:w-[200px] justify-center md:justify-end order-1 md:order-2">
             {gameState && <TargetTile targetNumber={gameState.targetNumber} />}
           </div>
         </div>

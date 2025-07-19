@@ -99,8 +99,8 @@ export function AnswersTile({
   } else {
     // For GamePlayingView: Show only found equations
     return (
-      <div className="p-4">
-        <div className="space-y-2">
+      <div className="p-4 sm:p-1 md:p-4">
+        <div className="space-y-2 sm:space-y-1 md:space-y-2">
           {foundEquations.map((foundEquation) => {
             const [i, j, k] = foundEquation.key.split(",").map(Number);
             const equationTiles = [tiles[i], tiles[j], tiles[k]];
@@ -110,16 +110,16 @@ export function AnswersTile({
             return (
               <div
                 key={foundEquation.key}
-                className="flex items-center gap-3 border border-white/20 rounded-lg px-3 py-2"
+                className="flex items-center gap-3 sm:gap-1 md:gap-3 border border-white/20 rounded-lg px-3 sm:px-1 md:px-3 py-2 sm:py-0.5 sm:h-[2.5rem] md:py-2 md:h-auto"
               >
-                <div className="flex items-center justify-center w-8">
+                <div className="flex items-center justify-center w-8 sm:w-6 md:w-8">
                   {isSinglePlayer ? (
-                    <span className="font-bold text-lg">v</span>
+                    <span className="font-bold text-lg sm:text-sm md:text-lg">v</span>
                   ) : (
-                    <span className="font-bold text-lg">P{playerIndex}</span>
+                    <span className="font-bold text-lg sm:text-sm md:text-lg">P{playerIndex}</span>
                   )}
                 </div>
-                <Typography variant="p1" className="flex-1 text-center">
+                <Typography variant="p1" className="flex-1 text-center sm:text-xs md:text-base">
                   {equationText}
                 </Typography>
               </div>
