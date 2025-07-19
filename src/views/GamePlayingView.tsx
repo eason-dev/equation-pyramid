@@ -79,7 +79,7 @@ export function GamePlayingView({
   return (
     <div className="min-h-screen flex flex-col items-center justify-start md:justify-center px-4 md:px-6 py-4 md:py-6 landscape:py-2">
       {/* Timer and Round Stepper Section */}
-      <div className="flex flex-col items-center gap-4 md:gap-6 lg:gap-10 landscape:gap-2">
+      <div className="flex flex-col items-center gap-3 md:gap-4 lg:gap-6">
         {config.numRounds > 1 && (
           <RoundStepper
             currentRound={config.currentRound}
@@ -90,7 +90,7 @@ export function GamePlayingView({
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col items-center gap-6 md:gap-10 lg:gap-14 w-full">
+      <div className="flex-1 flex flex-col items-center gap-6 md:gap-10 lg:gap-14 w-full md:mt-6 lg:mt-8">
         {/* Mobile: Show compact answer badges at top */}
         <div className="md:hidden flex items-center gap-2 h-8">
           {gameState && foundEquations && foundEquations.length > 0 && (
