@@ -65,7 +65,7 @@ export function GameSettingsView({
       </div>
 
       {/* Start Button */}
-      <div className="w-full max-w-xs md:max-w-sm pb-8">
+      <div className="flex justify-center w-full pb-8">
         <Button onClick={onStartGame} variant="primary">
           Start
         </Button>
