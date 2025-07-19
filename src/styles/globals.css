@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Set initial black background that ShaderBackground will overlay */
+html {
+  background-color: black;
+}
+
 /* Responsive breakpoints for reference:
    - Mobile: < 768px
    - Tablet: 768px - 1023px
