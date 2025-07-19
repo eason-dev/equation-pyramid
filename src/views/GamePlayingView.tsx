@@ -91,10 +91,10 @@ export function GamePlayingView({
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col items-center gap-6 md:gap-10 lg:gap-14 w-full mt-8 md:mt-10 lg:mt-12">
-        {/* Mobile: Show compact answer badges at top */}
-        <div className="sm:hidden flex items-center gap-4 h-8">
+        {/* Mobile/Tablet: Show compact answer badges at top */}
+        <div className="md:hidden flex justify-center w-full">
           {gameState && foundEquations && foundEquations.length > 0 && (
-            <div className="flex items-center gap-2 overflow-x-auto">
+            <div className="flex items-center gap-2 overflow-x-auto max-w-full px-4">
               {foundEquations.map((foundEq, idx) => {
                 // Parse the key to get tile indices
                 const tileIndices = foundEq.key.split(',').map(Number);
@@ -109,10 +109,16 @@ export function GamePlayingView({
                 });
                 
                 if (!equation) return null;
+                const equationText = tileIndices.map(i => tiles[i]?.label || "").join(" ");
                 
                 return (
-                  <div key={idx} className="text-xs font-semibold text-white/80 whitespace-nowrap">
-                    {equation.result === gameState.targetNumber ? "✓" : "✗"} {tileIndices.map(i => tiles[i]?.label || "").join("")}
+                  <div 
+                    key={idx} 
+                    className="flex items-center justify-center min-w-[98px] h-10 border border-white/20 rounded-lg bg-black/20 px-3"
+                  >
+                    <span className="text-sm font-semibold text-white/90 whitespace-nowrap">
+                      ✓ {equationText}
+                    </span>
                   </div>
                 );
               })}
@@ -121,9 +127,9 @@ export function GamePlayingView({
         </div>
 
         {/* Game Content - 3 column layout on tablet/desktop, stacked on mobile */}
-        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-0 md:gap-8 lg:gap-10 w-full max-w-[1100px]">
-          {/* Left Column: Answers tile - Hidden on mobile, visible on tablet/desktop */}
-          <div className="hidden sm:block flex-shrink-0 sm:w-[98px] md:w-[160px] lg:w-[200px]">
+        <div className="flex flex-col sm:flex-row sm:justify-center items-center sm:items-start gap-6 sm:gap-0 md:gap-8 lg:gap-10 w-full sm:w-auto md:w-full max-w-[1100px]">
+          {/* Left Column: Answers tile - Hidden on mobile/tablet, visible on desktop */}
+          <div className="hidden md:block flex-shrink-0 md:w-[160px] lg:w-[200px]">
             {gameState &&
               (foundEquations.length > 0 || shouldShowCompletion) && (
                 <AnswersTile
@@ -137,7 +143,7 @@ export function GamePlayingView({
           </div>
 
           {/* Center Column: Game content */}
-          <div className="flex-1 flex flex-col items-center gap-4 md:gap-6 lg:gap-8 order-2 sm:order-1">
+          <div className="flex-1 sm:flex-initial sm:w-auto md:flex-1 flex flex-col items-center gap-4 md:gap-6 lg:gap-8 order-2 sm:order-1">
             {/* Tile Pyramid with Target for mobile/tablet */}
             <div className="relative inline-block">
               <TileList
