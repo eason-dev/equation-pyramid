@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Typography } from "@/components/Typography";
+import { Block } from "@/components/Block";
 import { useButtonSound } from "@/hooks/useButtonSound";
 
 export default function AboutPage() {
@@ -41,7 +42,7 @@ export default function AboutPage() {
         {/* Content Sections */}
         <div className="flex flex-col gap-6 w-full">
           {/* Inspiration Section */}
-          <div className="bg-black bg-opacity-80 border border-blue-300 border-opacity-75 rounded-xl p-6">
+          <Block>
             <Typography variant="h2" className="text-white text-center mb-4">
               Inspiration
             </Typography>
@@ -51,10 +52,10 @@ export default function AboutPage() {
               show and really enjoyed it. So we decided to make it possible to
               let more people enjoy this game. Hope you like it :)
             </Typography>
-          </div>
+          </Block>
 
           {/* Contributors Section */}
-          <div className="bg-black bg-opacity-80 border border-blue-300 border-opacity-75 rounded-xl p-6">
+          <Block>
             <Typography variant="h2" className="text-white text-center mb-4">
               Contributors
             </Typography>
@@ -153,7 +154,7 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </Block>
         </div>
       </div>
     </div>
