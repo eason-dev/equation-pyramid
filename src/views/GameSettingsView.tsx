@@ -41,7 +41,12 @@ export function GameSettingsView({
                 onClick={() => onConfigUpdate({ numPlayers: option })}
                 isActive={numPlayers === option}
               >
-                {option}
+                <span className="flex items-end justify-center gap-1">
+                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none">{option}</span>
+                  <span className="hidden md:inline text-sm md:text-base lg:text-lg leading-none pb-[2px]">
+                    {option === 1 ? "Player" : "Players"}
+                  </span>
+                </span>
               </RoundButton>
             ))}
           </div>
@@ -57,7 +62,12 @@ export function GameSettingsView({
                 onClick={() => onConfigUpdate({ numRounds: option })}
                 isActive={numRounds === option}
               >
-                {option}
+                <span className="flex items-end justify-center gap-1">
+                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none">{option}</span>
+                  <span className="hidden md:inline text-sm md:text-base lg:text-lg leading-none pb-[2px]">
+                    {option === 1 ? "Round" : "Rounds"}
+                  </span>
+                </span>
               </RoundButton>
             ))}
           </div>
