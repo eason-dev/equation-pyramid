@@ -50,3 +50,15 @@ export const HighScores: Story = {
     selectedPlayerId: "1",
   },
 };
+
+export const MixedScores: Story = {
+  args: {
+    players: [
+      { id: "1", name: "Leader", score: 15 },
+      { id: "2", name: "Average Joe", score: 0 },
+      { id: "3", name: "Struggling", score: -5 },
+      { id: "4", name: "Really Struggling", score: -12 },
+    ],
+    selectedPlayerId: null,
+  },
+};

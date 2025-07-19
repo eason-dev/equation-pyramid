@@ -70,3 +70,10 @@ export const ZeroScore: Story = {
     showCrown: false,
   },
 };
+
+export const NegativeScore: Story = {
+  args: {
+    score: -5,
+    showCrown: false,
+  },
+};

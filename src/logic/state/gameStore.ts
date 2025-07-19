@@ -286,7 +286,7 @@ export const useGameStore = create<GameStoreState>()(
         if (state.foundEquations.some((eq) => eq.key === equationKey)) {
           // Deduct point for duplicate equation
           if (player) {
-            player.score -= 1;
+            player.score = Math.max(0, player.score - 1);
           }
         } else if (result === state.gameState.targetNumber) {
           // Award point for correct equation
@@ -300,7 +300,7 @@ export const useGameStore = create<GameStoreState>()(
         } else {
           // Deduct point for incorrect equation
           if (player) {
-            player.score -= 1;
+            player.score = Math.max(0, player.score - 1);
           }
         }
 
@@ -475,7 +475,7 @@ export const useGameStore = create<GameStoreState>()(
               (p) => p.id === state.guessingPlayerId,
             );
             if (player) {
-              player.score -= 1;
+              player.score = Math.max(0, player.score - 1);
             }
           });
           clearInterval(interval);

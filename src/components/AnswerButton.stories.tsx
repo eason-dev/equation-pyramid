@@ -94,3 +94,11 @@ export const SinglePlayer: Story = {
     isSinglePlayer: true,
   },
 };
+
+export const NegativeScore: Story = {
+  args: {
+    ...Default.args,
+    playerName: "Struggling Player",
+    score: -3,
+  },
+};

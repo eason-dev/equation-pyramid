@@ -208,7 +208,7 @@ describe("Game Store", () => {
       result.current.submitEquation();
     });
 
-    expect(result.current.players[0].score).toBe(-1); // Player 1 loses a point
+    expect(result.current.players[0].score).toBe(0); // Player 1 score stays at 0 (no negative scores)
     expect(result.current.selectedTiles).toHaveLength(0); // Tiles are cleared
     expect(result.current.currentState).toBe("game"); // Back to game state
   });
