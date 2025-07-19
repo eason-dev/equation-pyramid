@@ -28,7 +28,7 @@ export function TileList({
         <div
           // biome-ignore lint/suspicious/noArrayIndexKey: pyramid structure is static
           key={`row-${rowIndex}`}
-          className="flex justify-center items-center gap-3 md:gap-6 lg:gap-10"
+          className="flex justify-center items-center gap-5 md:gap-6 lg:gap-10"
         >
           {rowTiles.map((tile, tileIndex) => {
             // Calculate the original index in the tiles array

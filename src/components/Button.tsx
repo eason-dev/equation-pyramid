@@ -106,7 +106,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           // Responsive border radius
           "rounded-[8px] md:rounded-[10px] transition-all duration-200",
           // Responsive dimensions
-          "w-[128px] md:w-[160px] lg:w-[200px]",
+          "w-[136px] md:w-[160px] lg:w-[200px]",
           "h-[48px] md:h-[56px] lg:h-[64px]",
           // Responsive padding
           "px-4 py-2 md:px-5 md:py-2.5 lg:px-6 lg:py-3",
