@@ -124,6 +124,92 @@ function generateConstrainedTiles(): Tile[] {
   return tiles;
 }
 
+/**
+ * Calculate the raw mathematical result of a 3-tile equation following order of operations
+ * Shows actual mathematical result without game validity constraints
+ */
+export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
+  const [first, second, third] = tiles;
+  let result = first.number;
+
+  // Handle multiplication and division first (order of operations)
+  if (second.operator === "*" || second.operator === "/") {
+    switch (second.operator) {
+      case "*":
+        result *= second.number;
+        break;
+      case "/":
+        result = result / second.number;
+        break;
+    }
+    
+    // Then handle the third operator
+    switch (third.operator) {
+      case "+":
+        result += third.number;
+        break;
+      case "-":
+        result -= third.number;
+        break;
+      case "*":
+        result *= third.number;
+        break;
+      case "/":
+        result = result / third.number;
+        break;
+    }
+  } else {
+    // Addition and subtraction from left to right, but handle multiply/divide in third position first
+    if (third.operator === "*" || third.operator === "/") {
+      let tempResult = result;
+      
+      // Apply second operator
+      switch (second.operator) {
+        case "+":
+          tempResult += second.number;
+          break;
+        case "-":
+          tempResult -= second.number;
+          break;
+      }
+      
+      // Apply third operator to the tempResult
+      switch (third.operator) {
+        case "*":
+          tempResult *= third.number;
+          break;
+        case "/":
+          tempResult = tempResult / third.number;
+          break;
+      }
+      
+      result = tempResult;
+    } else {
+      // No multiplication or division in third position, left to right
+      switch (second.operator) {
+        case "+":
+          result += second.number;
+          break;
+        case "-":
+          result -= second.number;
+          break;
+      }
+      
+      switch (third.operator) {
+        case "+":
+          result += third.number;
+          break;
+        case "-":
+          result -= third.number;
+          break;
+      }
+    }
+  }
+  
+  // Round to 2 decimal places to handle floating point precision issues
+  return Math.round(result * 100) / 100;
+}
+
 export function calculateEquation(tiles: [Tile, Tile, Tile]): number {
   const [first, second, third] = tiles;
 

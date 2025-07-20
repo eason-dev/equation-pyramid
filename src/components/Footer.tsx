@@ -20,8 +20,8 @@ export function Footer({ audioControls, trackType }: FooterProps) {
     playButtonSound();
   };
 
-  // Show about button on homepage
-  const showAboutButton = pathname === "/";
+  // Show about button on homepage and tutorial page
+  const showAboutButton = pathname === "/" || pathname === "/tutorial";
 
   return (
     <footer className="relative md:fixed md:bottom-0 md:right-0">

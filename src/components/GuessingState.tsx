@@ -11,20 +11,22 @@ interface GuessingStateProps {
   playerName?: string;
   tiles: TileType[];
   selectedTiles: number[];
-  countdownSeconds: number;
-  countdownTotalSeconds: number;
+  countdownSeconds?: number;
+  countdownTotalSeconds?: number;
   state: "guessing" | "correct" | "wrong";
   calculatedResult?: number | null;
+  hideTimer?: boolean;
 }
 
 export function GuessingState({
   playerName,
   tiles,
   selectedTiles,
-  countdownSeconds,
-  countdownTotalSeconds,
+  countdownSeconds = 0,
+  countdownTotalSeconds = 1,
   state,
   calculatedResult,
+  hideTimer = false,
 }: GuessingStateProps) {
   const hasSelectedTiles = selectedTiles.length > 0;
   const hasThreeTiles = selectedTiles.length === 3;
@@ -44,18 +46,20 @@ export function GuessingState({
       {/* Main horizontal layout */}
       <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 lg:gap-10 min-h-[80px] md:min-h-[100px] lg:min-h-[120px]">
         {/* Timer - centered when no tiles selected, left when tiles selected */}
-        <div
-          className={cn(
-            "flex items-center justify-center transition-all duration-300",
-            hasSelectedTiles ? "md:order-1" : "md:order-2 mx-auto",
-          )}
-        >
-          <GuessingTimer
-            seconds={countdownSeconds}
-            totalSeconds={countdownTotalSeconds}
-            isVisible={true}
-          />
-        </div>
+        {!hideTimer && (
+          <div
+            className={cn(
+              "flex items-center justify-center transition-all duration-300",
+              hasSelectedTiles ? "md:order-1" : "md:order-2 mx-auto",
+            )}
+          >
+            <GuessingTimer
+              seconds={countdownSeconds}
+              totalSeconds={countdownTotalSeconds}
+              isVisible={true}
+            />
+          </div>
+        )}
 
         {/* Selected Tiles Display - center when tiles are selected */}
         {hasSelectedTiles && (
@@ -75,6 +79,7 @@ export function GuessingState({
                       isSelected={false}
                       disabled
                       isFirstSelected={isFirstSelected}
+                      onClick={() => {}}
                     />
                   </div>
                 );
@@ -97,18 +102,11 @@ export function GuessingState({
                 <div className="relative w-full text-center min-h-[1.2rem] md:min-h-[1.4rem] lg:min-h-[1.5rem] flex items-center justify-center">
                   <Typography
                     variant="p1"
-                    className={cn(
-                      "text-lg md:text-xl lg:text-2xl",
-                      calculatedResult === null ||
-                      calculatedResult === undefined
-                        ? "invisible"
-                        : ""
-                    )}
+                    className="text-lg md:text-xl lg:text-2xl"
                   >
-                    =
-                    {calculatedResult !== null && calculatedResult !== undefined
+                    = {calculatedResult !== null && calculatedResult !== undefined
                       ? calculatedResult
-                      : "0"}
+                      : "?"}
                   </Typography>
                 </div>
               </Block>

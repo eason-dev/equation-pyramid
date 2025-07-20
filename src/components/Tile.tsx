@@ -11,6 +11,7 @@ interface TileProps {
   onClick: () => void;
   disabled: boolean;
   isFirstSelected?: boolean;
+  isHint?: boolean;
 }
 
 const operatorMap: Record<Operator, string> = {
@@ -26,6 +27,7 @@ export function Tile({
   onClick,
   disabled,
   isFirstSelected = false,
+  isHint = false,
 }: TileProps) {
   const { playButtonSound } = useButtonSound();
   const operatorRef = useRef<HTMLSpanElement>(null);
@@ -135,6 +137,7 @@ export function Tile({
         relative
         overflow-hidden
         ${disabled ? "cursor-default" : "cursor-pointer"}
+        ${isHint ? "animate-pulse ring-2 ring-yellow-400 ring-offset-2 ring-offset-transparent" : ""}
       `}
       style={{
         background: styles.background,

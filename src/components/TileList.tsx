@@ -6,6 +6,7 @@ interface TileListProps {
   selectedTiles: number[];
   onTileClick: (index: number) => void;
   isGuessing: boolean;
+  hintTileIndices?: number[];
 }
 
 export function TileList({
@@ -13,6 +14,7 @@ export function TileList({
   selectedTiles,
   onTileClick,
   isGuessing,
+  hintTileIndices = [],
 }: TileListProps) {
   // Arrange tiles in pyramid: 1, 2, 3, 4 tiles per row
   const pyramidRows = [
@@ -48,6 +50,7 @@ export function TileList({
                 isSelected={selectedTiles.includes(originalIndex)}
                 onClick={() => onTileClick(originalIndex)}
                 disabled={!isGuessing || selectedTiles.includes(originalIndex)}
+                isHint={hintTileIndices.includes(originalIndex)}
               />
             );
           })}

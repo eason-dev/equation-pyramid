@@ -11,7 +11,7 @@ import {
   ROUND_DURATION,
   TILES_PER_EQUATION,
 } from "@/constants";
-import { calculateEquation, generateGameState } from "@/logic/game/logic";
+import { calculateEquation, calculateEquationRaw, generateGameState } from "@/logic/game/logic";
 import type { GameState, Player } from "@/logic/game/types";
 
 export type GameAppState =
@@ -227,6 +227,7 @@ export const useGameStore = create<GameStoreState>()(
           };
 
           const result = calculateEquation(equation.tiles);
+          const displayResult = calculateEquationRaw(equation.tiles);
           const equationKey = `${i},${j},${k}`;
           const isDuplicate = state.foundEquations.some(
             (eq) => eq.key === equationKey,
@@ -238,7 +239,7 @@ export const useGameStore = create<GameStoreState>()(
 
           set((state) => {
             state.currentState = "showingResult";
-            state.currentEquationResult = result;
+            state.currentEquationResult = displayResult;
             state.isCurrentEquationCorrect = isCorrect;
             // Keep the current guessTimer value instead of resetting
           });
