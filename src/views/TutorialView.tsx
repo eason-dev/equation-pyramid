@@ -115,10 +115,10 @@ export function TutorialView() {
   }, [selectedTiles, targetNumber]);
 
   return (
-    <div className="relative w-full min-h-screen flex flex-col items-center overflow-hidden">
+    <div className="relative w-full flex-grow flex flex-col items-center overflow-hidden">
       <ShaderBackground />
 
-      <div className="flex flex-col items-center justify-center gap-8 md:gap-12 w-full h-full px-6 md:px-10 py-20 md:py-24">
+      <div className="flex-grow flex flex-col items-center justify-center gap-8 md:gap-12 w-full px-6 md:px-10 py-20 md:py-24">
         <div className="text-center max-w-2xl">
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 md:mb-6">Tutorial</h1>
           <p className="text-lg md:text-xl lg:text-2xl text-white leading-relaxed">
