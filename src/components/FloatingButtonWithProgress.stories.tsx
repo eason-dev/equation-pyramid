@@ -8,7 +8,8 @@ const meta = {
     layout: "fullscreen",
     docs: {
       description: {
-        component: "A floating button that follows the mouse cursor with optional progress indicator and curved text animation.",
+        component:
+          "A floating button that follows the mouse cursor with optional progress indicator and curved text animation.",
       },
     },
   },
@@ -72,7 +73,6 @@ export const EndGame: Story = {
   },
 };
 
-
 export const ProgressAnimation: Story = {
   args: {
     children: "Loading...",
@@ -82,7 +82,7 @@ export const ProgressAnimation: Story = {
   },
   render: (args) => {
     const [progress, setProgress] = React.useState(0);
-    
+
     React.useEffect(() => {
       const interval = setInterval(() => {
         setProgress((prev) => {
@@ -90,10 +90,10 @@ export const ProgressAnimation: Story = {
           return prev + 0.1;
         });
       }, 500);
-      
+
       return () => clearInterval(interval);
     }, []);
-    
+
     return <FloatingButtonWithProgress {...args} progress={progress} />;
   },
   parameters: {

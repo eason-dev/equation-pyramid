@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-import { Typography } from "@/components/Typography";
+import Link from "next/link";
 import { Block } from "@/components/Block";
+import { Typography } from "@/components/Typography";
 import { useButtonSound } from "@/hooks/useButtonSound";
 
 export default function AboutPage() {

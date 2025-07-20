@@ -29,7 +29,12 @@ export function GameOverView({
   // Use clean merge utility to handle nested objects properly
   const mergedStore = mergeWithConfig(hookStore, storeOverrides);
 
-  const { config, gameState, foundEquations = [], roundHistory = [] } = mergedStore;
+  const {
+    config,
+    gameState,
+    foundEquations = [],
+    roundHistory = [],
+  } = mergedStore;
 
   // Mobile pagination state
   const [mobileView, setMobileView] = useState<"score" | "answers">("score");
@@ -158,7 +163,10 @@ export function GameOverView({
               {isSinglePlayer ? (
                 /* Single Player Score Circle */
                 <>
-                  <Typography variant="h2" className="text-white text-center text-xl">
+                  <Typography
+                    variant="h2"
+                    className="text-white text-center text-xl"
+                  >
                     YOUR SCORE IS
                   </Typography>
                   <div className="flex flex-col items-center gap-2.5">
@@ -188,7 +196,7 @@ export function GameOverView({
                 </div>
               )}
             </div>
-            
+
             {/* See Answers Button - Mobile Only */}
             <Button
               variant="primary"

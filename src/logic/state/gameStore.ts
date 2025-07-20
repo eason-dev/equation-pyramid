@@ -11,7 +11,11 @@ import {
   ROUND_DURATION,
   TILES_PER_EQUATION,
 } from "@/constants";
-import { calculateEquation, calculateEquationRaw, generateGameState } from "@/logic/game/logic";
+import {
+  calculateEquation,
+  calculateEquationRaw,
+  generateGameState,
+} from "@/logic/game/logic";
 import type { GameState, Player } from "@/logic/game/types";
 
 export type GameAppState =

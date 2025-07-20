@@ -142,7 +142,7 @@ export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
         result = result / second.number;
         break;
     }
-    
+
     // Then handle the third operator
     switch (third.operator) {
       case "+":
@@ -162,7 +162,7 @@ export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
     // Addition and subtraction from left to right, but handle multiply/divide in third position first
     if (third.operator === "*" || third.operator === "/") {
       let tempResult = result;
-      
+
       // Apply second operator
       switch (second.operator) {
         case "+":
@@ -172,7 +172,7 @@ export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
           tempResult -= second.number;
           break;
       }
-      
+
       // Apply third operator to the tempResult
       switch (third.operator) {
         case "*":
@@ -182,7 +182,7 @@ export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
           tempResult = tempResult / third.number;
           break;
       }
-      
+
       result = tempResult;
     } else {
       // No multiplication or division in third position, left to right
@@ -194,7 +194,7 @@ export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
           result -= second.number;
           break;
       }
-      
+
       switch (third.operator) {
         case "+":
           result += third.number;
@@ -205,7 +205,7 @@ export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
       }
     }
   }
-  
+
   // Round to 2 decimal places to handle floating point precision issues
   return Math.round(result * 100) / 100;
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Confetti from "@/components/Confetti";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -18,7 +18,7 @@ import { HomeView } from "@/views/HomeView";
 export default function AppPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   // Game store state
   const {
     currentState,
@@ -380,7 +380,10 @@ export default function AppPage() {
 
         <main className="flex-1">
           {displayState === "menu" && (
-            <HomeView onStart={start} onTutorialClick={() => router.push("/tutorial")} />
+            <HomeView
+              onStart={start}
+              onTutorialClick={() => router.push("/tutorial")}
+            />
           )}
 
           {displayState === "config" && (

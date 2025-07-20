@@ -9,8 +9,7 @@ import { RoundStepper } from "@/components/RoundStepper";
 import { TargetTile } from "@/components/TargetTile";
 import { TileList } from "@/components/TileList";
 import { Timer } from "@/components/Timer";
-import { Typography } from "@/components/Typography";
-import { GUESS_DURATION, ROUND_DURATION } from "@/constants";
+import { GUESS_DURATION } from "@/constants";
 import { mergeWithConfig } from "@/lib/utils";
 import type { Player, Tile as TileType } from "@/logic/game/types";
 import { type GameStoreState, useGameStore } from "@/logic/state/gameStore";
@@ -71,10 +70,10 @@ export function GamePlayingView({
   const shouldShowCompletion = !!isOver || allEquationsFound;
 
   // Calculate progress for the floating button
-  const timeProgress = 1 - (timeRemaining / ROUND_DURATION);
-  const answersProgress = gameState
-    ? foundEquations.length / gameState.validEquations.length
-    : 0;
+  // const timeProgress = 1 - timeRemaining / ROUND_DURATION;
+  // const answersProgress = gameState
+  //   ? foundEquations.length / gameState.validEquations.length
+  //   : 0;
 
   return (
     <div className="flex-grow flex flex-col items-center justify-start md:justify-center px-4 md:px-6 py-4 md:py-6 landscape:py-2">
@@ -95,25 +94,29 @@ export function GamePlayingView({
         <div className="md:hidden flex justify-center w-full">
           {gameState && foundEquations && foundEquations.length > 0 && (
             <div className="flex items-center gap-2 overflow-x-auto max-w-full px-4">
-              {foundEquations.map((foundEq, idx) => {
+              {foundEquations.map((foundEq) => {
                 // Parse the key to get tile indices
-                const tileIndices = foundEq.key.split(',').map(Number);
+                const tileIndices = foundEq.key.split(",").map(Number);
                 // Get the actual equation from validEquations
-                const equation = gameState.validEquations.find(eq => {
+                const equation = gameState.validEquations.find((eq) => {
                   const eqIndices = eq.tiles.map((eqTile) =>
                     tiles.findIndex(
-                      (tile) => tile.number === eqTile.number && tile.label === eqTile.label,
+                      (tile) =>
+                        tile.number === eqTile.number &&
+                        tile.label === eqTile.label,
                     ),
                   );
-                  return eqIndices.join(',') === foundEq.key;
+                  return eqIndices.join(",") === foundEq.key;
                 });
-                
+
                 if (!equation) return null;
-                const equationText = tileIndices.map(i => tiles[i]?.label || "").join(" ");
-                
+                const equationText = tileIndices
+                  .map((i) => tiles[i]?.label || "")
+                  .join(" ");
+
                 return (
-                  <div 
-                    key={idx} 
+                  <div
+                    key={foundEq.key}
                     className="flex items-center justify-center w-[60px] h-8 sm:min-w-[98px] sm:h-10 border border-white/20 rounded-lg bg-black/20 px-1 sm:px-3"
                   >
                     <span className="text-xs sm:text-sm font-semibold text-white/90 whitespace-nowrap">
@@ -152,10 +155,12 @@ export function GamePlayingView({
                 onTileClick={onTileClick}
                 isGuessing={isGuessing || isShowingResult}
               />
-              
+
               {/* Target tile positioned at right top corner of TileList on mobile/tablet */}
               <div className="md:hidden absolute top-0 right-0 sm:-top-2 sm:-right-24">
-                {gameState && <TargetTile targetNumber={gameState.targetNumber} />}
+                {gameState && (
+                  <TargetTile targetNumber={gameState.targetNumber} />
+                )}
               </div>
             </div>
 
@@ -248,7 +253,6 @@ export function GamePlayingView({
             )}
           </div>
         )}
-
       </div>
 
       {/* Debug Panel */}
@@ -261,11 +265,13 @@ export function GamePlayingView({
 
       {/* Floating Button - Only visible when round is complete */}
       {shouldShowCompletion && (
-        <FloatingButtonWithProgress 
+        <FloatingButtonWithProgress
           onClick={nextRound}
           progress={1}
           showCompletionText={true}
-          completionText={allEquationsFound ? "Answers Completed" : "Time's Up!"}
+          completionText={
+            allEquationsFound ? "Answers Completed" : "Time's Up!"
+          }
         >
           {config.currentRound >= config.numRounds ? "End Game" : "Next Round"}
         </FloatingButtonWithProgress>

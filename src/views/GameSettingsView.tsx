@@ -22,7 +22,10 @@ export function GameSettingsView({
     <div className="h-full flex flex-col items-center justify-start px-4 md:px-6 pt-12 md:pt-16 lg:pt-20 gap-12 md:gap-14 lg:gap-16">
       {/* Header Section */}
       <div className="flex flex-col items-center gap-4 md:gap-5 lg:gap-6">
-        <Typography variant="h1" className="text-center text-2xl md:text-3xl lg:text-4xl">
+        <Typography
+          variant="h1"
+          className="text-center text-2xl md:text-3xl lg:text-4xl"
+        >
           Game Setup
         </Typography>
       </div>
@@ -31,7 +34,10 @@ export function GameSettingsView({
       <div className="flex flex-col items-center gap-12 md:gap-16 lg:gap-20">
         {/* Number of Players */}
         <div className="flex flex-col items-center gap-4 md:gap-5 lg:gap-6">
-          <Typography variant="h2" className="text-center text-xl md:text-2xl lg:text-3xl">
+          <Typography
+            variant="h2"
+            className="text-center text-xl md:text-2xl lg:text-3xl"
+          >
             Number of Player
           </Typography>
           <div className="flex items-center justify-center gap-8 md:gap-12 lg:gap-[72px]">
@@ -42,7 +48,9 @@ export function GameSettingsView({
                 isActive={numPlayers === option}
               >
                 <span className="flex items-end justify-center gap-1">
-                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none">{option}</span>
+                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none">
+                    {option}
+                  </span>
                   <span className="hidden md:inline text-sm md:text-base lg:text-lg leading-none pb-[2px]">
                     {option === 1 ? "Player" : "Players"}
                   </span>
@@ -54,7 +62,12 @@ export function GameSettingsView({
 
         {/* Number of Rounds */}
         <div className="flex flex-col items-center gap-4 md:gap-5 lg:gap-6">
-          <Typography variant="h2" className="text-center text-xl md:text-2xl lg:text-3xl">Number of Round</Typography>
+          <Typography
+            variant="h2"
+            className="text-center text-xl md:text-2xl lg:text-3xl"
+          >
+            Number of Round
+          </Typography>
           <div className="flex items-center justify-center gap-8 md:gap-12 lg:gap-[72px] p-2.5">
             {ROUNDS_OPTIONS.map((option) => (
               <RoundButton
@@ -63,7 +76,9 @@ export function GameSettingsView({
                 isActive={numRounds === option}
               >
                 <span className="flex items-end justify-center gap-1">
-                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none">{option}</span>
+                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none">
+                    {option}
+                  </span>
                   <span className="hidden md:inline text-sm md:text-base lg:text-lg leading-none pb-[2px]">
                     {option === 1 ? "Round" : "Rounds"}
                   </span>

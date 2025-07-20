@@ -72,7 +72,8 @@ function FullscreenShader({ externalColor }: { externalColor?: string }) {
 
   useFrame(({ clock, size }) => {
     if (ref.current) {
-      ref.current.u_time = (clock.getElapsedTime() + timeOffsetRef.current) * 0.1;
+      ref.current.u_time =
+        (clock.getElapsedTime() + timeOffsetRef.current) * 0.1;
       ref.current.u_resolution = new THREE.Vector2(size.width, size.height);
       ref.current.u_strength = strength;
 

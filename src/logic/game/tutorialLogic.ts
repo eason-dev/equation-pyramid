@@ -1,6 +1,6 @@
-import { Tile } from "./types";
-import { calculateEquation, calculateEquationRaw } from "./logic";
 import { INVALID_RESULT } from "@/constants";
+import { calculateEquation, calculateEquationRaw } from "./logic";
+import type { Tile } from "./types";
 
 /**
  * Calculate raw mathematical result for tutorial (shows actual math result, not game-valid result)
@@ -15,7 +15,7 @@ export function calculateTutorialEquationRaw(tiles: Tile[]): number | null {
  */
 export function calculateTutorialEquation(tiles: Tile[]): number | null {
   if (tiles.length !== 3) return null;
-  
+
   const result = calculateEquation(tiles as [Tile, Tile, Tile]);
   return result === INVALID_RESULT ? null : result;
 }
@@ -47,17 +47,18 @@ export function generateTutorialTiles(): {
 
   // Pre-calculate some valid equations for hints
   const validEquations: Tile[][] = [];
-  
+
   // Find all valid 3-tile combinations that equal 6
   for (let i = 0; i < tiles.length; i++) {
     for (let j = 0; j < tiles.length; j++) {
       for (let k = 0; k < tiles.length; k++) {
-        if (i !== j && j !== k && i !== k) { // All different tiles
+        if (i !== j && j !== k && i !== k) {
+          // All different tiles
           const testTiles = [tiles[i], tiles[j], tiles[k]];
           const result = calculateTutorialEquation(testTiles);
           if (result === targetNumber) {
             validEquations.push([...testTiles]);
-            
+
             // Only keep first 4 valid equations for hints
             if (validEquations.length >= 4) {
               return {
@@ -84,10 +85,10 @@ export function generateTutorialTiles(): {
  */
 export function isValidTutorialEquation(
   tiles: Tile[],
-  targetNumber: number
+  targetNumber: number,
 ): boolean {
   if (tiles.length !== 3) return false;
-  
+
   const result = calculateTutorialEquation(tiles);
   return result === targetNumber;
 }
@@ -96,10 +97,10 @@ export function isValidTutorialEquation(
  * Get a random valid equation for hint purposes
  */
 export function getRandomValidEquation(
-  validEquations: Tile[][]
+  validEquations: Tile[][],
 ): Tile[] | null {
   if (validEquations.length === 0) return null;
-  
+
   const randomIndex = Math.floor(Math.random() * validEquations.length);
   return validEquations[randomIndex];
 }

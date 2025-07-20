@@ -1,12 +1,10 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { Tile } from "@/logic/game/types";
 import {
   generateTutorialTiles,
-  calculateTutorialEquation,
   isValidTutorialEquation,
-  getRandomValidEquation,
 } from "@/logic/game/tutorialLogic";
+import type { Tile } from "@/logic/game/types";
 
 export type TutorialState = "playing" | "complete";
 
@@ -31,7 +29,7 @@ interface TutorialStore {
   reset: () => void;
 }
 
-export const useTutorialStore = create<TutorialStore>(
+export const useTutorialStore = create<TutorialStore>()(
   immer((set) => ({
     // Initial state
     currentState: "playing",
@@ -46,7 +44,7 @@ export const useTutorialStore = create<TutorialStore>(
     initializeTutorial: () => {
       set((state) => {
         const { tiles, targetNumber, validEquations } = generateTutorialTiles();
-        
+
         state.tiles = tiles;
         state.targetNumber = targetNumber;
         state.validEquations = validEquations;
@@ -60,12 +58,18 @@ export const useTutorialStore = create<TutorialStore>(
     // Select a tile
     selectTile: (tile) => {
       set((state) => {
-        if (state.selectedTiles.length < 3 && !state.selectedTiles.find(t => t.label === tile.label)) {
+        if (
+          state.selectedTiles.length < 3 &&
+          !state.selectedTiles.find((t) => t.label === tile.label)
+        ) {
           state.selectedTiles.push(tile);
-          
+
           // Check equation if 3 tiles selected
           if (state.selectedTiles.length === 3) {
-            const isValid = isValidTutorialEquation(state.selectedTiles, state.targetNumber);
+            const isValid = isValidTutorialEquation(
+              state.selectedTiles,
+              state.targetNumber,
+            );
             if (isValid) {
               state.currentState = "complete";
             } else {
@@ -84,7 +88,9 @@ export const useTutorialStore = create<TutorialStore>(
     // Unselect a tile
     unselectTile: (tile) => {
       set((state) => {
-        state.selectedTiles = state.selectedTiles.filter(t => t.label !== tile.label);
+        state.selectedTiles = state.selectedTiles.filter(
+          (t) => t.label !== tile.label,
+        );
       });
     },
 
@@ -92,7 +98,10 @@ export const useTutorialStore = create<TutorialStore>(
     checkEquation: () => {
       let isValid = false;
       set((state) => {
-        isValid = isValidTutorialEquation(state.selectedTiles, state.targetNumber);
+        isValid = isValidTutorialEquation(
+          state.selectedTiles,
+          state.targetNumber,
+        );
       });
       return isValid;
     },
@@ -134,5 +143,5 @@ export const useTutorialStore = create<TutorialStore>(
         state.validEquations = [];
       });
     },
-  }))
+  })),
 );

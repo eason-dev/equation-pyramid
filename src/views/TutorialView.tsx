@@ -1,29 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useTutorialStore } from "@/logic/state/tutorialStore";
-import { TileList } from "@/components/TileList";
-import { TargetTile } from "@/components/TargetTile";
-import { GuessingState } from "@/components/GuessingState";
-import { TutorialCompleteOverlay } from "@/components/TutorialCompleteOverlay";
-import { ShaderBackground } from "@/components/ShaderBackground";
+import { useEffect, useMemo, useRef } from "react";
 import { Footer } from "@/components/Footer";
+import { GuessingState } from "@/components/GuessingState";
+import { ShaderBackground } from "@/components/ShaderBackground";
+import { TargetTile } from "@/components/TargetTile";
+import { TileList } from "@/components/TileList";
+import { TutorialCompleteOverlay } from "@/components/TutorialCompleteOverlay";
 import { useAudio } from "@/hooks/useAudio";
 import { useButtonSound } from "@/hooks/useButtonSound";
-import { calculateTutorialEquationRaw, isValidTutorialEquation } from "@/logic/game/tutorialLogic";
+import {
+  calculateTutorialEquationRaw,
+  isValidTutorialEquation,
+} from "@/logic/game/tutorialLogic";
+import { useTutorialStore } from "@/logic/state/tutorialStore";
 
 export function TutorialView() {
   const router = useRouter();
   const { playButtonSound } = useButtonSound();
   const hintTimerRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   // Audio controls for tutorial music
   const audioControls = useAudio("/audio/main-background-music.ogg", {
     loop: true,
     volume: 0.3,
   });
-  
+
   const {
     currentState,
     tiles,
@@ -40,7 +43,7 @@ export function TutorialView() {
   // Initialize tutorial on mount
   useEffect(() => {
     initializeTutorial();
-    
+
     // Start hint timer
     let seconds = 0;
     hintTimerRef.current = setInterval(() => {
@@ -66,12 +69,12 @@ export function TutorialView() {
   const handleTileClick = (tileIndex: number) => {
     const tile = tiles[tileIndex];
     if (!tile) return;
-    
+
     playButtonSound();
-    
+
     // Check if tile is already selected
-    const isSelected = selectedTiles.some(t => t.label === tile.label);
-    
+    const isSelected = selectedTiles.some((t) => t.label === tile.label);
+
     if (isSelected) {
       unselectTile(tile);
     } else if (selectedTiles.length < 3) {
@@ -86,20 +89,24 @@ export function TutorialView() {
 
   // Convert selected tiles to indices for TileList
   const selectedTileIndices = useMemo(() => {
-    return selectedTiles.map(selectedTile => 
-      tiles.findIndex(tile => tile.label === selectedTile.label)
-    ).filter(index => index !== -1);
+    return selectedTiles
+      .map((selectedTile) =>
+        tiles.findIndex((tile) => tile.label === selectedTile.label),
+      )
+      .filter((index) => index !== -1);
   }, [selectedTiles, tiles]);
-  
+
   // Get hint tile indices
   const hintTileIndices = useMemo(() => {
     if (!showHint || validEquations.length === 0) return [];
     const hintTiles = validEquations[0];
-    return hintTiles.map(hintTile => 
-      tiles.findIndex(tile => tile.label === hintTile.label)
-    ).filter(index => index !== -1);
+    return hintTiles
+      .map((hintTile) =>
+        tiles.findIndex((tile) => tile.label === hintTile.label),
+      )
+      .filter((index) => index !== -1);
   }, [showHint, validEquations, tiles]);
-  
+
   // Calculate result for GuessingState (shows actual math result)
   const calculatedResult = useMemo(() => {
     if (selectedTiles.length === 3) {
@@ -107,11 +114,13 @@ export function TutorialView() {
     }
     return null;
   }, [selectedTiles]);
-  
+
   // Determine state for GuessingState
   const guessingState = useMemo(() => {
     if (selectedTiles.length < 3) return "guessing";
-    return isValidTutorialEquation(selectedTiles, targetNumber) ? "correct" : "wrong";
+    return isValidTutorialEquation(selectedTiles, targetNumber)
+      ? "correct"
+      : "wrong";
   }, [selectedTiles, targetNumber]);
 
   return (
@@ -120,9 +129,12 @@ export function TutorialView() {
 
       <div className="flex-grow flex flex-col items-center justify-center gap-8 md:gap-12 w-full px-6 md:px-10 py-20 md:py-24">
         <div className="text-center max-w-2xl">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 md:mb-6">Tutorial</h1>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4 md:mb-6">
+            Tutorial
+          </h1>
           <p className="text-lg md:text-xl lg:text-2xl text-white leading-relaxed">
-            Let&apos;s do an easy tutorial first.<br />
+            Let&apos;s do an easy tutorial first.
+            <br />
             Try to use 3 tiles to reach the target number!
           </p>
         </div>
@@ -130,9 +142,7 @@ export function TutorialView() {
         {/* Game Area - 3 columns */}
         <div className="grid grid-cols-[1fr_auto_1fr] gap-6 md:gap-10 lg:gap-20 items-center max-w-[1400px] mx-auto w-full">
           {/* Left Column - Empty for symmetry */}
-          <div className="flex justify-end">
-            {/* Empty space */}
-          </div>
+          <div className="flex justify-end">{/* Empty space */}</div>
 
           {/* Center Column - Tiles */}
           <div className="flex flex-col items-center gap-8">
@@ -143,7 +153,7 @@ export function TutorialView() {
               isGuessing={true}
               hintTileIndices={hintTileIndices}
             />
-            
+
             {/* Guessing State */}
             <div className="mt-4">
               <GuessingState

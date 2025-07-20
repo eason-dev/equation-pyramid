@@ -65,15 +65,16 @@ export function GuessingState({
         {hasSelectedTiles && (
           <div className="order-2">
             {/* Responsive container for tiles */}
-            <div
-              className="flex items-center gap-2 md:gap-2.5 w-full md:w-[280px] lg:w-[326px] h-[80px] md:h-[90px] lg:h-[102px] justify-center"
-            >
+            <div className="flex items-center gap-2 md:gap-2.5 w-full md:w-[280px] lg:w-[326px] h-[80px] md:h-[90px] lg:h-[102px] justify-center">
               {/* Render selected tiles, left-aligned */}
               {selectedTiles.map((tileIndex, arrayIndex) => {
                 const tile = tiles[tileIndex];
                 const isFirstSelected = arrayIndex === 0; // First tile in the selected array
                 return (
-                  <div key={tileIndex} className="w-[70px] md:w-[85px] lg:w-[102px]">
+                  <div
+                    key={tileIndex}
+                    className="w-[70px] md:w-[85px] lg:w-[102px]"
+                  >
                     <Tile
                       tile={tile}
                       isSelected={false}
@@ -98,13 +99,19 @@ export function GuessingState({
                   getResultBorderStyle(),
                 )}
               >
-                <Typography variant="h2" className="text-base md:text-lg lg:text-xl">Result</Typography>
+                <Typography
+                  variant="h2"
+                  className="text-base md:text-lg lg:text-xl"
+                >
+                  Result
+                </Typography>
                 <div className="relative w-full text-center min-h-[1.2rem] md:min-h-[1.4rem] lg:min-h-[1.5rem] flex items-center justify-center">
                   <Typography
                     variant="p1"
                     className="text-lg md:text-xl lg:text-2xl"
                   >
-                    = {calculatedResult !== null && calculatedResult !== undefined
+                    ={" "}
+                    {calculatedResult !== null && calculatedResult !== undefined
                       ? calculatedResult
                       : "?"}
                   </Typography>
@@ -120,7 +127,10 @@ export function GuessingState({
 
       {/* Player Name - only show if provided */}
       {playerName && (
-        <Typography variant="h2" className="text-white text-lg md:text-xl lg:text-2xl">
+        <Typography
+          variant="h2"
+          className="text-white text-lg md:text-xl lg:text-2xl"
+        >
           {playerName}
         </Typography>
       )}

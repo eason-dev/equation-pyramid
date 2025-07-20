@@ -125,13 +125,28 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         {...props}
       >
         {/* Player Name - hidden in single player mode */}
-        {!isSinglePlayer && <Typography variant="h2" className="text-lg md:text-xl lg:text-2xl">{playerName}</Typography>}
+        {!isSinglePlayer && (
+          <Typography variant="h2" className="text-lg md:text-xl lg:text-2xl">
+            {playerName}
+          </Typography>
+        )}
 
         {/* Call to Action - only show when not in over state and in single player mode */}
-        {!isOver && isSinglePlayer && <Typography variant="h2" className="text-base md:text-lg lg:text-xl text-center">Press Here to Answer!</Typography>}
+        {!isOver && isSinglePlayer && (
+          <Typography
+            variant="h2"
+            className="text-base md:text-lg lg:text-xl text-center"
+          >
+            Press Here to Answer!
+          </Typography>
+        )}
 
         {/* Score text - only show when round is over and in single player mode */}
-        {isOver && isSinglePlayer && <Typography variant="h2" className="text-lg md:text-xl lg:text-2xl">Score</Typography>}
+        {isOver && isSinglePlayer && (
+          <Typography variant="h2" className="text-lg md:text-xl lg:text-2xl">
+            Score
+          </Typography>
+        )}
 
         {/* Score Badge */}
         <div
@@ -144,7 +159,9 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
             WebkitBackdropFilter: "blur(24px)",
           }}
         >
-          <Typography variant="h2" className="text-xl md:text-2xl lg:text-3xl">{score}</Typography>
+          <Typography variant="h2" className="text-xl md:text-2xl lg:text-3xl">
+            {score}
+          </Typography>
         </div>
       </button>
     );

@@ -26,35 +26,34 @@ export function FloatingButtonWithProgress({
   const mousePos = useRef({ x: 0, y: 0 });
   const buttonPos = useRef({ x: 0, y: 0 });
   const animationRef = useRef<number | undefined>(undefined);
-  
+
   // Detect if device has touch capabilities
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   useEffect(() => {
     // Check if device supports touch
     const checkTouchDevice = () => {
-      return ('ontouchstart' in window) || 
-             (navigator.maxTouchPoints > 0);
+      return "ontouchstart" in window || navigator.maxTouchPoints > 0;
     };
-    
+
     setIsTouchDevice(checkTouchDevice());
-    
+
     // Also check on resize
     const handleResize = () => {
       setIsTouchDevice(checkTouchDevice());
     };
-    
-    window.addEventListener('resize', handleResize);
-    
+
+    window.addEventListener("resize", handleResize);
+
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   useEffect(() => {
     // Only enable mouse tracking on non-touch devices
     if (isTouchDevice) return;
-    
+
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
     };
@@ -116,7 +115,9 @@ export function FloatingButtonWithProgress({
                 top: "-30px",
                 filter: "drop-shadow(0 0 10px rgba(169, 199, 255, 0.5))",
               }}
+              aria-label="Progress indicator"
             >
+              <title>Progress indicator</title>
               {/* Background circle */}
               <circle
                 stroke="rgba(169, 199, 255, 0.2)"
@@ -131,7 +132,7 @@ export function FloatingButtonWithProgress({
                 stroke="rgba(169, 199, 255, 0.8)"
                 fill="transparent"
                 strokeWidth={3}
-                strokeDasharray={440 + " " + 440}
+                strokeDasharray={`${440} ${440}`}
                 style={{
                   strokeDashoffset: 440 - progress * 440,
                   transition: "stroke-dashoffset 0.5s ease-in-out",
@@ -154,7 +155,9 @@ export function FloatingButtonWithProgress({
 
           {/* Button Container */}
           <div className="pointer-events-auto">
-            <RoundButton onClick={onClick} disabled={disabled}>{children}</RoundButton>
+            <RoundButton onClick={onClick} disabled={disabled}>
+              {children}
+            </RoundButton>
           </div>
         </div>
       </div>
@@ -182,7 +185,9 @@ export function FloatingButtonWithProgress({
             style={{
               filter: "drop-shadow(0 0 10px rgba(169, 199, 255, 0.5))",
             }}
+            aria-label="Progress indicator"
           >
+            <title>Progress indicator</title>
             {/* Background circle */}
             <circle
               stroke="rgba(169, 199, 255, 0.2)"
@@ -197,7 +202,7 @@ export function FloatingButtonWithProgress({
               stroke="rgba(169, 199, 255, 0.8)"
               fill="transparent"
               strokeWidth={strokeWidth}
-              strokeDasharray={circumference + " " + circumference}
+              strokeDasharray={`${circumference} ${circumference}`}
               style={{
                 strokeDashoffset,
                 transition: "stroke-dashoffset 0.5s ease-in-out",
@@ -219,7 +224,7 @@ export function FloatingButtonWithProgress({
                 animate: true,
                 duration: 20,
                 repeat: "auto",
-                fontSize: 14
+                fontSize: 14,
               }}
               className="text-[#A9C7FF]"
             >
@@ -229,8 +234,13 @@ export function FloatingButtonWithProgress({
         )}
 
         {/* Button Container */}
-        <div className="pointer-events-auto relative" style={{ margin: "20px" }}>
-          <RoundButton onClick={onClick} disabled={disabled}>{children}</RoundButton>
+        <div
+          className="pointer-events-auto relative"
+          style={{ margin: "20px" }}
+        >
+          <RoundButton onClick={onClick} disabled={disabled}>
+            {children}
+          </RoundButton>
         </div>
       </div>
     </div>

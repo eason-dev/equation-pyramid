@@ -124,9 +124,13 @@ export function AnswersTile({
               >
                 <div className="flex items-center justify-center w-8 sm:w-6 md:w-8">
                   {isSinglePlayer ? (
-                    <span className="font-bold text-lg sm:text-sm md:text-lg">✓</span>
+                    <span className="font-bold text-lg sm:text-sm md:text-lg">
+                      ✓
+                    </span>
                   ) : (
-                    <span className="font-bold text-lg sm:text-sm md:text-lg">P{playerIndex}</span>
+                    <span className="font-bold text-lg sm:text-sm md:text-lg">
+                      P{playerIndex}
+                    </span>
                   )}
                 </div>
                 <Typography variant="p1" className="flex-1 text-center">

@@ -40,7 +40,10 @@ export function ScoreCircle({ score, showCrown = false }: ScoreCircleProps) {
           WebkitBackdropFilter: "blur(24px)",
         }}
       >
-        <Typography variant="h1" className="text-white text-4xl md:text-5xl lg:text-6xl">
+        <Typography
+          variant="h1"
+          className="text-white text-4xl md:text-5xl lg:text-6xl"
+        >
           {score}
         </Typography>
       </div>
