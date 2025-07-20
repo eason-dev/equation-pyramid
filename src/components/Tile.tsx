@@ -134,7 +134,7 @@ export function Tile({
         font-inter
         relative
         overflow-hidden
-        ${disabled ? "cursor-not-allowed" : "cursor-pointer"}
+        ${disabled ? "cursor-default" : "cursor-pointer"}
       `}
       style={{
         background: styles.background,
