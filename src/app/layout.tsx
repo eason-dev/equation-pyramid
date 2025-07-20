@@ -28,11 +28,20 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Equation Pyramid",
+    images: [
+      {
+        url: "/og.jpg",
+        width: 1289,
+        height: 712,
+        alt: "Equation Pyramid - Math Puzzle Game",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Equation Pyramid - Math Puzzle Game",
     description: "Challenge your math skills with Equation Pyramid! Form equations using number tiles to reach target values.",
+    images: ["/og.jpg"],
   },
   icons: {
     icon: [
