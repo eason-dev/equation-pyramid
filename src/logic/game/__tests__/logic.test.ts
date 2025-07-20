@@ -1,6 +1,6 @@
 import type { Tile } from "@/logic/game/types";
 
-import { calculateEquation, generateGameState } from "../logic";
+import { calculateEquation, calculateEquationRaw, generateGameState } from "../logic";
 
 const INVALID_RESULT = -1;
 
@@ -131,6 +131,48 @@ describe("Game Logic", () => {
         { operator: "+", number: 2, label: "C" },
       ];
       expect(calculateEquation(tiles)).toBe(INVALID_RESULT);
+    });
+  });
+
+  describe("calculateEquationRaw", () => {
+    it("should correctly calculate AGB scenario (15 + (-9) + 9 = 15)", () => {
+      // This test specifically addresses the bug found in the screenshot
+      // where AGB (A=+15, G=-9, B=+9) was calculating to 0.67 instead of 15
+      const tiles: [Tile, Tile, Tile] = [
+        { operator: "+", number: 15, label: "A" },
+        { operator: "-", number: 9, label: "G" },
+        { operator: "+", number: 9, label: "B" },
+      ];
+      expect(calculateEquationRaw(tiles)).toBe(15);
+    });
+
+    it("should handle simple addition and subtraction", () => {
+      const tiles1: [Tile, Tile, Tile] = [
+        { operator: "+", number: 10, label: "A" },
+        { operator: "-", number: 3, label: "B" },
+        { operator: "+", number: 5, label: "C" },
+      ];
+      expect(calculateEquationRaw(tiles1)).toBe(12);
+    });
+
+    it("should handle order of operations with multiplication", () => {
+      // 5 + 3 * 2 = 5 + 6 = 11
+      const tiles1: [Tile, Tile, Tile] = [
+        { operator: "+", number: 5, label: "A" },
+        { operator: "+", number: 3, label: "B" },
+        { operator: "*", number: 2, label: "C" },
+      ];
+      expect(calculateEquationRaw(tiles1)).toBe(11);
+    });
+
+    it("should handle decimal results", () => {
+      // 10 / 3 + 2 = 3.33 + 2 = 5.33
+      const tiles1: [Tile, Tile, Tile] = [
+        { operator: "+", number: 10, label: "A" },
+        { operator: "/", number: 3, label: "B" },
+        { operator: "+", number: 2, label: "C" },
+      ];
+      expect(calculateEquationRaw(tiles1)).toBe(5.33);
     });
   });
 

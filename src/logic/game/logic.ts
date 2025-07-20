@@ -130,83 +130,97 @@ function generateConstrainedTiles(): Tile[] {
  */
 export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
   const [first, second, third] = tiles;
-  let result = first.number;
 
-  // Handle multiplication and division first (order of operations)
-  if (second.operator === "*" || second.operator === "/") {
-    switch (second.operator) {
-      case "*":
-        result *= second.number;
-        break;
-      case "/":
-        result = result / second.number;
-        break;
-    }
+  // For a three-term expression: first.number second.operator second.number third.operator third.number
+  // We need to follow order of operations (PEMDAS/BODMAS)
 
-    // Then handle the third operator
-    switch (third.operator) {
-      case "+":
-        result += third.number;
-        break;
-      case "-":
-        result -= third.number;
-        break;
-      case "*":
-        result *= third.number;
-        break;
-      case "/":
-        result = result / third.number;
-        break;
-    }
-  } else {
-    // Addition and subtraction from left to right, but handle multiply/divide in third position first
-    if (third.operator === "*" || third.operator === "/") {
-      let tempResult = result;
+  // Case 1: Both second and third operators are multiplication or division
+  // Evaluate left to right: ((first op2 second) op3 third)
+  if (
+    (second.operator === "*" || second.operator === "/") &&
+    (third.operator === "*" || third.operator === "/")
+  ) {
+    let result = first.number;
 
-      // Apply second operator
-      switch (second.operator) {
-        case "+":
-          tempResult += second.number;
-          break;
-        case "-":
-          tempResult -= second.number;
-          break;
-      }
-
-      // Apply third operator to the tempResult
-      switch (third.operator) {
-        case "*":
-          tempResult *= third.number;
-          break;
-        case "/":
-          tempResult = tempResult / third.number;
-          break;
-      }
-
-      result = tempResult;
+    // Apply second operator
+    if (second.operator === "*") {
+      result *= second.number;
     } else {
-      // No multiplication or division in third position, left to right
-      switch (second.operator) {
-        case "+":
-          result += second.number;
-          break;
-        case "-":
-          result -= second.number;
-          break;
-      }
-
-      switch (third.operator) {
-        case "+":
-          result += third.number;
-          break;
-        case "-":
-          result -= third.number;
-          break;
-      }
+      result = result / second.number;
     }
+
+    // Apply third operator
+    if (third.operator === "*") {
+      result *= third.number;
+    } else {
+      result = result / third.number;
+    }
+
+    return Math.round(result * 100) / 100;
   }
 
-  // Round to 2 decimal places to handle floating point precision issues
+  // Case 2: Only second operator is multiplication or division
+  // Evaluate as: (first op2 second) op3 third
+  if (second.operator === "*" || second.operator === "/") {
+    let result = first.number;
+
+    // Apply second operator first (higher precedence)
+    if (second.operator === "*") {
+      result *= second.number;
+    } else {
+      result = result / second.number;
+    }
+
+    // Then apply third operator
+    if (third.operator === "+") {
+      result += third.number;
+    } else {
+      result -= third.number;
+    }
+
+    return Math.round(result * 100) / 100;
+  }
+
+  // Case 3: Only third operator is multiplication or division
+  // Evaluate as: first op2 (second op3 third)
+  if (third.operator === "*" || third.operator === "/") {
+    // Calculate second op3 third first (higher precedence)
+    let rightResult = second.number;
+    if (third.operator === "*") {
+      rightResult *= third.number;
+    } else {
+      rightResult = rightResult / third.number;
+    }
+
+    // Then apply second operator with the result
+    let result = first.number;
+    if (second.operator === "+") {
+      result += rightResult;
+    } else {
+      result -= rightResult;
+    }
+
+    return Math.round(result * 100) / 100;
+  }
+
+  // Case 4: Both operators are addition or subtraction
+  // Evaluate left to right: ((first op2 second) op3 third)
+  let result = first.number;
+
+  // Apply second operator
+  if (second.operator === "+") {
+    result += second.number;
+  } else {
+    result -= second.number;
+  }
+
+  // Apply third operator
+  if (third.operator === "+") {
+    result += third.number;
+  } else {
+    result -= third.number;
+  }
+
   return Math.round(result * 100) / 100;
 }
 
