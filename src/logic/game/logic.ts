@@ -125,10 +125,10 @@ function generateConstrainedTiles(): Tile[] {
 }
 
 /**
- * Calculate the raw mathematical result of a 3-tile equation following order of operations
- * Shows actual mathematical result without game validity constraints
+ * Core calculation function that handles order of operations correctly
+ * Returns raw result without any validation constraints
  */
-export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
+function calculateEquationCore(tiles: [Tile, Tile, Tile]): number {
   const [first, second, third] = tiles;
 
   // For a three-term expression: first.number second.operator second.number third.operator third.number
@@ -156,7 +156,7 @@ export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
       result = result / third.number;
     }
 
-    return Math.round(result * 100) / 100;
+    return result;
   }
 
   // Case 2: Only second operator is multiplication or division
@@ -178,7 +178,7 @@ export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
       result -= third.number;
     }
 
-    return Math.round(result * 100) / 100;
+    return result;
   }
 
   // Case 3: Only third operator is multiplication or division
@@ -200,7 +200,7 @@ export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
       result -= rightResult;
     }
 
-    return Math.round(result * 100) / 100;
+    return result;
   }
 
   // Case 4: Both operators are addition or subtraction
@@ -221,94 +221,116 @@ export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
     result -= third.number;
   }
 
+  return result;
+}
+
+/**
+ * Calculate the raw mathematical result of a 3-tile equation following order of operations
+ * Shows actual mathematical result without game validity constraints
+ */
+export function calculateEquationRaw(tiles: [Tile, Tile, Tile]): number {
+  const result = calculateEquationCore(tiles);
+  // Round to 2 decimal places to handle floating point precision issues
   return Math.round(result * 100) / 100;
 }
 
+/**
+ * Calculate the game equation with validation for integer results and positive values
+ */
 export function calculateEquation(tiles: [Tile, Tile, Tile]): number {
   const [first, second, third] = tiles;
 
-  // First operation: second.operator(second.number)
-  let result = first.number;
+  // Validate division operations before calculation to ensure integer results
+  // This requires checking intermediate steps for division operations
 
-  // Handle multiplication and division first
-  if (second.operator === "*" || second.operator === "/") {
-    switch (second.operator) {
-      case "*":
-        result *= second.number;
-        break;
-      case "/": {
-        // Check if division results in integer
-        if (result % second.number !== 0) return INVALID_RESULT;
-        result = result / second.number;
-        break;
-      }
-    }
+  // Case 1: Both second and third operators are multiplication or division
+  if (
+    (second.operator === "*" || second.operator === "/") &&
+    (third.operator === "*" || third.operator === "/")
+  ) {
+    let result = first.number;
 
-    // Then handle the third operator
-    switch (third.operator) {
-      case "+":
-        result += third.number;
-        break;
-      case "-":
-        result -= third.number;
-        break;
-      case "*":
-        result *= third.number;
-        break;
-      case "/": {
-        // Check if division results in integer
-        if (result % third.number !== 0) return INVALID_RESULT;
-        result = result / third.number;
-        break;
-      }
-    }
-  } else {
-    // If second operator is + or -, we need to check third operator first
-    if (third.operator === "*" || third.operator === "/") {
-      // Calculate third operation first
-      let tempResult = second.number;
-      switch (third.operator) {
-        case "*":
-          tempResult *= third.number;
-          break;
-        case "/": {
-          // Check if division results in integer
-          if (tempResult % third.number !== 0) return INVALID_RESULT;
-          tempResult = tempResult / third.number;
-          break;
-        }
-      }
-
-      // Then apply second operation
-      switch (second.operator) {
-        case "+":
-          result += tempResult;
-          break;
-        case "-":
-          result -= tempResult;
-          break;
-      }
+    // Apply second operator with validation
+    if (second.operator === "*") {
+      result *= second.number;
     } else {
-      // Both operators are + or -, proceed left to right
-      switch (second.operator) {
-        case "+":
-          result += second.number;
-          break;
-        case "-":
-          result -= second.number;
-          break;
-      }
-
-      switch (third.operator) {
-        case "+":
-          result += third.number;
-          break;
-        case "-":
-          result -= third.number;
-          break;
-      }
+      if (result % second.number !== 0) return INVALID_RESULT;
+      result = result / second.number;
     }
+
+    // Apply third operator with validation
+    if (third.operator === "*") {
+      result *= third.number;
+    } else {
+      if (result % third.number !== 0) return INVALID_RESULT;
+      result = result / third.number;
+    }
+
+    // Check if final result is valid
+    if (result <= 0 || !Number.isInteger(result)) {
+      return INVALID_RESULT;
+    }
+
+    return result;
   }
+
+  // Case 2: Only second operator is multiplication or division
+  if (second.operator === "*" || second.operator === "/") {
+    let result = first.number;
+
+    // Apply second operator with validation
+    if (second.operator === "*") {
+      result *= second.number;
+    } else {
+      if (result % second.number !== 0) return INVALID_RESULT;
+      result = result / second.number;
+    }
+
+    // Apply third operator (no division validation needed for +/-)
+    if (third.operator === "+") {
+      result += third.number;
+    } else {
+      result -= third.number;
+    }
+
+    // Check if final result is valid
+    if (result <= 0 || !Number.isInteger(result)) {
+      return INVALID_RESULT;
+    }
+
+    return result;
+  }
+
+  // Case 3: Only third operator is multiplication or division
+  if (third.operator === "*" || third.operator === "/") {
+    // Calculate second op3 third first with validation
+    let rightResult = second.number;
+    if (third.operator === "*") {
+      rightResult *= third.number;
+    } else {
+      if (rightResult % third.number !== 0) return INVALID_RESULT;
+      rightResult = rightResult / third.number;
+    }
+
+    // Apply second operator
+    let result = first.number;
+    if (second.operator === "+") {
+      result += rightResult;
+    } else {
+      result -= rightResult;
+    }
+
+    // Check if final result is valid
+    if (result <= 0 || !Number.isInteger(result)) {
+      return INVALID_RESULT;
+    }
+
+    return result;
+  }
+
+  // Case 4: Both operators are addition or subtraction
+  // Use the core calculation since no division validation is needed
+  const result = calculateEquationCore(tiles);
 
   // Check if final result is valid
   if (result <= 0 || !Number.isInteger(result)) {
@@ -479,3 +501,13 @@ export function generateGameState(): GameState {
     validEquations: [],
   };
 }
+
+// Export as object to help with Jest module resolution
+const GameLogic = {
+  calculateEquationRaw,
+  calculateEquation,
+  generateGameState,
+};
+
+export default GameLogic;
+export { calculateEquationRaw, calculateEquation, generateGameState };

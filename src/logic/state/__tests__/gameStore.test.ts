@@ -13,6 +13,7 @@ jest.mock("../../game/logic", () => ({
     validEquations: [],
   }),
   calculateEquation: jest.fn().mockReturnValue(10),
+  calculateEquationRaw: jest.fn().mockReturnValue(10),
 }));
 
 describe("Game Store", () => {

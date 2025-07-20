@@ -1,11 +1,25 @@
 import type { Tile } from "@/logic/game/types";
 
-import { calculateEquation, calculateEquationRaw, generateGameState } from "../logic";
+import {
+  calculateEquation,
+  calculateEquationRaw,
+  generateGameState,
+} from "../logic";
 
 const INVALID_RESULT = -1;
 
 describe("Game Logic", () => {
   describe("calculateEquation", () => {
+    it("should correctly handle AGB scenario (15 + (-9) + 9 = 15)", () => {
+      // Verify that calculateEquation now also handles the AGB case correctly
+      const tiles: [Tile, Tile, Tile] = [
+        { operator: "+", number: 15, label: "A" },
+        { operator: "-", number: 9, label: "G" },
+        { operator: "+", number: 9, label: "B" },
+      ];
+      expect(calculateEquation(tiles)).toBe(15);
+    });
+
     it("should handle addition and subtraction", () => {
       // Test case 1: All additions
       const tiles1: [Tile, Tile, Tile] = [
@@ -173,6 +187,60 @@ describe("Game Logic", () => {
         { operator: "+", number: 2, label: "C" },
       ];
       expect(calculateEquationRaw(tiles1)).toBe(5.33);
+    });
+  });
+
+  describe("Function consistency", () => {
+    it("should have calculateEquation and calculateEquationRaw return same results for valid integer cases", () => {
+      const testCases: [Tile, Tile, Tile][] = [
+        // Simple addition/subtraction cases
+        [
+          { operator: "+", number: 15, label: "A" },
+          { operator: "-", number: 9, label: "G" },
+          { operator: "+", number: 9, label: "B" },
+        ],
+        [
+          { operator: "+", number: 10, label: "A" },
+          { operator: "+", number: 5, label: "B" },
+          { operator: "-", number: 3, label: "C" },
+        ],
+        // Valid multiplication/division cases
+        [
+          { operator: "+", number: 12, label: "A" },
+          { operator: "/", number: 3, label: "B" },
+          { operator: "+", number: 2, label: "C" },
+        ],
+        [
+          { operator: "+", number: 5, label: "A" },
+          { operator: "*", number: 2, label: "B" },
+          { operator: "+", number: 3, label: "C" },
+        ],
+      ];
+
+      for (const tiles of testCases) {
+        const rawResult = calculateEquationRaw(tiles);
+        const gameResult = calculateEquation(tiles);
+
+        // For valid game results, both should match
+        if (gameResult !== INVALID_RESULT) {
+          expect(rawResult).toBe(gameResult);
+        }
+      }
+    });
+
+    it("should have calculateEquation reject non-integer division while calculateEquationRaw allows it", () => {
+      // Case where division doesn't result in integer
+      const tiles: [Tile, Tile, Tile] = [
+        { operator: "+", number: 10, label: "A" },
+        { operator: "/", number: 3, label: "B" },
+        { operator: "+", number: 2, label: "C" },
+      ];
+
+      const rawResult = calculateEquationRaw(tiles);
+      const gameResult = calculateEquation(tiles);
+
+      expect(rawResult).toBe(5.33); // Raw allows decimal
+      expect(gameResult).toBe(INVALID_RESULT); // Game rejects non-integer
     });
   });
 

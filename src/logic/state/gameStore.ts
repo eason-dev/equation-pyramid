@@ -209,6 +209,11 @@ export const useGameStore = create<GameStoreState>()(
     selectTile: (tileIndex) => {
       const { selectedTiles, stopGuessTimer } = get();
 
+      // Check if this will be the 3rd tile selection
+      const willBeThirdTile =
+        selectedTiles.length === TILES_PER_EQUATION - 1 &&
+        !selectedTiles.includes(tileIndex);
+
       set((state) => {
         if (
           state.selectedTiles.length < TILES_PER_EQUATION &&
@@ -219,10 +224,10 @@ export const useGameStore = create<GameStoreState>()(
       });
 
       // When 3rd tile is selected, calculate result and show it with delay
-      if (selectedTiles.length === TILES_PER_EQUATION - 1) {
+      if (willBeThirdTile) {
         const state = get();
         if (state.gameState) {
-          const [i, j, k] = [...state.selectedTiles, tileIndex];
+          const [i, j, k] = [...selectedTiles, tileIndex];
           const equation = {
             tiles: [
               state.gameState.tiles[i],
