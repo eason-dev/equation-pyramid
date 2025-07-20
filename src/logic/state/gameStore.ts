@@ -73,6 +73,9 @@ interface GameData {
 
   // Audio settings
   isAudioEnabled: boolean;
+
+  // Timer control flags
+  shouldStartTimerAfterTransition: boolean;
 }
 
 export interface GameStoreState extends GameData {
@@ -92,6 +95,7 @@ export interface GameStoreState extends GameData {
   stopMainTimer: () => void;
   startGuessTimer: () => void;
   stopGuessTimer: () => void;
+  startTimerAfterTransition: () => void;
   startResultDelayTimer: () => void;
   stopResultDelayTimer: () => void;
 
@@ -133,6 +137,7 @@ const initialState: GameData = {
   guessTimerInterval: null,
   resultDelayInterval: null,
   isAudioEnabled: getInitialAudioState(),
+  shouldStartTimerAfterTransition: false,
 };
 
 const createInitialPlayers = (numPlayers: number): Player[] => {
@@ -174,7 +179,6 @@ export const useGameStore = create<GameStoreState>()(
     },
 
     startGame: () => {
-      const { startMainTimer } = get();
       set((state) => {
         state.currentState = "game";
         state.config.currentRound = 1;
@@ -186,8 +190,9 @@ export const useGameStore = create<GameStoreState>()(
         state.guessTimer = GUESS_DURATION;
         state.guessingPlayerId = null;
         state.roundHistory = []; // Clear round history from previous games
+        // Set flag to start timer after transition completes
+        state.shouldStartTimerAfterTransition = true;
       });
-      startMainTimer();
     },
 
     startGuessing: (playerId) => {
@@ -333,7 +338,6 @@ export const useGameStore = create<GameStoreState>()(
     },
 
     nextRound: () => {
-      const { startMainTimer } = get();
       set((state) => {
         // Save current round to history before moving to next round or ending game
         // (Only if not already saved by transitionToRoundOver)
@@ -362,7 +366,8 @@ export const useGameStore = create<GameStoreState>()(
           state.currentState = "gameOver";
         } else {
           state.currentState = "game";
-          // Don't update anything else yet
+          // Set flag to start timer after transition completes
+          state.shouldStartTimerAfterTransition = true;
         }
       });
 
@@ -378,7 +383,7 @@ export const useGameStore = create<GameStoreState>()(
             state.guessTimer = GUESS_DURATION;
             state.guessingPlayerId = null;
           });
-          startMainTimer();
+          // Timer will be started by startTimerAfterTransition when transition completes
         }, 600); // Delay to match when transition overlay reaches center
       }
     },
@@ -510,6 +515,16 @@ export const useGameStore = create<GameStoreState>()(
         clearInterval(state.guessTimerInterval);
         set((state) => {
           state.guessTimerInterval = null;
+        });
+      }
+    },
+
+    startTimerAfterTransition: () => {
+      const state = get();
+      if (state.shouldStartTimerAfterTransition) {
+        get().startMainTimer();
+        set((state) => {
+          state.shouldStartTimerAfterTransition = false;
         });
       }
     },

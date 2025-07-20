@@ -41,6 +41,7 @@ export default function AppPage() {
     // nextRound,
     continueGame,
     // transitionToRoundOver,
+    startTimerAfterTransition,
   } = useGameStore();
 
   // Debug mode
@@ -322,6 +323,9 @@ export default function AppPage() {
     // Animation completed, just hide overlay
     setShowTransition(false);
 
+    // Start timer if it was deferred due to transition
+    startTimerAfterTransition();
+
     // Check if we should show confetti after transition
     if (shouldShowConfettiAfterTransition) {
       setShowConfetti(true);
@@ -332,7 +336,7 @@ export default function AppPage() {
         setShowConfetti(false);
       }, 6000);
     }
-  }, [shouldShowConfettiAfterTransition]);
+  }, [shouldShowConfettiAfterTransition, startTimerAfterTransition]);
 
   const tiles = gameState?.tiles ?? [];
   const selectedPlayerId = guessingPlayerId;

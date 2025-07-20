@@ -17,7 +17,7 @@ export default function AboutPage() {
     window.open(
       "https://github.com/eason-dev/equation-pyramid",
       "_blank",
-      "noopener,noreferrer"
+      "noopener,noreferrer",
     );
   };
 
