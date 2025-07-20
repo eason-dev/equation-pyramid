@@ -15,8 +15,34 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Equation Pyramid",
-  description: "A game where players solve math equations",
+  title: "Equation Pyramid - Math Puzzle Game",
+  description: "Challenge your math skills with Equation Pyramid! Form equations using number tiles to reach target values in this addictive puzzle game inspired by The Devil's Plan.",
+  keywords: ["math game", "puzzle game", "equation game", "brain training", "mental math", "educational game"],
+  authors: [{ name: "Carol & Eason" }],
+  creator: "Carol & Eason",
+  publisher: "Equation Pyramid",
+  manifest: "/manifest.json",
+  openGraph: {
+    title: "Equation Pyramid - Math Puzzle Game",
+    description: "Challenge your math skills with Equation Pyramid! Form equations using number tiles to reach target values.",
+    type: "website",
+    locale: "en_US",
+    siteName: "Equation Pyramid",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Equation Pyramid - Math Puzzle Game",
+    description: "Challenge your math skills with Equation Pyramid! Form equations using number tiles to reach target values.",
+  },
+  icons: {
+    icon: [
+      { url: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/web-app-manifest-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" },
+    ],
+  },
 };
 
 export const viewport: Viewport = {

@@ -1,0 +1,24 @@
+{
+  "name": "Equation Pyramid - Math Puzzle Game",
+  "short_name": "Equation Pyramid",
+  "description": "Challenge your math skills with Equation Pyramid! Form equations using number tiles to reach target values.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0B0B",
+  "theme_color": "#242b3e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
