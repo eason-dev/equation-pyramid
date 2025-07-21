@@ -148,7 +148,8 @@ export const Typography = forwardRef<
   // Default non-curved rendering
   return (
     <Component
-      ref={ref as any}
+      // @ts-expect-error - ref type mismatch between component types
+      ref={ref}
       className={cn(variantStyles[variant], className)}
       {...props}
     >

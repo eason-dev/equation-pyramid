@@ -5,6 +5,33 @@ import { useEffect, useRef } from "react";
 import { useButtonSound } from "@/hooks/useButtonSound";
 import type { Operator, Tile as TileType } from "@/logic/game/types";
 
+// Add CSS keyframes for hint animation
+if (typeof window !== "undefined" && !document.querySelector("#hint-pulse-keyframes")) {
+  const style = document.createElement("style");
+  style.id = "hint-pulse-keyframes";
+  style.textContent = `
+    @keyframes hint-glow {
+      0%, 100% {
+        box-shadow: 
+          0 0 0 0 rgba(250, 204, 21, 0.7),
+          0 0 20px rgba(250, 204, 21, 0.6),
+          inset 0 0 20px rgba(250, 204, 21, 0.2);
+      }
+      50% {
+        box-shadow: 
+          0 0 0 12px rgba(250, 204, 21, 0),
+          0 0 40px rgba(250, 204, 21, 0.8),
+          inset 0 0 30px rgba(250, 204, 21, 0.3);
+      }
+    }
+    
+    .hint-tile {
+      animation: hint-glow 2s ease-in-out infinite;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 interface TileProps {
   tile: TileType;
   isSelected: boolean;
@@ -137,12 +164,12 @@ export function Tile({
         relative
         overflow-hidden
         ${disabled ? "cursor-default" : "cursor-pointer"}
-        ${isHint ? "animate-pulse ring-2 ring-yellow-400 ring-offset-2 ring-offset-transparent" : ""}
+        ${isHint ? "hint-tile" : ""}
       `}
       style={{
         background: styles.background,
         border: styles.border,
-        boxShadow: styles.shadow,
+        boxShadow: !isHint ? styles.shadow : undefined,
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
       }}

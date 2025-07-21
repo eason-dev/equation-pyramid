@@ -1,6 +1,6 @@
 "use client";
 
-import { TutorialView } from "@/views/TutorialView";
+import TutorialView from "@/views/TutorialView";
 
 export default function TutorialPage() {
   return <TutorialView />;

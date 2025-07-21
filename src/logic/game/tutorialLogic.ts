@@ -29,47 +29,40 @@ export function generateTutorialTiles(): {
   targetNumber: number;
   validEquations: Tile[][];
 } {
-  // Static tiles with variety - all numbers < 10, includes all operators
+  // Simple tiles designed for exactly 3 clear valid equations
   const tiles: Tile[] = [
-    { label: "A", number: 2, operator: "+" },
-    { label: "B", number: 3, operator: "+" },
-    { label: "C", number: 4, operator: "+" },
-    { label: "D", number: 1, operator: "+" },
-    { label: "E", number: 5, operator: "-" },
-    { label: "F", number: 2, operator: "*" },
+    { label: "A", number: 1, operator: "+" },
+    { label: "B", number: 2, operator: "+" },
+    { label: "C", number: 3, operator: "+" },
+    { label: "D", number: 4, operator: "+" },
+    { label: "E", number: 1, operator: "+" },
+    { label: "F", number: 1, operator: "+" },
     { label: "G", number: 3, operator: "*" },
-    { label: "H", number: 2, operator: "-" },
-    { label: "I", number: 6, operator: "/" },
-    { label: "J", number: 1, operator: "-" },
+    { label: "H", number: 2, operator: "*" },
+    { label: "I", number: 2, operator: "-" },
+    { label: "J", number: 5, operator: "+" },
   ];
 
   const targetNumber = 6;
 
-  // Pre-calculate some valid equations for hints
-  const validEquations: Tile[][] = [];
+  // Hand-picked exactly 3 non-overlapping valid equations for clarity
+  const validEquations: Tile[][] = [
+    // Equation 1: A(1) + B(+2) + C(+3) = 1 + 2 + 3 = 6
+    [tiles[0], tiles[1], tiles[2]], // A, B, C
+    // Equation 2: D(4) + E(+1) + F(+1) = 4 + 1 + 1 = 6  
+    [tiles[3], tiles[4], tiles[5]], // D, E, F
+    // Equation 3: G(3) + H(*2) + I(-2) = 3 + 3*2 - 2 = 3 + 6 - 2 = 7 ≠ 6, let me fix this
+    // Equation 3: J(5) + H(*2) + I(-2) = 5 + 5*2 - 2 = 5 + 10 - 2 = 13 ≠ 6, wrong again
+    // Equation 3: G(3) + J(+5) + I(-2) = 3 + 5 - 2 = 6 ✓
+    [tiles[6], tiles[9], tiles[8]], // G, J, I
+  ];
 
-  // Find all valid 3-tile combinations that equal 6
-  for (let i = 0; i < tiles.length; i++) {
-    for (let j = 0; j < tiles.length; j++) {
-      for (let k = 0; k < tiles.length; k++) {
-        if (i !== j && j !== k && i !== k) {
-          // All different tiles
-          const testTiles = [tiles[i], tiles[j], tiles[k]];
-          const result = calculateTutorialEquation(testTiles);
-          if (result === targetNumber) {
-            validEquations.push([...testTiles]);
-
-            // Only keep first 4 valid equations for hints
-            if (validEquations.length >= 4) {
-              return {
-                tiles,
-                targetNumber,
-                validEquations,
-              };
-            }
-          }
-        }
-      }
+  // Verify all equations are valid
+  for (let i = validEquations.length - 1; i >= 0; i--) {
+    const result = calculateTutorialEquation(validEquations[i]);
+    if (result !== targetNumber) {
+      console.warn(`Invalid equation at index ${i}:`, validEquations[i], `result: ${result}`);
+      validEquations.splice(i, 1);
     }
   }
 

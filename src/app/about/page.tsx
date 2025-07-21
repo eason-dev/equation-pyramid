@@ -13,7 +13,7 @@ export default function AboutPage() {
     playButtonSound();
   };
 
-  const handleGitHubClick = () => {
+  const _handleGitHubClick = () => {
     window.open(
       "https://github.com/eason-dev/equation-pyramid",
       "_blank",

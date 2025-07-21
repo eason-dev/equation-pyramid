@@ -204,7 +204,7 @@ describe("Game Store", () => {
     expect(result.current.players[0].score).toBe(1); // Player 1 gets a point
     expect(result.current.selectedTiles).toHaveLength(0); // Tiles are cleared
     expect(result.current.foundEquations).toHaveLength(1); // Equation is recorded
-    
+
     // Game continues because there are more valid equations in the mock
     expect(result.current.currentState).toBe("game");
   });
@@ -353,7 +353,7 @@ describe("Game Store", () => {
     });
 
     expect(result.current.currentState).toBe("showingResult");
-    
+
     // Wait for auto-transition back to game
     act(() => {
       jest.advanceTimersByTime(2500);
