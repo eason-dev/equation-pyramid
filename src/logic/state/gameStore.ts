@@ -255,6 +255,29 @@ export const useGameStore = create<GameStoreState>()(
             state.currentState = "showingResult";
             state.currentEquationResult = displayResult;
             state.isCurrentEquationCorrect = isCorrect;
+
+            // Immediately add to foundEquations if correct and not duplicate
+            if (isCorrect && state.guessingPlayerId) {
+              state.foundEquations.push({
+                key: equationKey,
+                foundBy: state.guessingPlayerId,
+              });
+              // Award point immediately
+              const player = state.players.find(
+                (p) => p.id === state.guessingPlayerId,
+              );
+              if (player) {
+                player.score += 1;
+              }
+            } else if (isDuplicate && state.guessingPlayerId) {
+              // Deduct point immediately for duplicate
+              const player = state.players.find(
+                (p) => p.id === state.guessingPlayerId,
+              );
+              if (player) {
+                player.score = Math.max(0, player.score - 1);
+              }
+            }
             // Keep the current guessTimer value instead of resetting
           });
 
@@ -298,22 +321,40 @@ export const useGameStore = create<GameStoreState>()(
           (p) => p.id === state.guessingPlayerId,
         );
 
-        if (state.foundEquations.some((eq) => eq.key === equationKey)) {
-          // Deduct point for duplicate equation
-          if (player) {
-            player.score = Math.max(0, player.score - 1);
+        // Check if this was already processed in selectTile
+        const alreadyProcessed = state.isCurrentEquationCorrect !== null;
+
+        if (!alreadyProcessed) {
+          // Only process if not already handled in selectTile
+          // This case happens when timer expires before equation is complete
+          if (state.foundEquations.some((eq) => eq.key === equationKey)) {
+            // Deduct point for duplicate equation
+            if (player) {
+              player.score = Math.max(0, player.score - 1);
+            }
+          } else if (result === state.gameState.targetNumber) {
+            // This shouldn't happen as correct equations are processed in selectTile
+            // But keep as fallback
+            if (player) {
+              player.score += 1;
+            }
+            state.foundEquations.push({
+              key: equationKey,
+              foundBy: state.guessingPlayerId,
+            });
+          } else {
+            // Deduct point for incorrect equation
+            if (player) {
+              player.score = Math.max(0, player.score - 1);
+            }
           }
-        } else if (result === state.gameState.targetNumber) {
-          // Award point for correct equation
-          if (player) {
-            player.score += 1;
-          }
-          state.foundEquations.push({
-            key: equationKey,
-            foundBy: state.guessingPlayerId,
-          });
-        } else {
-          // Deduct point for incorrect equation
+        } else if (
+          state.isCurrentEquationCorrect === false &&
+          result !== state.gameState.targetNumber &&
+          !state.foundEquations.some((eq) => eq.key === equationKey)
+        ) {
+          // Handle incorrect equations that weren't duplicates
+          // Score deduction for incorrect equation
           if (player) {
             player.score = Math.max(0, player.score - 1);
           }

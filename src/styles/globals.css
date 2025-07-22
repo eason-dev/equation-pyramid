@@ -37,7 +37,6 @@ html {
   }
 }
 
-
 /* Hide cursor globally when floating button is active */
 .hide-cursor * {
   cursor: none !important;

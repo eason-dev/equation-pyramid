@@ -230,13 +230,17 @@ describe("Game Store", () => {
       result.current.selectTile(2);
     });
 
+    // With immediate update, score is deducted right away for incorrect equation
+    expect(result.current.players[0].score).toBe(0); // Score should be 0 (deducted for incorrect)
+    expect(result.current.isCurrentEquationCorrect).toBe(false); // Marked as incorrect
+
     // Wait for auto-submit after result display
     act(() => {
       jest.advanceTimersByTime(2500);
     });
 
-    // Player gets 1 point because calculateEquationRaw returns 10, which matches the target
-    expect(result.current.players[0].score).toBe(1);
+    // Score remains 0 after submit (already processed)
+    expect(result.current.players[0].score).toBe(0);
     expect(result.current.selectedTiles).toHaveLength(0); // Tiles are cleared
     expect(result.current.currentState).toBe("game"); // Back to game state
   });
