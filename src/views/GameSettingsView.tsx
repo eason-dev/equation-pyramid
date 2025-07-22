@@ -19,7 +19,7 @@ export function GameSettingsView({
   onStartGame,
 }: GameSettingsViewProps) {
   return (
-    <div className="h-full flex flex-col items-center justify-start px-4 md:px-6 pt-12 md:pt-16 lg:pt-20 gap-12 md:gap-14 lg:gap-16">
+    <div className="h-full flex flex-col items-center justify-center px-4 md:px-6 gap-8 md:gap-10 lg:gap-12">
       {/* Header Section */}
       <div className="flex flex-col items-center gap-4 md:gap-5 lg:gap-6">
         <Typography
@@ -90,7 +90,7 @@ export function GameSettingsView({
       </div>
 
       {/* Start Button */}
-      <div className="flex justify-center w-full pb-8">
+      <div className="flex justify-center w-full">
         <Button onClick={onStartGame} variant="primary">
           Start
         </Button>

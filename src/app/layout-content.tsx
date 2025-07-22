@@ -47,10 +47,10 @@ export default function LayoutContent({
       {/* Background Shader */}
       <ShaderBackground showControls={false} color="#242b3e" />
 
-      <div className="min-h-screen text-white flex flex-col relative z-10">
+      <div className="h-screen overflow-hidden text-white flex flex-col relative z-10">
         <Header />
 
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 pt-16 md:pt-20 overflow-y-auto overflow-x-hidden">{children}</main>
 
         <Footer audioControls={mainAudioControls} trackType="main" />
       </div>

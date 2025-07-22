@@ -13,11 +13,6 @@ html {
 
 /* Landscape orientation adjustments for mobile */
 @media (max-width: 767px) and (orientation: landscape) {
-  /* Reduce vertical spacing in landscape */
-  .min-h-screen {
-    min-height: auto;
-  }
-
   /* Adjust padding for landscape */
   .pt-12 {
     padding-top: 2rem;
@@ -40,6 +35,12 @@ html {
   .gap-6 {
     gap: 1rem;
   }
+}
+
+/* Ensure html and body take full height */
+html, body {
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Hide cursor globally when floating button is active */

@@ -22,7 +22,7 @@ export default function AboutPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 relative">
+    <div className="h-full flex flex-col items-center justify-start p-6 relative overflow-y-auto overflow-x-hidden">
       {/* Close Button */}
       <div className="fixed top-6 right-6 z-20">
         <Link href="/" onClick={handleLinkClick}>

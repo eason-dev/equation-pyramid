@@ -18,23 +18,25 @@ export function Header() {
   };
 
   return (
-    <header className="flex items-center justify-between p-4 md:p-6">
-      {/* Logo */}
-      <Link href="/" onClick={handleLogoClick} className="cursor-pointer">
-        <Image
-          src="/logo.svg"
-          alt="Logo"
-          width={120}
-          height={32}
-          className="h-6 w-auto md:h-8"
-        />
-      </Link>
+    <header className="fixed top-0 left-0 right-0 z-50">
+      <div className="flex items-center justify-between p-4 md:p-6">
+        {/* Logo */}
+        <Link href="/" onClick={handleLogoClick} className="cursor-pointer">
+          <Image
+            src="/logo.svg"
+            alt="Logo"
+            width={120}
+            height={32}
+            className="h-6 w-auto md:h-8"
+          />
+        </Link>
 
-      {/* Center - Empty space for game-specific content */}
-      <div className="flex-1" />
+        {/* Center - Empty space for game-specific content */}
+        <div className="flex-1" />
 
-      {/* Right - Empty space */}
-      <div className="w-[40px] md:w-[60px]" />
+        {/* Right - Empty space */}
+        <div className="w-[40px] md:w-[60px]" />
+      </div>
     </header>
   );
 }

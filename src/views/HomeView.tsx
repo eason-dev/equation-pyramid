@@ -30,7 +30,7 @@ export function HomeView({ onStart, onTutorialClick }: HomeViewProps) {
     setTiles(gameState.tiles);
   }, []);
   return (
-    <div className="h-full flex flex-col items-center justify-start px-4 md:px-6 lg:px-8 pt-12 md:pt-16 lg:pt-20 gap-8 md:gap-12 lg:gap-16">
+    <div className="h-full flex flex-col items-center justify-center px-4 md:px-6 lg:px-8 gap-6 md:gap-8 lg:gap-10">
       {/* Title Section */}
       <div className="flex flex-col items-center gap-4 md:gap-5 lg:gap-6">
         <Typography
@@ -49,7 +49,7 @@ export function HomeView({ onStart, onTutorialClick }: HomeViewProps) {
 
       {/* Center Section - Pyramid Tiles */}
       <div className="flex-1 flex items-center justify-center w-full max-w-sm md:max-w-md lg:max-w-none">
-        <div className="transform scale-75 md:scale-90 lg:scale-100">
+        <div className="transform scale-[0.65] md:scale-75 lg:scale-90">
           <TileList
             tiles={tiles}
             selectedTiles={[]}
@@ -60,7 +60,7 @@ export function HomeView({ onStart, onTutorialClick }: HomeViewProps) {
       </div>
 
       {/* Buttons Section */}
-      <div className="flex flex-col items-center gap-6 md:gap-7 lg:gap-8 w-full max-w-xs md:max-w-sm pb-8">
+      <div className="flex flex-col items-center gap-4 md:gap-5 lg:gap-6 w-full max-w-xs md:max-w-sm pb-4">
         <Button variant="primary" onClick={onStart}>
           Start Game
         </Button>
