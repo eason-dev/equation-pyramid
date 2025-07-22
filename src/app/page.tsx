@@ -376,13 +376,13 @@ export default function AppPage() {
 
       {/* Main Content */}
       <div
-        className={`h-screen overflow-hidden text-white flex flex-col relative z-10 transition-transform duration-75 ${
+        className={`min-h-screen text-white flex flex-col relative z-10 transition-transform duration-75 ${
           isShaking ? "animate-shake" : ""
         }`}
       >
         <Header />
 
-        <main className="flex-1 pt-16 md:pt-20 overflow-y-auto overflow-x-hidden">
+        <main className="flex-1 pt-16 md:pt-20">
           {displayState === "menu" && (
             <HomeView
               onStart={start}

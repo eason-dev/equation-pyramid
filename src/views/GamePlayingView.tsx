@@ -76,7 +76,7 @@ export function GamePlayingView({
   //   : 0;
 
   return (
-    <div className="h-full flex flex-col items-center justify-center px-4 md:px-6 py-4 md:py-6 landscape:py-2 overflow-hidden">
+    <div className="h-full flex flex-col items-center justify-center px-4 md:px-6 py-4 md:py-6 landscape:py-2">
       {/* Timer and Round Stepper Section */}
       <div className="flex flex-col items-center gap-3 md:gap-4 lg:gap-6">
         {config.numRounds > 1 && (

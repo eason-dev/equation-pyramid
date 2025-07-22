@@ -132,7 +132,7 @@ export function GameOverView({
   ]);
 
   return (
-    <div className="h-full flex flex-col items-center justify-start px-4 md:px-6 pt-12 md:pt-16 lg:pt-20 relative z-10">
+    <div className="h-full flex flex-col items-center justify-center px-4 md:px-6 relative z-10">
       {/* Mobile Pagination Dots */}
       <div className="md:hidden flex items-center gap-2 mb-8">
         <button

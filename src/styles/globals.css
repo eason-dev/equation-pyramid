@@ -37,11 +37,6 @@ html {
   }
 }
 
-/* Ensure html and body take full height */
-html, body {
-  height: 100%;
-  overflow: hidden;
-}
 
 /* Hide cursor globally when floating button is active */
 .hide-cursor * {
