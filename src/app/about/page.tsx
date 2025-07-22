@@ -1,48 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { Block } from "@/components/Block";
 import { Typography } from "@/components/Typography";
-import { useButtonSound } from "@/hooks/useButtonSound";
 
 export default function AboutPage() {
-  const { playButtonSound } = useButtonSound();
-
-  const handleLinkClick = () => {
-    playButtonSound();
-  };
-
-  const handleGitHubClick = () => {
-    window.open(
-      "https://github.com/eason-dev/equation-pyramid",
-      "_blank",
-      "noopener,noreferrer",
-    );
-  };
-
   return (
-    <div className="h-full flex flex-col items-center justify-start p-6 relative">
-      {/* Close Button */}
-      <div className="fixed top-6 right-6 z-20">
-        <Link href="/" onClick={handleLinkClick}>
-          <div className="w-12 h-12 bg-black bg-opacity-80 rounded-full flex items-center justify-center hover:bg-opacity-60 transition-colors cursor-pointer">
-            <svg width="19.5" height="19.5" viewBox="0 0 20 20" fill="none">
-              <title>Close</title>
-              <path
-                d="M15 5L5 15M5 5L15 15"
-                stroke="white"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-        </Link>
-      </div>
-
+    <div className="h-full flex flex-col items-center justify-start px-6 pt-2 pb-4 relative">
       {/* Content */}
-      <div className="flex flex-col items-center gap-24 max-w-4xl w-full">
+      <div className="flex flex-col items-center gap-10 max-w-4xl w-full">
         {/* Title */}
         <Typography variant="h1" className="text-white text-center">
           About
@@ -94,7 +60,6 @@ export default function AboutPage() {
                       href="https://www.carolhsiao.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={handleLinkClick}
                       className="w-6 h-6 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
                       title="Website"
                     >
@@ -112,7 +77,6 @@ export default function AboutPage() {
                       href="https://www.linkedin.com/in/carol-hsiao-5779a1158/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={handleLinkClick}
                       className="w-6 h-6 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
                       title="LinkedIn"
                     >
@@ -130,7 +94,6 @@ export default function AboutPage() {
                       href="https://github.com/carolhsiaoo"
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={handleLinkClick}
                       className="w-6 h-6 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
                       title="GitHub"
                     >
@@ -166,7 +129,6 @@ export default function AboutPage() {
                       href="https://easonchang.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={handleLinkClick}
                       className="w-6 h-6 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
                       title="Website"
                     >
@@ -184,7 +146,6 @@ export default function AboutPage() {
                       href="https://www.linkedin.com/in/easonchang101/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={handleLinkClick}
                       className="w-6 h-6 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
                       title="LinkedIn"
                     >
@@ -202,7 +163,6 @@ export default function AboutPage() {
                       href="https://github.com/eason-dev"
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={handleLinkClick}
                       className="w-6 h-6 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
                       title="GitHub"
                     >
@@ -220,7 +180,6 @@ export default function AboutPage() {
                       href="https://twitter.com/EasonChang_me"
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={handleLinkClick}
                       className="w-6 h-6 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
                       title="Twitter"
                     >
@@ -254,7 +213,6 @@ export default function AboutPage() {
                 href="https://github.com/eason-dev/equation-pyramid"
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={handleLinkClick}
                 className="flex items-center gap-3 px-6 py-3 bg-black bg-opacity-60 hover:bg-opacity-80 rounded-lg transition-colors border border-white border-opacity-20"
               >
                 <svg
