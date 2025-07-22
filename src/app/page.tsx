@@ -372,7 +372,7 @@ export default function AppPage() {
       )}
 
       {/* Background Shader */}
-      <ShaderBackground showControls={true} color={getBackgroundColor()} />
+      <ShaderBackground showControls={DEBUG} color={getBackgroundColor()} />
 
       {/* Main Content */}
       <div

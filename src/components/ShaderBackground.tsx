@@ -106,9 +106,13 @@ export function ShaderBackground({
   className = "fixed top-0 left-0 w-screen h-screen overflow-hidden -z-10",
   color,
 }: ShaderBackgroundProps) {
+  // Only show controls in development mode, even if showControls is true
+  const shouldShowControls =
+    showControls && process.env.NODE_ENV === "development";
+
   return (
     <>
-      {showControls && <Leva collapsed={true} />}
+      {shouldShowControls && <Leva collapsed={true} />}
       <div className={className}>
         <Canvas orthographic camera={{ zoom: 1, position: [0, 0, 1] }}>
           <FullscreenShader externalColor={color} />
