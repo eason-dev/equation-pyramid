@@ -22,6 +22,7 @@ interface GamePlayingViewProps {
   onTileClick: (index: number) => void;
   DEBUG?: boolean;
   isOver?: boolean;
+  isTutorial?: boolean;
 
   // Optional store state override for testing/Storybook
   storeOverrides?: Partial<GameStoreState>;
@@ -36,6 +37,7 @@ export function GamePlayingView({
   storeOverrides,
   DEBUG = false,
   isOver = false,
+  isTutorial = false,
 }: GamePlayingViewProps) {
   const hookStore = useGameStore();
 
@@ -263,8 +265,8 @@ export function GamePlayingView({
         />
       )}
 
-      {/* Floating Button - Only visible when round is complete */}
-      {shouldShowCompletion && (
+      {/* Floating Button - Only visible when round is complete and not in tutorial */}
+      {shouldShowCompletion && !isTutorial && (
         <FloatingButtonWithProgress
           onClick={nextRound}
           progress={1}

@@ -6,10 +6,12 @@ import TutorialView from "@/components/TutorialView";
 import { useTutorialStore } from "@/logic/state/tutorialStore";
 import { ShaderBackground } from "@/components/ShaderBackground";
 import { useAudio } from "@/hooks/useAudio";
+import { useGameStore } from "@/logic/state/gameStore";
 
 export default function TutorialPage() {
   const router = useRouter();
   const { startTutorial, exitTutorial } = useTutorialStore();
+  const { exitToMenu } = useGameStore();
 
   // Tutorial background music
   const audioControls = useAudio("/audio/main-background-music.ogg", {
@@ -27,13 +29,18 @@ export default function TutorialPage() {
   useEffect(() => {
     const unsubscribe = useTutorialStore.subscribe((state) => {
       if (!state.isActive && state.hasCompletedTutorial) {
-        // Navigate back to home with settings flag
-        router.push("/?showSettings=true");
+        // Reset game to menu state first
+        exitToMenu();
+        // Add small delay to ensure proper state transition
+        setTimeout(() => {
+          // Navigate back to home with settings flag
+          router.push("/?showSettings=true");
+        }, 100);
       }
     });
 
     return unsubscribe;
-  }, [router]);
+  }, [router, exitToMenu]);
 
   return (
     <>

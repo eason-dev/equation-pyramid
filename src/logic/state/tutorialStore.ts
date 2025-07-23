@@ -28,12 +28,6 @@ const tutorialSteps: TutorialStep[] = [
   },
   {
     id: 3,
-    content: "",
-    showTiles: true,
-    selectedTiles: [0, 1], // Show tiles A and I selected
-  },
-  {
-    id: 4,
     content: "Solve × and ÷ come before + and -",
     showTiles: true,
     selectedTiles: [0, 1, 2], // Show tiles A, I, J selected
@@ -42,7 +36,7 @@ const tutorialSteps: TutorialStep[] = [
     showEquation: "1 + 1 + 1",
   },
   {
-    id: 5,
+    id: 4,
     title: "Scoring Rules",
     content: [
       "+1 → Get it right",
@@ -53,7 +47,7 @@ const tutorialSteps: TutorialStep[] = [
     highlight: "score",
   },
   {
-    id: 6,
+    id: 5,
     title: "Bonus tip",
     content: "It would be 2 to 5 answers in each round, try to find as many as possible.",
     highlight: "answers",

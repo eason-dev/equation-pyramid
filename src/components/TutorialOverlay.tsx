@@ -47,22 +47,18 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
           selector = '[data-tutorial="tiles-area"]';
           break;
         case 2:
-          // Highlight tile A
-          selector = '[data-tutorial="tile-0"]';
-          break;
-        case 3:
-          // Highlight tiles A and I
-          selector = '[data-tutorial="tile-0"], [data-tutorial="tile-8"]';
-          break;
-        case 4:
-          // Highlight the result area
+          // Highlight the guessing state area
           selector = '[data-tutorial="guessing-state"]';
           break;
-        case 5:
-          // Highlight the score area
-          selector = '[data-tutorial="answer-button"]';
+        case 3:
+          // Highlight the guessing state showing result
+          selector = '[data-tutorial="guessing-state"]';
           break;
-        case 6:
+        case 4:
+          // No highlight for step 4 - full overlay (scoring rules)
+          selector = '';
+          break;
+        case 5:
           // Highlight the answers area
           selector = '[data-tutorial="answers-area"]';
           break;
@@ -70,6 +66,7 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
 
       if (selector) {
         const elements = document.querySelectorAll(selector);
+        
         if (elements.length > 0) {
           // Calculate bounding box for all elements
           let minX = Infinity, minY = Infinity, maxX = 0, maxY = 0;
@@ -91,15 +88,37 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
             height: maxY - minY + (padding * 2),
           });
 
-          // Calculate tooltip position - always at bottom center by default
-          // Account for the tooltip being ~400px wide, so center it
-          let tooltipTop = window.innerHeight - 250;
-          let tooltipLeft = window.innerWidth / 2 - 200; // Center a 400px wide element
+          // Calculate tooltip position
+          let tooltipTop, tooltipLeft;
           
-          // Special positioning for step 2 (to the right of tile A)
-          if (currentStep === 2) {
-            tooltipLeft = maxX + padding + 20;
-            tooltipTop = minY;
+          // Special positioning for specific steps
+          if (currentStep === 2 || currentStep === 3) {
+            // Position below the highlighted element (guessing state)
+            tooltipTop = maxY + padding + 20;
+            tooltipLeft = (minX + maxX) / 2 - 200; // Center relative to highlighted element
+            
+            // Ensure it doesn't go off screen bottom
+            if (tooltipTop > window.innerHeight - 300) {
+              // Position above instead
+              tooltipTop = minY - padding - 300;
+            }
+            
+            // Ensure it doesn't go off screen horizontally
+            if (tooltipLeft < 20) tooltipLeft = 20;
+            if (tooltipLeft > window.innerWidth - 420) tooltipLeft = window.innerWidth - 420;
+          } else if (currentStep === 5) {
+            // Position above the answers area for step 5
+            tooltipTop = minY - padding - 250;
+            tooltipLeft = (minX + maxX) / 2 - 200;
+            
+            // Ensure it doesn't go off screen
+            if (tooltipTop < 20) tooltipTop = 20;
+            if (tooltipLeft < 20) tooltipLeft = 20;
+            if (tooltipLeft > window.innerWidth - 420) tooltipLeft = window.innerWidth - 420;
+          } else {
+            // Default bottom center position
+            tooltipTop = window.innerHeight - 250;
+            tooltipLeft = window.innerWidth / 2 - 200;
           }
           
           setTooltipPosition({
@@ -111,11 +130,20 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
         // No highlight for this step
         setHighlightPosition(null);
         
-        // Position at bottom center for steps without specific highlights
-        setTooltipPosition({
-          top: window.innerHeight - 200,
-          left: window.innerWidth / 2,
-        });
+        // Position based on step
+        if (currentStep === 4) {
+          // Center position for step 4 (scoring rules)
+          setTooltipPosition({
+            top: window.innerHeight / 2 - 150, // Center vertically (assuming ~300px height)
+            left: window.innerWidth / 2 - 200, // Center horizontally
+          });
+        } else {
+          // Default bottom center for other steps
+          setTooltipPosition({
+            top: window.innerHeight - 250,
+            left: window.innerWidth / 2 - 200,
+          });
+        }
       }
     };
 
@@ -124,12 +152,18 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
     window.addEventListener("scroll", calculatePosition, true);
     
     // Recalculate after a small delay to ensure DOM is ready
-    const timeout = setTimeout(calculatePosition, 100);
+    const timeout1 = setTimeout(calculatePosition, 100);
+    // Additional recalculation for step 2 to ensure guessing state is rendered
+    const timeout2 = setTimeout(calculatePosition, 500);
+    // One more recalculation for safety
+    const timeout3 = setTimeout(calculatePosition, 800);
 
     return () => {
       window.removeEventListener("resize", calculatePosition);
       window.removeEventListener("scroll", calculatePosition, true);
-      clearTimeout(timeout);
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
+      clearTimeout(timeout3);
     };
   }, [currentStep]);
 
@@ -222,15 +256,15 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
               </div>
               
               <div className="p-6">
-                {/* Step title - only for steps 5 & 6 */}
-                {currentStepData.title && currentStep >= 5 && (
+                {/* Step title - only for steps 4 & 5 */}
+                {currentStepData.title && currentStep >= 4 && (
                   <Typography variant="h2" className="text-white mb-4 text-center">
                     {currentStepData.title}
                   </Typography>
                 )}
 
               {/* Content */}
-              <div className={currentStep >= 5 ? "mb-6" : "mb-6"}>
+              <div className={currentStep >= 4 ? "mb-6" : "mb-6"}>
                 {Array.isArray(currentStepData.content) ? (
                   <ul className="space-y-2 text-left">
                     {currentStepData.content.map((item, index) => (

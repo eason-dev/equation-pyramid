@@ -72,9 +72,6 @@ importers:
       '@storybook/addon-docs':
         specifier: ^9.0.9
         version: 9.0.9(@types/react@19.1.5)(storybook@9.0.9(@testing-library/dom@10.4.0))
-      '@storybook/addon-onboarding':
-        specifier: ^9.0.9
-        version: 9.0.9(storybook@9.0.9(@testing-library/dom@10.4.0))
       '@storybook/addon-vitest':
         specifier: ^9.0.9
         version: 9.0.9(@vitest/browser@3.2.3)(@vitest/runner@3.2.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.9(@testing-library/dom@10.4.0))(vitest@3.2.3)
@@ -1300,11 +1297,6 @@ packages:
 
   '@storybook/addon-docs@9.0.9':
     resolution: {integrity: sha512-jioo7RXTEzuCvZ1mD+7e2n6sGvlXH0mm8ENEsercM35vPKZzrmsmwQ+SPJk5GNjrcNy2qXR7bXJA14hwc+shuA==}
-    peerDependencies:
-      storybook: ^9.0.9
-
-  '@storybook/addon-onboarding@9.0.9':
-    resolution: {integrity: sha512-aU8nWRr5HFBCGuScwJvOx3RVN7SkEt5ADzPWY4jwqWJyyLljcge2vO24F3tyh3mifmqb9MoPU/NoaJQTQ1xHmg==}
     peerDependencies:
       storybook: ^9.0.9
 
@@ -5922,10 +5914,6 @@ snapshots:
       ts-dedent: 2.2.0
     transitivePeerDependencies:
       - '@types/react'
-
-  '@storybook/addon-onboarding@9.0.9(storybook@9.0.9(@testing-library/dom@10.4.0))':
-    dependencies:
-      storybook: 9.0.9(@testing-library/dom@10.4.0)
 
   '@storybook/addon-vitest@9.0.9(@vitest/browser@3.2.3)(@vitest/runner@3.2.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(storybook@9.0.9(@testing-library/dom@10.4.0))(vitest@3.2.3)':
     dependencies:

@@ -132,6 +132,8 @@ export const Typography = forwardRef<
                     ? "0.55em"
                     : textContent === "Answers Completed"
                       ? "0.60em"
+                      : textContent === "Tutorial Finish"
+                      ? "0.38em"
                       : "0.45em",
               }}
             >
