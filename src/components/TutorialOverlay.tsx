@@ -292,9 +292,11 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
                 {Array.isArray(currentStepData.content) ? (
                   <ul className="space-y-2 text-left">
                     {currentStepData.content.map((item, index) => (
-                      <li key={index} className="text-white text-sm flex items-start">
-                        <span className="mr-2">•</span>
-                        <span>{item}</span>
+                      <li key={index} className="flex items-start">
+                        <span className="mr-2 text-white">•</span>
+                        <Typography variant="p3" className="text-white">
+                          {item}
+                        </Typography>
                       </li>
                     ))}
                   </ul>

@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { FloatingButtonWithProgress } from "@/components/FloatingButtonWithProgress";
 
 // Animation overlay component
-function AnimationOverlay({ phase, step }: { phase: string; step: number }) {
+function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; step: number; onPhaseComplete: () => void }) {
   const [answerButtonRect, setAnswerButtonRect] = useState<DOMRect | null>(null);
   const [tileRects, setTileRects] = useState<(DOMRect | null)[]>([null, null, null]);
 
@@ -29,9 +29,12 @@ function AnimationOverlay({ phase, step }: { phase: string; step: number }) {
   }, [phase]);
 
   return (
-    <div className="fixed inset-0 z-[9998] pointer-events-none">
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/50" />
+    <div className="fixed inset-0 z-[9998]">
+      {/* Dark overlay - clickable to advance */}
+      <div 
+        className="absolute inset-0 bg-black/50 cursor-pointer" 
+        onClick={onPhaseComplete}
+      />
       
       {/* Step 2 animations */}
       {step === 2 && (
@@ -40,7 +43,7 @@ function AnimationOverlay({ phase, step }: { phase: string; step: number }) {
           {phase === "pressing" && answerButtonRect && (
             <>
               <div 
-                className="absolute bg-white/10 rounded-xl animate-pulse"
+                className="absolute bg-white/10 rounded-xl animate-pulse cursor-pointer"
                 style={{
                   top: answerButtonRect.top - 5,
                   left: answerButtonRect.left - 5,
@@ -48,15 +51,19 @@ function AnimationOverlay({ phase, step }: { phase: string; step: number }) {
                   height: answerButtonRect.height + 10,
                   boxShadow: "0 0 40px rgba(169, 199, 255, 0.8)",
                 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPhaseComplete();
+                }}
               />
               <div 
-                className="absolute text-white text-2xl font-bold animate-bounce"
+                className="absolute text-white text-2xl font-bold animate-bounce pointer-events-none"
                 style={{
                   top: answerButtonRect.top - 60,
                   left: answerButtonRect.left + answerButtonRect.width / 2 - 20,
                 }}
               >
-                Click!
+                Click Here!
               </div>
             </>
           )}
@@ -65,7 +72,7 @@ function AnimationOverlay({ phase, step }: { phase: string; step: number }) {
           {phase === "selecting" && tileRects[0] && (
             <>
               <div 
-                className="absolute rounded-lg animate-pulse"
+                className="absolute rounded-lg animate-pulse cursor-pointer"
                 style={{
                   top: tileRects[0].top - 5,
                   left: tileRects[0].left - 5,
@@ -74,15 +81,19 @@ function AnimationOverlay({ phase, step }: { phase: string; step: number }) {
                   border: "3px solid rgba(169, 199, 255, 0.8)",
                   boxShadow: "0 0 30px rgba(169, 199, 255, 0.8)",
                 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPhaseComplete();
+                }}
               />
               <div 
-                className="absolute text-white text-xl font-bold"
+                className="absolute text-white text-xl font-bold pointer-events-none"
                 style={{
                   top: tileRects[0].top - 40,
                   left: tileRects[0].left + tileRects[0].width / 2 - 30,
                 }}
               >
-                Select A
+                Click Tile A
               </div>
             </>
           )}
@@ -96,7 +107,7 @@ function AnimationOverlay({ phase, step }: { phase: string; step: number }) {
           {phase === "selecting2" && tileRects[1] && (
             <>
               <div 
-                className="absolute rounded-lg animate-pulse"
+                className="absolute rounded-lg animate-pulse cursor-pointer"
                 style={{
                   top: tileRects[1].top - 5,
                   left: tileRects[1].left - 5,
@@ -105,15 +116,19 @@ function AnimationOverlay({ phase, step }: { phase: string; step: number }) {
                   border: "3px solid rgba(169, 199, 255, 0.8)",
                   boxShadow: "0 0 30px rgba(169, 199, 255, 0.8)",
                 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPhaseComplete();
+                }}
               />
               <div 
-                className="absolute text-white text-xl font-bold"
+                className="absolute text-white text-xl font-bold pointer-events-none"
                 style={{
                   top: tileRects[1].top - 40,
                   left: tileRects[1].left + tileRects[1].width / 2 - 30,
                 }}
               >
-                Select I
+                Click Tile I
               </div>
             </>
           )}
@@ -122,7 +137,7 @@ function AnimationOverlay({ phase, step }: { phase: string; step: number }) {
           {phase === "selecting3" && tileRects[2] && (
             <>
               <div 
-                className="absolute rounded-lg animate-pulse"
+                className="absolute rounded-lg animate-pulse cursor-pointer"
                 style={{
                   top: tileRects[2].top - 5,
                   left: tileRects[2].left - 5,
@@ -131,24 +146,37 @@ function AnimationOverlay({ phase, step }: { phase: string; step: number }) {
                   border: "3px solid rgba(169, 199, 255, 0.8)",
                   boxShadow: "0 0 30px rgba(169, 199, 255, 0.8)",
                 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPhaseComplete();
+                }}
               />
               <div 
-                className="absolute text-white text-xl font-bold"
+                className="absolute text-white text-xl font-bold pointer-events-none"
                 style={{
                   top: tileRects[2].top - 40,
                   left: tileRects[2].left + tileRects[2].width / 2 - 30,
                 }}
               >
-                Select J
+                Click Tile J
               </div>
             </>
           )}
           
           {/* Show result phase */}
           {phase === "showResult" && (
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div 
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                onPhaseComplete();
+              }}
+            >
               <div className="text-white text-4xl font-bold animate-bounce">
                 = 10 ✓
+              </div>
+              <div className="text-white text-sm mt-2 text-center">
+                Click to continue
               </div>
             </div>
           )}
@@ -188,7 +216,7 @@ const mockGameState = {
 
 export default function TutorialView() {
   const router = useRouter();
-  const { isActive, currentStep, nextStep, previousStep, exitTutorial } = useTutorialStore();
+  const { isActive, currentStep, nextStep, previousStep, exitTutorial, exitTutorialWithoutCompletion } = useTutorialStore();
   const [isAnimatingStep2, setIsAnimatingStep2] = useState(false);
   const [step2AnimationPhase, setStep2AnimationPhase] = useState<"idle" | "pressing" | "selecting" | "done">("idle");
   const [isAnimatingStep3, setIsAnimatingStep3] = useState(false);
@@ -202,23 +230,21 @@ export default function TutorialView() {
       setIsAnimatingStep2(true);
       setShowOverlay(false);
       setStep2AnimationPhase("pressing");
-      
-      // Phase 1: Show answer button being pressed
-      setTimeout(() => {
-        setStep2AnimationPhase("selecting");
-      }, 1500);
-      
-      // Phase 2: Show tile selection
-      setTimeout(() => {
-        setStep2AnimationPhase("done");
-        setIsAnimatingStep2(false);
-        // Add longer delay before showing overlay to ensure guessing state is rendered
-        setTimeout(() => {
-          setShowOverlay(true);
-        }, 500);
-      }, 3000);
     }
   }, [currentStep, step2AnimationPhase]);
+  
+  // Handle step 2 phase progression
+  const handleStep2PhaseComplete = () => {
+    if (step2AnimationPhase === "pressing") {
+      setStep2AnimationPhase("selecting");
+    } else if (step2AnimationPhase === "selecting") {
+      setStep2AnimationPhase("done");
+      setIsAnimatingStep2(false);
+      setTimeout(() => {
+        setShowOverlay(true);
+      }, 500);
+    }
+  };
 
   // Animation for step 3 (now showing the equation result)
   useEffect(() => {
@@ -226,27 +252,23 @@ export default function TutorialView() {
       setIsAnimatingStep3(true);
       setShowOverlay(false);
       setStep3AnimationPhase("selecting2");
-      
-      // Phase 1: Select second tile (I)
-      setTimeout(() => {
-        setStep3AnimationPhase("selecting3");
-      }, 1000);
-      
-      // Phase 2: Select third tile (J)
-      setTimeout(() => {
-        setStep3AnimationPhase("showResult");
-      }, 2000);
-      
-      // Phase 3: Show result and overlay
-      setTimeout(() => {
-        setStep3AnimationPhase("done");
-        setIsAnimatingStep3(false);
-        setTimeout(() => {
-          setShowOverlay(true);
-        }, 500);
-      }, 3000);
     }
   }, [currentStep, step3AnimationPhase]);
+  
+  // Handle step 3 phase progression
+  const handleStep3PhaseComplete = () => {
+    if (step3AnimationPhase === "selecting2") {
+      setStep3AnimationPhase("selecting3");
+    } else if (step3AnimationPhase === "selecting3") {
+      setStep3AnimationPhase("showResult");
+    } else if (step3AnimationPhase === "showResult") {
+      setStep3AnimationPhase("done");
+      setIsAnimatingStep3(false);
+      setTimeout(() => {
+        setShowOverlay(true);
+      }, 500);
+    }
+  };
 
   // Reset animation states when changing steps
   useEffect(() => {
@@ -269,7 +291,7 @@ export default function TutorialView() {
   const isLastStep = currentStep === 5;
 
   const handleExit = () => {
-    exitTutorial();
+    exitTutorialWithoutCompletion();
     router.push("/");
   };
 
@@ -285,6 +307,10 @@ export default function TutorialView() {
     } else {
       nextStep();
     }
+  };
+
+  const handlePrevious = () => {
+    previousStep();
   };
 
   // Map tutorial steps to game states
@@ -440,12 +466,12 @@ export default function TutorialView() {
 
       {/* Animation indicators for step 2 */}
       {isAnimatingStep2 && (
-        <AnimationOverlay phase={step2AnimationPhase} step={2} />
+        <AnimationOverlay phase={step2AnimationPhase} step={2} onPhaseComplete={handleStep2PhaseComplete} />
       )}
       
       {/* Animation indicators for step 3 */}
       {isAnimatingStep3 && (
-        <AnimationOverlay phase={step3AnimationPhase} step={3} />
+        <AnimationOverlay phase={step3AnimationPhase} step={3} onPhaseComplete={handleStep3PhaseComplete} />
       )}
       
       {/* Floating button when tutorial is completed */}

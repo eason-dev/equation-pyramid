@@ -49,8 +49,10 @@ const tutorialSteps: TutorialStep[] = [
   {
     id: 5,
     title: "Bonus tip",
-    content: "It would be 2 to 5 answers in each round, try to find as many as possible.",
-    highlight: "answers",
+    content: [
+      "Each round ends when you've found all the answers or when the 3-minute timer runs out.",
+      "It would be 2 to 5 answers in each round, try to find as many as possible.",
+    ],
   },
 ];
 
@@ -65,6 +67,7 @@ interface TutorialActions {
   nextStep: () => void;
   previousStep: () => void;
   exitTutorial: () => void;
+  exitTutorialWithoutCompletion: () => void;
   resetTutorial: () => void;
   skipToStep: (step: number) => void;
 }
@@ -102,6 +105,12 @@ export const useTutorialStore = create<TutorialState & TutorialActions>()(
       set((state) => {
         state.isActive = false;
         state.hasCompletedTutorial = true;
+      }),
+
+    exitTutorialWithoutCompletion: () =>
+      set((state) => {
+        state.isActive = false;
+        // Don't set hasCompletedTutorial to true
       }),
 
     resetTutorial: () =>

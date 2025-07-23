@@ -42,6 +42,7 @@ export default function AppPage() {
     continueGame,
     // transitionToRoundOver,
     startTimerAfterTransition,
+    exitToMenu,
   } = useGameStore();
 
   // Debug mode
@@ -396,6 +397,7 @@ export default function AppPage() {
               numRounds={config.numRounds}
               onConfigUpdate={handleConfigUpdate}
               onStartGame={startGame}
+              onBackToHome={exitToMenu}
             />
           )}
 

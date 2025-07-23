@@ -10,6 +10,7 @@ interface GameSettingsViewProps {
   numRounds: number;
   onConfigUpdate: (config: { numPlayers?: number; numRounds?: number }) => void;
   onStartGame: () => void;
+  onBackToHome: () => void;
 }
 
 export function GameSettingsView({
@@ -17,6 +18,7 @@ export function GameSettingsView({
   numRounds,
   onConfigUpdate,
   onStartGame,
+  onBackToHome,
 }: GameSettingsViewProps) {
   return (
     <div className="h-full flex flex-col items-center justify-center px-4 md:px-6 gap-8 md:gap-10 lg:gap-12">
@@ -89,10 +91,13 @@ export function GameSettingsView({
         </div>
       </div>
 
-      {/* Start Button */}
-      <div className="flex justify-center w-full">
+      {/* Action Buttons */}
+      <div className="flex flex-col items-center gap-4 w-full">
         <Button onClick={onStartGame} variant="primary">
           Start
+        </Button>
+        <Button onClick={onBackToHome} variant="secondary">
+          Home
         </Button>
       </div>
     </div>
