@@ -55,12 +55,12 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
           selector = '[data-tutorial="guessing-state"]';
           break;
         case 4:
-          // No highlight for step 4 - full overlay (scoring rules)
-          selector = '';
+          // Highlight the answer button (score area)
+          selector = '[data-tutorial="answer-button"]';
           break;
         case 5:
-          // Highlight the answers area
-          selector = '[data-tutorial="answers-area"]';
+          // No highlight for step 5 - full overlay
+          selector = '';
           break;
       }
 
@@ -106,8 +106,8 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
             // Ensure it doesn't go off screen horizontally
             if (tooltipLeft < 20) tooltipLeft = 20;
             if (tooltipLeft > window.innerWidth - 420) tooltipLeft = window.innerWidth - 420;
-          } else if (currentStep === 5) {
-            // Position above the answers area for step 5
+          } else if (currentStep === 4) {
+            // Position above the answer button (score) for step 4
             tooltipTop = minY - padding - 250;
             tooltipLeft = (minX + maxX) / 2 - 200;
             
@@ -131,8 +131,8 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
         setHighlightPosition(null);
         
         // Position based on step
-        if (currentStep === 4) {
-          // Center position for step 4 (scoring rules)
+        if (currentStep === 5) {
+          // Center position for step 5
           setTooltipPosition({
             top: window.innerHeight / 2 - 150, // Center vertically (assuming ~300px height)
             left: window.innerWidth / 2 - 200, // Center horizontally

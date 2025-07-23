@@ -406,18 +406,15 @@ export default function TutorialView() {
     <>
       {/* Add wrapper div with tutorial data attributes */}
       <div data-tutorial="game-wrapper" className="relative h-full">
-        {/* Tutorial Title - shown above timer for steps 1-3 */}
-        {currentStep <= 3 && (
-          <div className="text-center pt-20 pb-8">
-            <h1 className="text-white text-4xl font-bold mb-4">
-              Tutorial
-            </h1>
+        {/* Tutorial Title - shown throughout the tutorial */}
+        <div className="text-center pt-8 pb-8">
+          <h1 className="text-white text-4xl font-bold">
+            Tutorial
+          </h1>
+        </div>
 
-          </div>
-        )}
-
-        {/* Game view with adjusted padding when tutorial title is shown */}
-        <div className={currentStep <= 3 ? "" : "h-full"}>
+        {/* Game view */}
+        <div>
           <GamePlayingView
             tiles={tutorialTiles}
             players={tutorialCompleted ? getStoreOverrides().players : [tutorialPlayer]}
