@@ -116,13 +116,14 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
           // Special positioning for specific steps
           if (currentStep === 2 || currentStep === 3) {
             // Position below the highlighted element (guessing state)
-            tooltipTop = boundsMaxY + 20;
+            tooltipTop = boundsMaxY - 350;
             tooltipLeft = (boundsMinX + boundsMaxX) / 2 - 200; // Center relative to highlighted element
             
             // Ensure it doesn't go off screen bottom
-            if (tooltipTop > window.innerHeight - 300) {
-              // Position above instead
-              tooltipTop = boundsMinY - 10 - 300;
+            // Increased threshold from 300 to 200 to allow popup to go lower
+            if (tooltipTop > window.innerHeight - 200) {
+              // If still too low, clamp to bottom edge instead of flipping above
+              tooltipTop = window.innerHeight - 200;
             }
             
             // Ensure it doesn't go off screen horizontally
@@ -130,13 +131,17 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
             if (tooltipLeft > window.innerWidth - 420) tooltipLeft = window.innerWidth - 420;
           } else if (currentStep === 4) {
             // Position above the answer button (score) for step 4
-            tooltipTop = boundsMinY - 10 - 250;
+            tooltipTop = boundsMinY - 10 - 360;
             tooltipLeft = (boundsMinX + boundsMaxX) / 2 - 200;
             
             // Ensure it doesn't go off screen
             if (tooltipTop < 20) tooltipTop = 20;
             if (tooltipLeft < 20) tooltipLeft = 20;
             if (tooltipLeft > window.innerWidth - 420) tooltipLeft = window.innerWidth - 420;
+          } else if (currentStep === 1) {
+            // Step 1 - Bottom center (default position)
+            tooltipTop = window.innerHeight - 250;
+            tooltipLeft = window.innerWidth / 2 - 200;
           } else {
             // Default bottom center position
             tooltipTop = window.innerHeight - 250;
@@ -154,9 +159,9 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
         
         // Position based on step
         if (currentStep === 5) {
-          // Center position for step 5
+          // Step 5 - Center position
           setTooltipPosition({
-            top: window.innerHeight / 2 - 150, // Center vertically (assuming ~300px height)
+            top: window.innerHeight / 2 - 150, // Center vertically
             left: window.innerWidth / 2 - 200, // Center horizontally
           });
         } else {
