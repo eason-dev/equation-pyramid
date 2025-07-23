@@ -242,6 +242,7 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
               left: pos.left,
               width: pos.width,
               height: pos.height,
+              boxShadow: "0 0 20px rgba(255, 255, 255, 0.3)",
             }}
           />
         ))}

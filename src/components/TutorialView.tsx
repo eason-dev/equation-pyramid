@@ -54,6 +54,7 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
                   height={tileRects[0].height + 10}
                   rx="8"
                   fill="black"
+                  transform={`rotate(45 ${tileRects[0].left + tileRects[0].width / 2} ${tileRects[0].top + tileRects[0].height / 2})`}
                 />
               )}
               {phase === "selecting2" && tileRects[1] && (
@@ -64,6 +65,7 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
                   height={tileRects[1].height + 10}
                   rx="8"
                   fill="black"
+                  transform={`rotate(45 ${tileRects[1].left + tileRects[1].width / 2} ${tileRects[1].top + tileRects[1].height / 2})`}
                 />
               )}
               {phase === "selecting3" && tileRects[2] && (
@@ -74,6 +76,7 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
                   height={tileRects[2].height + 10}
                   rx="8"
                   fill="black"
+                  transform={`rotate(45 ${tileRects[2].left + tileRects[2].width / 2} ${tileRects[2].top + tileRects[2].height / 2})`}
                 />
               )}
             </mask>
@@ -94,12 +97,13 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
       {/* Highlight borders */}
       {phase === "pressing" && answerButtonRect && (
         <div
-          className="fixed border-2 border-white rounded-xl pointer-events-auto cursor-pointer"
+          className="fixed border-2 border-white rounded-xl pointer-events-auto cursor-pointer animate-pulse"
           style={{
             top: answerButtonRect.top - 5,
             left: answerButtonRect.left - 5,
             width: answerButtonRect.width + 10,
             height: answerButtonRect.height + 10,
+            boxShadow: "0 0 20px rgba(255, 255, 255, 0.6)",
           }}
           onClick={(e) => {
             e.stopPropagation();
@@ -109,12 +113,14 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
       )}
       {phase === "selecting" && tileRects[0] && (
         <div
-          className="fixed border-2 border-white rounded-lg pointer-events-auto cursor-pointer"
+          className="fixed border-2 border-white rounded-lg pointer-events-auto cursor-pointer animate-pulse"
           style={{
             top: tileRects[0].top - 5,
             left: tileRects[0].left - 5,
             width: tileRects[0].width + 10,
             height: tileRects[0].height + 10,
+            rotate: "45deg",
+            boxShadow: "0 0 20px rgba(255, 255, 255, 0.6)",
           }}
           onClick={(e) => {
             e.stopPropagation();
@@ -124,12 +130,14 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
       )}
       {phase === "selecting2" && tileRects[1] && (
         <div
-          className="fixed border-2 border-white rounded-lg pointer-events-auto cursor-pointer"
+          className="fixed border-2 border-white rounded-lg pointer-events-auto cursor-pointer animate-pulse"
           style={{
             top: tileRects[1].top - 5,
             left: tileRects[1].left - 5,
             width: tileRects[1].width + 10,
             height: tileRects[1].height + 10,
+            rotate: "45deg",
+            boxShadow: "0 0 20px rgba(255, 255, 255, 0.6)",
           }}
           onClick={(e) => {
             e.stopPropagation();
@@ -139,12 +147,14 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
       )}
       {phase === "selecting3" && tileRects[2] && (
         <div
-          className="fixed border-2 border-white rounded-lg pointer-events-auto cursor-pointer"
+          className="fixed border-2 border-white rounded-lg pointer-events-auto cursor-pointer animate-pulse"
           style={{
             top: tileRects[2].top - 5,
             left: tileRects[2].left - 5,
             width: tileRects[2].width + 10,
             height: tileRects[2].height + 10,
+            rotate: "45deg",
+            boxShadow: "0 0 20px rgba(255, 255, 255, 0.6)",
           }}
           onClick={(e) => {
             e.stopPropagation();
@@ -162,7 +172,7 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
               className="fixed text-white text-2xl font-bold animate-bounce pointer-events-none"
               style={{
                 top: answerButtonRect.top - 60,
-                left: answerButtonRect.left + answerButtonRect.width / 2 - 40,
+                left: answerButtonRect.left + answerButtonRect.width / 2,
               }}
             >
               Click Here!
