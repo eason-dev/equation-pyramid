@@ -169,13 +169,16 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
           {/* Click Here text for answer button */}
           {phase === "pressing" && answerButtonRect && (
             <div 
-              className="fixed text-white text-2xl font-bold animate-bounce pointer-events-none"
+              className="fixed flex justify-center items-center pointer-events-none"
               style={{
                 top: answerButtonRect.top - 60,
-                left: answerButtonRect.left + answerButtonRect.width / 2,
+                left: answerButtonRect.left,
+                width: answerButtonRect.width,
               }}
             >
-              Click Here!
+              <span className="text-white text-2xl font-bold animate-bounce">
+                Click Here!
+              </span>
             </div>
           )}
           
@@ -184,8 +187,9 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
             <div 
               className="fixed text-white text-xl font-bold pointer-events-none"
               style={{
-                top: tileRects[0].top - 40,
-                left: tileRects[0].left + tileRects[0].width / 2 - 45,
+                top: tileRects[0].top - 50,
+                left: tileRects[0].left + tileRects[0].width / 2,
+                transform: "translateX(-50%)",
               }}
             >
               Click Tile A
@@ -202,8 +206,9 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
             <div 
               className="fixed text-white text-xl font-bold pointer-events-none"
               style={{
-                top: tileRects[1].top - 40,
-                left: tileRects[1].left + tileRects[1].width / 2 - 40,
+                top: tileRects[1].top - 50,
+                left: tileRects[1].left + tileRects[1].width / 2,
+                transform: "translateX(-50%)",
               }}
             >
               Click Tile I
@@ -215,8 +220,9 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
             <div 
               className="fixed text-white text-xl font-bold pointer-events-none"
               style={{
-                top: tileRects[2].top - 40,
-                left: tileRects[2].left + tileRects[2].width / 2 - 40,
+                top: tileRects[2].top - 50,
+                left: tileRects[2].left + tileRects[2].width / 2,
+                transform: "translateX(-50%)",
               }}
             >
               Click Tile J
