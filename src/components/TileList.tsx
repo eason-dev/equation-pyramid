@@ -25,7 +25,10 @@ export function TileList({
   ];
 
   return (
-    <div className="flex flex-col items-center gap-3 md:gap-4 lg:gap-5 py-4 md:py-6 lg:py-8">
+    <div 
+      className="flex flex-col items-center gap-3 md:gap-4 lg:gap-5 py-4 md:py-6 lg:py-8"
+      data-tutorial="tiles-area"
+    >
       {pyramidRows.map((rowTiles, rowIndex) => (
         <div
           // biome-ignore lint/suspicious/noArrayIndexKey: pyramid structure is static
@@ -44,14 +47,18 @@ export function TileList({
                     : 6 + tileIndex;
 
             return (
-              <Tile
+              <div
                 key={originalIndex}
-                tile={tile}
-                isSelected={selectedTiles.includes(originalIndex)}
-                onClick={() => onTileClick(originalIndex)}
-                disabled={!isGuessing || selectedTiles.includes(originalIndex)}
-                isHint={hintTileIndices.includes(originalIndex)}
-              />
+                data-tutorial={`tile-${originalIndex}`}
+              >
+                <Tile
+                  tile={tile}
+                  isSelected={selectedTiles.includes(originalIndex)}
+                  onClick={() => onTileClick(originalIndex)}
+                  disabled={!isGuessing || selectedTiles.includes(originalIndex)}
+                  isHint={hintTileIndices.includes(originalIndex)}
+                />
+              </div>
             );
           })}
         </div>

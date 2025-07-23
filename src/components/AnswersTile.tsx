@@ -61,7 +61,7 @@ export function AnswersTile({
     });
 
     return (
-      <div className="p-4">
+      <div className="p-4" data-tutorial="answers-area">
         <div className="space-y-2">
           {sortedEquations.map((equation) => {
             const equationKey = createEquationKey(equation);

@@ -42,7 +42,10 @@ export function GuessingState({
   };
 
   return (
-    <div className="flex flex-col items-center gap-3 md:gap-4 lg:gap-5">
+    <div 
+      className="flex flex-col items-center gap-3 md:gap-4 lg:gap-5"
+      data-tutorial="guessing-state"
+    >
       {/* Main horizontal layout */}
       <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 lg:gap-10 min-h-[80px] md:min-h-[100px] lg:min-h-[120px]">
         {/* Timer - centered when no tiles selected, left when tiles selected */}

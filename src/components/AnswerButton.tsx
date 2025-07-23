@@ -72,6 +72,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         ref={ref}
         type="button"
         disabled={isDisabled}
+        data-tutorial="answer-button"
         onClick={(_e) => {
           if (!isDisabled) {
             playButtonSound();

@@ -39,26 +39,10 @@ export default function TutorialPage() {
     <>
       <ShaderBackground showControls={false} color="#242b3e" />
       <div className="min-h-screen text-white flex flex-col relative z-10">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4">
-          <h1 className="text-xl font-bold">✦ Equation Pyramid</h1>
-          <div className="flex gap-4 text-sm">
-            <button onClick={() => router.push("/about")} className="hover:text-gray-300">
-              About
-            </button>
-            <button className="hover:text-gray-300">♪</button>
-          </div>
-        </div>
-
         {/* Main Content */}
         <main className="flex-1">
           <TutorialView />
         </main>
-
-        {/* Footer */}
-        <div className="p-4 text-center text-sm text-gray-400">
-          © 2024 Equation Pyramid
-        </div>
       </div>
     </>
   );
