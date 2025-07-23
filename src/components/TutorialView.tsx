@@ -223,15 +223,16 @@ export default function TutorialView() {
   const [step3AnimationPhase, setStep3AnimationPhase] = useState<"idle" | "selecting2" | "selecting3" | "showResult" | "done">("idle");
   const [showOverlay, setShowOverlay] = useState(true);
   const [tutorialCompleted, setTutorialCompleted] = useState(false);
+  const [isNavigatingBack, setIsNavigatingBack] = useState(false);
 
   useEffect(() => {
-    // When entering step 2, start the animation sequence
-    if (currentStep === 2 && step2AnimationPhase === "idle") {
+    // When entering step 2, start the animation sequence (but not when navigating back)
+    if (currentStep === 2 && step2AnimationPhase === "idle" && !isNavigatingBack) {
       setIsAnimatingStep2(true);
       setShowOverlay(false);
       setStep2AnimationPhase("pressing");
     }
-  }, [currentStep, step2AnimationPhase]);
+  }, [currentStep, step2AnimationPhase, isNavigatingBack]);
   
   // Handle step 2 phase progression
   const handleStep2PhaseComplete = () => {
@@ -248,12 +249,12 @@ export default function TutorialView() {
 
   // Animation for step 3 (now showing the equation result)
   useEffect(() => {
-    if (currentStep === 3 && step3AnimationPhase === "idle") {
+    if (currentStep === 3 && step3AnimationPhase === "idle" && !isNavigatingBack) {
       setIsAnimatingStep3(true);
       setShowOverlay(false);
       setStep3AnimationPhase("selecting2");
     }
-  }, [currentStep, step3AnimationPhase]);
+  }, [currentStep, step3AnimationPhase, isNavigatingBack]);
   
   // Handle step 3 phase progression
   const handleStep3PhaseComplete = () => {
@@ -310,7 +311,24 @@ export default function TutorialView() {
   };
 
   const handlePrevious = () => {
+    // Set flag to prevent animation auto-start when navigating back
+    setIsNavigatingBack(true);
+    
+    // Reset ALL animation states before navigating
+    setStep2AnimationPhase("done"); // Set to "done" instead of "idle" to prevent auto-trigger
+    setIsAnimatingStep2(false);
+    setStep3AnimationPhase("done"); // Set to "done" instead of "idle" to prevent auto-trigger
+    setIsAnimatingStep3(false);
+    
+    // Ensure overlay shows
+    setShowOverlay(true);
+    
     previousStep();
+    
+    // Keep the flag longer to prevent animation triggers
+    setTimeout(() => {
+      setIsNavigatingBack(false);
+    }, 1000);
   };
 
   // Map tutorial steps to game states
@@ -459,7 +477,7 @@ export default function TutorialView() {
         <TutorialOverlay
           currentStep={currentStep}
           onNext={handleNext}
-          onPrevious={previousStep}
+          onPrevious={handlePrevious}
           onExit={handleExit}
         />
       )}
