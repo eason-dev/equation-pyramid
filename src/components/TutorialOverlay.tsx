@@ -224,7 +224,7 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
               y="0"
               width="100%"
               height="100%"
-              fill="rgba(0, 0, 0, 0.75)"
+              fill="rgba(0, 0, 0, 0.5)"
               mask="url(#highlight-mask)"
             />
           </svg>
@@ -236,7 +236,7 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
             key={index}
             initial={{ opacity: 0, scale: 1.1 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="fixed border-2 border-blue-400 rounded-lg pointer-events-none"
+            className="fixed border-2 border-white rounded-lg pointer-events-none"
             style={{
               top: pos.top,
               left: pos.left,

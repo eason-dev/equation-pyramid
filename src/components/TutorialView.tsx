@@ -29,144 +29,194 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
   }, [phase]);
 
   return (
-    <div className="fixed inset-0 z-[9998]">
-      {/* Dark overlay - clickable to advance */}
-      <div 
-        className="absolute inset-0 bg-black/50 cursor-pointer" 
-        onClick={onPhaseComplete}
-      />
+    <div className="fixed inset-0 z-[9998] pointer-events-none">
+      {/* Dark overlay with cutout */}
+      <div className="fixed inset-0 pointer-events-auto">
+        <svg className="w-full h-full">
+          <defs>
+            <mask id="animation-highlight-mask">
+              <rect x="0" y="0" width="100%" height="100%" fill="white" />
+              {phase === "pressing" && answerButtonRect && (
+                <rect
+                  x={answerButtonRect.left - 5}
+                  y={answerButtonRect.top - 5}
+                  width={answerButtonRect.width + 10}
+                  height={answerButtonRect.height + 10}
+                  rx="12"
+                  fill="black"
+                />
+              )}
+              {phase === "selecting" && tileRects[0] && (
+                <rect
+                  x={tileRects[0].left - 5}
+                  y={tileRects[0].top - 5}
+                  width={tileRects[0].width + 10}
+                  height={tileRects[0].height + 10}
+                  rx="8"
+                  fill="black"
+                />
+              )}
+              {phase === "selecting2" && tileRects[1] && (
+                <rect
+                  x={tileRects[1].left - 5}
+                  y={tileRects[1].top - 5}
+                  width={tileRects[1].width + 10}
+                  height={tileRects[1].height + 10}
+                  rx="8"
+                  fill="black"
+                />
+              )}
+              {phase === "selecting3" && tileRects[2] && (
+                <rect
+                  x={tileRects[2].left - 5}
+                  y={tileRects[2].top - 5}
+                  width={tileRects[2].width + 10}
+                  height={tileRects[2].height + 10}
+                  rx="8"
+                  fill="black"
+                />
+              )}
+            </mask>
+          </defs>
+          <rect
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            fill="rgba(0, 0, 0, 0.5)"
+            mask="url(#animation-highlight-mask)"
+            className="pointer-events-auto cursor-pointer"
+            onClick={onPhaseComplete}
+          />
+        </svg>
+      </div>
+
+      {/* Highlight borders */}
+      {phase === "pressing" && answerButtonRect && (
+        <div
+          className="fixed border-2 border-white rounded-xl pointer-events-auto cursor-pointer"
+          style={{
+            top: answerButtonRect.top - 5,
+            left: answerButtonRect.left - 5,
+            width: answerButtonRect.width + 10,
+            height: answerButtonRect.height + 10,
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onPhaseComplete();
+          }}
+        />
+      )}
+      {phase === "selecting" && tileRects[0] && (
+        <div
+          className="fixed border-2 border-white rounded-lg pointer-events-auto cursor-pointer"
+          style={{
+            top: tileRects[0].top - 5,
+            left: tileRects[0].left - 5,
+            width: tileRects[0].width + 10,
+            height: tileRects[0].height + 10,
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onPhaseComplete();
+          }}
+        />
+      )}
+      {phase === "selecting2" && tileRects[1] && (
+        <div
+          className="fixed border-2 border-white rounded-lg pointer-events-auto cursor-pointer"
+          style={{
+            top: tileRects[1].top - 5,
+            left: tileRects[1].left - 5,
+            width: tileRects[1].width + 10,
+            height: tileRects[1].height + 10,
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onPhaseComplete();
+          }}
+        />
+      )}
+      {phase === "selecting3" && tileRects[2] && (
+        <div
+          className="fixed border-2 border-white rounded-lg pointer-events-auto cursor-pointer"
+          style={{
+            top: tileRects[2].top - 5,
+            left: tileRects[2].left - 5,
+            width: tileRects[2].width + 10,
+            height: tileRects[2].height + 10,
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            onPhaseComplete();
+          }}
+        />
+      )}
       
-      {/* Step 2 animations */}
+      {/* Step 2 animations - text labels */}
       {step === 2 && (
         <>
-          {/* Highlight answer button during pressing phase */}
+          {/* Click Here text for answer button */}
           {phase === "pressing" && answerButtonRect && (
-            <>
-              <div 
-                className="absolute bg-white/10 rounded-xl animate-pulse cursor-pointer"
-                style={{
-                  top: answerButtonRect.top - 5,
-                  left: answerButtonRect.left - 5,
-                  width: answerButtonRect.width + 10,
-                  height: answerButtonRect.height + 10,
-                  boxShadow: "0 0 40px rgba(169, 199, 255, 0.8)",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPhaseComplete();
-                }}
-              />
-              <div 
-                className="absolute text-white text-2xl font-bold animate-bounce pointer-events-none"
-                style={{
-                  top: answerButtonRect.top - 60,
-                  left: answerButtonRect.left + answerButtonRect.width / 2 - 20,
-                }}
-              >
-                Click Here!
-              </div>
-            </>
+            <div 
+              className="fixed text-white text-2xl font-bold animate-bounce pointer-events-none"
+              style={{
+                top: answerButtonRect.top - 60,
+                left: answerButtonRect.left + answerButtonRect.width / 2 - 40,
+              }}
+            >
+              Click Here!
+            </div>
           )}
           
-          {/* Highlight first tile during selecting phase */}
+          {/* Click Tile A text */}
           {phase === "selecting" && tileRects[0] && (
-            <>
-              <div 
-                className="absolute rounded-lg animate-pulse cursor-pointer"
-                style={{
-                  top: tileRects[0].top - 5,
-                  left: tileRects[0].left - 5,
-                  width: tileRects[0].width + 10,
-                  height: tileRects[0].height + 10,
-                  border: "3px solid rgba(169, 199, 255, 0.8)",
-                  boxShadow: "0 0 30px rgba(169, 199, 255, 0.8)",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPhaseComplete();
-                }}
-              />
-              <div 
-                className="absolute text-white text-xl font-bold pointer-events-none"
-                style={{
-                  top: tileRects[0].top - 40,
-                  left: tileRects[0].left + tileRects[0].width / 2 - 30,
-                }}
-              >
-                Click Tile A
-              </div>
-            </>
+            <div 
+              className="fixed text-white text-xl font-bold pointer-events-none"
+              style={{
+                top: tileRects[0].top - 40,
+                left: tileRects[0].left + tileRects[0].width / 2 - 45,
+              }}
+            >
+              Click Tile A
+            </div>
           )}
         </>
       )}
       
-      {/* Step 3 animations */}
+      {/* Step 3 animations - text labels */}
       {step === 3 && (
         <>
-          {/* Highlight second tile (I) */}
+          {/* Click Tile I text */}
           {phase === "selecting2" && tileRects[1] && (
-            <>
-              <div 
-                className="absolute rounded-lg animate-pulse cursor-pointer"
-                style={{
-                  top: tileRects[1].top - 5,
-                  left: tileRects[1].left - 5,
-                  width: tileRects[1].width + 10,
-                  height: tileRects[1].height + 10,
-                  border: "3px solid rgba(169, 199, 255, 0.8)",
-                  boxShadow: "0 0 30px rgba(169, 199, 255, 0.8)",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPhaseComplete();
-                }}
-              />
-              <div 
-                className="absolute text-white text-xl font-bold pointer-events-none"
-                style={{
-                  top: tileRects[1].top - 40,
-                  left: tileRects[1].left + tileRects[1].width / 2 - 30,
-                }}
-              >
-                Click Tile I
-              </div>
-            </>
+            <div 
+              className="fixed text-white text-xl font-bold pointer-events-none"
+              style={{
+                top: tileRects[1].top - 40,
+                left: tileRects[1].left + tileRects[1].width / 2 - 40,
+              }}
+            >
+              Click Tile I
+            </div>
           )}
           
-          {/* Highlight third tile (J) */}
+          {/* Click Tile J text */}
           {phase === "selecting3" && tileRects[2] && (
-            <>
-              <div 
-                className="absolute rounded-lg animate-pulse cursor-pointer"
-                style={{
-                  top: tileRects[2].top - 5,
-                  left: tileRects[2].left - 5,
-                  width: tileRects[2].width + 10,
-                  height: tileRects[2].height + 10,
-                  border: "3px solid rgba(169, 199, 255, 0.8)",
-                  boxShadow: "0 0 30px rgba(169, 199, 255, 0.8)",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPhaseComplete();
-                }}
-              />
-              <div 
-                className="absolute text-white text-xl font-bold pointer-events-none"
-                style={{
-                  top: tileRects[2].top - 40,
-                  left: tileRects[2].left + tileRects[2].width / 2 - 30,
-                }}
-              >
-                Click Tile J
-              </div>
-            </>
+            <div 
+              className="fixed text-white text-xl font-bold pointer-events-none"
+              style={{
+                top: tileRects[2].top - 40,
+                left: tileRects[2].left + tileRects[2].width / 2 - 40,
+              }}
+            >
+              Click Tile J
+            </div>
           )}
           
           {/* Show result phase */}
           {phase === "showResult" && (
             <div 
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+              className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-auto cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
                 onPhaseComplete();
