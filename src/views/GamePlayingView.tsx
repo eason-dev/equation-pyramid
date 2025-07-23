@@ -132,7 +132,10 @@ export function GamePlayingView({
         </div>
 
         {/* Game Content - 3 column layout on tablet/desktop, stacked on mobile */}
-        <div className="flex flex-col sm:flex-row sm:justify-center items-center sm:items-start gap-6 sm:gap-0 md:gap-8 lg:gap-10 w-full sm:w-auto md:w-full max-w-[1100px]">
+        <div 
+          className="flex flex-col sm:flex-row sm:justify-center items-center sm:items-start gap-6 sm:gap-0 md:gap-8 lg:gap-10 w-full sm:w-auto md:w-full max-w-[1100px]"
+          data-tutorial="main-game-content"
+        >
           {/* Left Column: Answers tile - Hidden on mobile/tablet, visible on desktop */}
           <div className="hidden md:block flex-shrink-0 md:w-[160px] lg:w-[200px]">
             {gameState &&

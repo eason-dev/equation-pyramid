@@ -9,7 +9,10 @@ interface TargetTileProps {
 
 export function TargetTile({ targetNumber }: TargetTileProps) {
   return (
-    <Block className="text-center w-16 h-16 sm:min-w-[100px] sm:min-h-[100px] md:min-w-[120px] md:min-h-[120px] lg:min-w-[128px] lg:min-h-[128px] p-2 sm:p-4 md:p-5 lg:p-6">
+    <Block 
+      className="text-center w-16 h-16 sm:min-w-[100px] sm:min-h-[100px] md:min-w-[120px] md:min-h-[120px] lg:min-w-[128px] lg:min-h-[128px] p-2 sm:p-4 md:p-5 lg:p-6"
+      data-tutorial="target-tile"
+    >
       <Typography
         variant="h2"
         className="text-sm sm:text-lg md:text-xl lg:text-2xl"

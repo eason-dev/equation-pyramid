@@ -21,7 +21,7 @@ interface HighlightPosition {
 }
 
 export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: TutorialOverlayProps) {
-  const [highlightPosition, setHighlightPosition] = useState<HighlightPosition | null>(null);
+  const [highlightPositions, setHighlightPositions] = useState<HighlightPosition[]>([]);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -43,8 +43,8 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
       
       switch (currentStep) {
         case 1:
-          // Highlight the tiles area
-          selector = '[data-tutorial="tiles-area"]';
+          // Highlight the main game content area (tiles and target)
+          selector = '[data-tutorial="main-game-content"]';
           break;
         case 2:
           // Highlight the guessing state area
@@ -68,7 +68,10 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
         const elements = document.querySelectorAll(selector);
         
         if (elements.length > 0) {
-          // Calculate bounding box for all elements
+          const padding = 10;
+          const positions: HighlightPosition[] = [];
+          
+          // Create a single bounding box for all elements
           let minX = Infinity, minY = Infinity, maxX = 0, maxY = 0;
           
           elements.forEach(el => {
@@ -78,29 +81,48 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
             maxX = Math.max(maxX, rect.right);
             maxY = Math.max(maxY, rect.bottom);
           });
-
-          const padding = 10;
-          // Use viewport coordinates (getBoundingClientRect already returns viewport coords)
-          setHighlightPosition({
+          
+          // For step 1, adjust the left boundary to exclude empty answer column space
+          if (currentStep === 1) {
+            // Find the tiles area to use as left boundary
+            const tilesArea = document.querySelector('[data-tutorial="tiles-area"]');
+            if (tilesArea) {
+              const tilesRect = tilesArea.getBoundingClientRect();
+              minX = Math.max(minX, tilesRect.left - 50); // Add some margin but not full column width
+            }
+          }
+          
+          positions.push({
             top: minY - padding,
             left: minX - padding,
             width: maxX - minX + (padding * 2),
             height: maxY - minY + (padding * 2),
           });
+          
+          setHighlightPositions(positions);
 
-          // Calculate tooltip position
+          // Calculate tooltip position based on all highlight positions
           let tooltipTop, tooltipLeft;
+          let boundsMinX = Infinity, boundsMinY = Infinity, boundsMaxX = 0, boundsMaxY = 0;
+          
+          // Calculate overall bounds of all highlights
+          positions.forEach(pos => {
+            boundsMinX = Math.min(boundsMinX, pos.left);
+            boundsMinY = Math.min(boundsMinY, pos.top);
+            boundsMaxX = Math.max(boundsMaxX, pos.left + pos.width);
+            boundsMaxY = Math.max(boundsMaxY, pos.top + pos.height);
+          });
           
           // Special positioning for specific steps
           if (currentStep === 2 || currentStep === 3) {
             // Position below the highlighted element (guessing state)
-            tooltipTop = maxY + padding + 20;
-            tooltipLeft = (minX + maxX) / 2 - 200; // Center relative to highlighted element
+            tooltipTop = boundsMaxY + 20;
+            tooltipLeft = (boundsMinX + boundsMaxX) / 2 - 200; // Center relative to highlighted element
             
             // Ensure it doesn't go off screen bottom
             if (tooltipTop > window.innerHeight - 300) {
               // Position above instead
-              tooltipTop = minY - padding - 300;
+              tooltipTop = boundsMinY - 10 - 300;
             }
             
             // Ensure it doesn't go off screen horizontally
@@ -108,8 +130,8 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
             if (tooltipLeft > window.innerWidth - 420) tooltipLeft = window.innerWidth - 420;
           } else if (currentStep === 4) {
             // Position above the answer button (score) for step 4
-            tooltipTop = minY - padding - 250;
-            tooltipLeft = (minX + maxX) / 2 - 200;
+            tooltipTop = boundsMinY - 10 - 250;
+            tooltipLeft = (boundsMinX + boundsMaxX) / 2 - 200;
             
             // Ensure it doesn't go off screen
             if (tooltipTop < 20) tooltipTop = 20;
@@ -128,7 +150,7 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
         }
       } else {
         // No highlight for this step
-        setHighlightPosition(null);
+        setHighlightPositions([]);
         
         // Position based on step
         if (currentStep === 5) {
@@ -182,18 +204,19 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
             <defs>
               <mask id="highlight-mask">
                 <rect x="0" y="0" width="100%" height="100%" fill="white" />
-                {highlightPosition && (
+                {highlightPositions.map((pos, index) => (
                   <motion.rect
+                    key={index}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    x={highlightPosition.left}
-                    y={highlightPosition.top}
-                    width={highlightPosition.width}
-                    height={highlightPosition.height}
+                    x={pos.left}
+                    y={pos.top}
+                    width={pos.width}
+                    height={pos.height}
                     rx="8"
                     fill="black"
                   />
-                )}
+                ))}
               </mask>
             </defs>
             <rect
@@ -207,20 +230,21 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
           </svg>
         </div>
 
-        {/* Highlight border */}
-        {highlightPosition && (
+        {/* Highlight borders */}
+        {highlightPositions.map((pos, index) => (
           <motion.div
+            key={index}
             initial={{ opacity: 0, scale: 1.1 }}
             animate={{ opacity: 1, scale: 1 }}
             className="fixed border-2 border-blue-400 rounded-lg pointer-events-none"
             style={{
-              top: highlightPosition.top,
-              left: highlightPosition.left,
-              width: highlightPosition.width,
-              height: highlightPosition.height,
+              top: pos.top,
+              left: pos.left,
+              width: pos.width,
+              height: pos.height,
             }}
           />
-        )}
+        ))}
 
         {/* Tutorial tooltip */}
         <FocusTrap active={true}>
