@@ -1,147 +1,128 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import {
-  generateTutorialTiles,
-  isValidTutorialEquation,
-} from "@/logic/game/tutorialLogic";
-import type { Tile } from "@/logic/game/types";
 
-export type TutorialState = "playing" | "complete";
-
-interface TutorialStore {
-  // State
-  currentState: TutorialState;
-  tiles: Tile[];
-  selectedTiles: Tile[];
-  targetNumber: number;
-  hintTimer: number;
-  showHint: boolean;
-  validEquations: Tile[][];
-
-  // Actions
-  initializeTutorial: () => void;
-  selectTile: (tile: Tile) => void;
-  unselectTile: (tile: Tile) => void;
-  checkEquation: () => boolean;
-  completeTutorial: () => void;
-  updateHintTimer: (time: number) => void;
-  showHintAnimation: () => void;
-  reset: () => void;
+export interface TutorialStep {
+  id: number;
+  title?: string;
+  content: string | string[];
+  highlight?: "tiles" | "target" | "score" | "answers";
+  showTiles?: boolean;
+  selectedTiles?: number[];
+  showResult?: boolean;
+  resultValue?: number;
+  showEquation?: string;
 }
 
-export const useTutorialStore = create<TutorialStore>()(
+const tutorialSteps: TutorialStep[] = [
+  {
+    id: 1,
+    content: "Use three different tiles to form an equation that reaches the target number.",
+    showTiles: true,
+    highlight: "tiles",
+  },
+  {
+    id: 2,
+    content: "Ignore the operator on your first chosen tile.",
+    showTiles: true,
+    selectedTiles: [0], // Show tile A selected
+  },
+  {
+    id: 3,
+    content: "",
+    showTiles: true,
+    selectedTiles: [0, 1], // Show tiles A and I selected
+  },
+  {
+    id: 4,
+    content: "Solve × and ÷ come before + and -",
+    showTiles: true,
+    selectedTiles: [0, 1, 2], // Show tiles A, I, J selected
+    showResult: true,
+    resultValue: 10,
+    showEquation: "1 + 1 + 1",
+  },
+  {
+    id: 5,
+    title: "Scoring Rules",
+    content: [
+      "+1 → Get it right",
+      "-1 → Get it wrong",
+      "-1 → Say a correct answer that's already been used",
+      "-1 → Hit the button but don't answer in 10 seconds",
+    ],
+    highlight: "score",
+  },
+  {
+    id: 6,
+    title: "Bonus tip",
+    content: "It would be 2 to 5 answers in each round, try to find as many as possible.",
+    highlight: "answers",
+  },
+];
+
+interface TutorialState {
+  isActive: boolean;
+  currentStep: number;
+  hasCompletedTutorial: boolean;
+}
+
+interface TutorialActions {
+  startTutorial: () => void;
+  nextStep: () => void;
+  previousStep: () => void;
+  exitTutorial: () => void;
+  resetTutorial: () => void;
+  skipToStep: (step: number) => void;
+}
+
+export const useTutorialStore = create<TutorialState & TutorialActions>()(
   immer((set) => ({
-    // Initial state
-    currentState: "playing",
-    tiles: [],
-    selectedTiles: [],
-    targetNumber: 6,
-    hintTimer: 0,
-    showHint: false,
-    validEquations: [],
+    isActive: false,
+    currentStep: 1,
+    hasCompletedTutorial: false,
 
-    // Initialize tutorial with simple tiles
-    initializeTutorial: () => {
+    startTutorial: () =>
       set((state) => {
-        const { tiles, targetNumber, validEquations } = generateTutorialTiles();
+        state.isActive = true;
+        state.currentStep = 1;
+      }),
 
-        state.tiles = tiles;
-        state.targetNumber = targetNumber;
-        state.validEquations = validEquations;
-        state.currentState = "playing";
-        state.selectedTiles = [];
-        state.hintTimer = 0;
-        state.showHint = false;
-      });
-    },
-
-    // Select a tile
-    selectTile: (tile) => {
+    nextStep: () =>
       set((state) => {
-        if (
-          state.selectedTiles.length < 3 &&
-          !state.selectedTiles.find((t) => t.label === tile.label)
-        ) {
-          state.selectedTiles.push(tile);
-
-          // Check equation if 3 tiles selected
-          if (state.selectedTiles.length === 3) {
-            const isValid = isValidTutorialEquation(
-              state.selectedTiles,
-              state.targetNumber,
-            );
-            if (isValid) {
-              state.currentState = "complete";
-            } else {
-              // Wrong answer - clear selection after delay
-              setTimeout(() => {
-                set((state) => {
-                  state.selectedTiles = [];
-                });
-              }, 1000);
-            }
-          }
+        if (state.currentStep < tutorialSteps.length) {
+          state.currentStep += 1;
+        } else {
+          state.isActive = false;
+          state.hasCompletedTutorial = true;
         }
-      });
-    },
+      }),
 
-    // Unselect a tile
-    unselectTile: (tile) => {
+    previousStep: () =>
       set((state) => {
-        state.selectedTiles = state.selectedTiles.filter(
-          (t) => t.label !== tile.label,
-        );
-      });
-    },
-
-    // Check if current equation is valid
-    checkEquation: () => {
-      let isValid = false;
-      set((state) => {
-        isValid = isValidTutorialEquation(
-          state.selectedTiles,
-          state.targetNumber,
-        );
-      });
-      return isValid;
-    },
-
-    // Complete the tutorial
-    completeTutorial: () => {
-      set((state) => {
-        state.currentState = "complete";
-      });
-    },
-
-    // Update hint timer
-    updateHintTimer: (time) => {
-      set((state) => {
-        state.hintTimer = time;
-        // Show hint after 5 seconds
-        if (time >= 5 && !state.showHint && state.selectedTiles.length === 0) {
-          state.showHint = true;
+        if (state.currentStep > 1) {
+          state.currentStep -= 1;
         }
-      });
-    },
+      }),
 
-    // Show hint animation
-    showHintAnimation: () => {
+    exitTutorial: () =>
       set((state) => {
-        state.showHint = true;
-      });
-    },
+        state.isActive = false;
+        state.hasCompletedTutorial = true;
+      }),
 
-    // Reset tutorial
-    reset: () => {
+    resetTutorial: () =>
       set((state) => {
-        state.currentState = "playing";
-        state.tiles = [];
-        state.selectedTiles = [];
-        state.targetNumber = 6;
-        state.hintTimer = 0;
-        state.showHint = false;
-        state.validEquations = [];
-      });
-    },
-  })),
+        state.currentStep = 1;
+        state.isActive = false;
+      }),
+
+    skipToStep: (step: number) =>
+      set((state) => {
+        if (step >= 1 && step <= tutorialSteps.length) {
+          state.currentStep = step;
+        }
+      }),
+  }))
 );
+
+export { tutorialSteps };

@@ -19,6 +19,7 @@
     "@react-three/fiber": "^9.1.2",
     "babel-plugin-glsl": "^1.0.0",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.23.6",
     "gsap": "^3.13.0",
     "immer": "^10.1.1",
     "leva": "^0.10.0",
