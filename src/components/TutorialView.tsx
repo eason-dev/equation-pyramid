@@ -412,12 +412,11 @@ export default function TutorialView() {
         selectedTiles: [],
         foundEquations: [
           { key: "0,8,9", foundBy: "tutorial" }, // A, I, J
-          { key: "7,6,9", foundBy: "tutorial" }, // H, G, J
         ],
         mainTimer: 0,
         guessingPlayerId: null,
         guessTimer: 0,
-        players: [{ ...tutorialPlayer, score: 2 }],
+        players: [{ ...tutorialPlayer, score: 1 }],
       };
     }
 
