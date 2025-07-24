@@ -41,7 +41,7 @@ const tutorialSteps: TutorialStep[] = [
     content: [
       "+1 → Get it right",
       "-1 → Get it wrong",
-      "-1 → Say a correct answer that's already been used",
+      "-1 → Click a correct answer that's already been found",
       "-1 → Hit the button but don't answer in 10 seconds",
     ],
     highlight: "score",

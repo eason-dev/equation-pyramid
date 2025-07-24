@@ -122,7 +122,8 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
             // Ensure it doesn't go off screen bottom
             // Increased threshold from 300 to 200 to allow popup to go lower
             if (tooltipTop > window.innerHeight - 200) {
-              // If still too low, clamp to bottom edge instead of flipping above
+              // If still too low, clamp to bot
+              // tom edge instead of flipping above
               tooltipTop = window.innerHeight - 200;
             }
             

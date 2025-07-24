@@ -5,11 +5,11 @@ import { useRouter } from "next/navigation";
 import { GamePlayingView } from "@/views/GamePlayingView";
 import { TutorialOverlay } from "@/components/TutorialOverlay";
 import type { Player, Tile as TileType } from "@/logic/game/types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FloatingButtonWithProgress } from "@/components/FloatingButtonWithProgress";
 
 // Animation overlay component
-function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; step: number; onPhaseComplete: () => void }) {
+function AnimationOverlay({ phase, step, onPhaseComplete, onTileClick }: { phase: string; step: number; onPhaseComplete: () => void; onTileClick?: (tileIndex: number) => void }) {
   const [answerButtonRect, setAnswerButtonRect] = useState<DOMRect | null>(null);
   const [tileRects, setTileRects] = useState<(DOMRect | null)[]>([null, null, null]);
 
@@ -124,6 +124,9 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
           }}
           onClick={(e) => {
             e.stopPropagation();
+            if (onTileClick) {
+              onTileClick(0); // Select tile A
+            }
             onPhaseComplete();
           }}
         />
@@ -141,6 +144,9 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
           }}
           onClick={(e) => {
             e.stopPropagation();
+            if (onTileClick) {
+              onTileClick(8); // Select tile I
+            }
             onPhaseComplete();
           }}
         />
@@ -158,6 +164,9 @@ function AnimationOverlay({ phase, step, onPhaseComplete }: { phase: string; ste
           }}
           onClick={(e) => {
             e.stopPropagation();
+            if (onTileClick) {
+              onTileClick(9); // Select tile J
+            }
             onPhaseComplete();
           }}
         />
@@ -283,6 +292,8 @@ const mockGameState = {
 export default function TutorialView() {
   const router = useRouter();
   const { isActive, currentStep, nextStep, previousStep, exitTutorial, exitTutorialWithoutCompletion } = useTutorialStore();
+  const prevStepRef = useRef(currentStep);
+  const [pendingStep3, setPendingStep3] = useState(false);
   const [isAnimatingStep2, setIsAnimatingStep2] = useState(false);
   const [step2AnimationPhase, setStep2AnimationPhase] = useState<"idle" | "pressing" | "selecting" | "done">("idle");
   const [isAnimatingStep3, setIsAnimatingStep3] = useState(false);
@@ -290,6 +301,8 @@ export default function TutorialView() {
   const [showOverlay, setShowOverlay] = useState(true);
   const [tutorialCompleted, setTutorialCompleted] = useState(false);
   const [isNavigatingBack, setIsNavigatingBack] = useState(false);
+  const [animationSelectedTiles, setAnimationSelectedTiles] = useState<number[]>([]);
+  const [blockOverlay, setBlockOverlay] = useState(false);
 
   useEffect(() => {
     // When entering step 2, start the animation sequence (but not when navigating back)
@@ -297,6 +310,8 @@ export default function TutorialView() {
       setIsAnimatingStep2(true);
       setShowOverlay(false);
       setStep2AnimationPhase("pressing");
+      // Clear any previous selections
+      setAnimationSelectedTiles([]);
     }
   }, [currentStep, step2AnimationPhase, isNavigatingBack]);
   
@@ -315,12 +330,17 @@ export default function TutorialView() {
 
   // Animation for step 3 (now showing the equation result)
   useEffect(() => {
-    if (currentStep === 3 && step3AnimationPhase === "idle" && !isNavigatingBack) {
-      setIsAnimatingStep3(true);
+    console.log('[Step 3 Animation Effect] currentStep:', currentStep, 'phase:', step3AnimationPhase, 'navigatingBack:', isNavigatingBack, 'pendingStep3:', pendingStep3, 'blockOverlay:', blockOverlay);
+    if (currentStep === 3 && step3AnimationPhase === "idle" && !isNavigatingBack && !pendingStep3 && !blockOverlay) {
+      console.log('[Step 3 Animation Effect] Starting step 3 animation');
+      // Immediately start animation without showing overlay
       setShowOverlay(false);
+      setIsAnimatingStep3(true);
       setStep3AnimationPhase("selecting2");
+      // Start with tile A already selected from step 2
+      setAnimationSelectedTiles([0]);
     }
-  }, [currentStep, step3AnimationPhase, isNavigatingBack]);
+  }, [currentStep, step3AnimationPhase, isNavigatingBack, pendingStep3, blockOverlay]);
   
   // Handle step 3 phase progression
   const handleStep3PhaseComplete = () => {
@@ -339,19 +359,50 @@ export default function TutorialView() {
 
   // Reset animation states when changing steps
   useEffect(() => {
+    const previousStep = prevStepRef.current;
+    console.log('[useEffect] Step changed:', previousStep, '->', currentStep, 'blockOverlay:', blockOverlay);
+    
     if (currentStep !== 2) {
       setStep2AnimationPhase("idle");
-      if (currentStep !== 3) {
-        setShowOverlay(true);
-      }
     }
     if (currentStep !== 3) {
       setStep3AnimationPhase("idle");
-      if (currentStep !== 2) {
-        setShowOverlay(true);
-      }
+    } else if (currentStep === 3 && previousStep === 2 && blockOverlay) {
+      // Ensure step 3 animation doesn't start until we're ready
+      setStep3AnimationPhase("idle");
+      setIsAnimatingStep3(false);
     }
-  }, [currentStep]);
+    
+    // Handle overlay visibility
+    if (blockOverlay) {
+      console.log('[useEffect] Overlay blocked, skipping visibility changes');
+      // Don't change overlay state while blocked
+      prevStepRef.current = currentStep;
+      return;
+    }
+    
+    if (currentStep === 3 && previousStep === 2) {
+      console.log('[useEffect] Transition 2->3 detected, hiding overlay');
+      // Never show overlay when going from step 2 to 3
+      setShowOverlay(false);
+    } else if (currentStep === 2 && step2AnimationPhase === "idle" && !isNavigatingBack) {
+      // Hide overlay for step 2 animation
+      setShowOverlay(false);
+    } else if (currentStep === 3 && step3AnimationPhase === "idle" && !isNavigatingBack) {
+      // Hide overlay for step 3 animation
+      setShowOverlay(false);
+    } else if (
+      (currentStep === 2 && step2AnimationPhase === "done") ||
+      (currentStep === 3 && step3AnimationPhase === "done") ||
+      (currentStep !== 2 && currentStep !== 3)
+    ) {
+      console.log('[useEffect] Showing overlay for step:', currentStep);
+      // Show overlay in other cases
+      setShowOverlay(true);
+    }
+    
+    prevStepRef.current = currentStep;
+  }, [currentStep, step2AnimationPhase, step3AnimationPhase, isNavigatingBack, blockOverlay]);
 
   if (!isActive && !tutorialCompleted) return null;
 
@@ -368,11 +419,35 @@ export default function TutorialView() {
   };
 
   const handleNext = () => {
+    console.log('[handleNext] Current step:', currentStep);
     if (isLastStep) {
       setTutorialCompleted(true);
       setShowOverlay(false);
     } else {
-      nextStep();
+      if (currentStep === 2) {
+        console.log('[handleNext] Transitioning from step 2 to 3');
+        // Block overlay completely during transition
+        setBlockOverlay(true);
+        setShowOverlay(false);
+        setPendingStep3(true);
+        // Use setTimeout to ensure state updates are batched
+        setTimeout(() => {
+          nextStep();
+          // Ensure step 3 starts with only tile A selected
+          setAnimationSelectedTiles([0]);
+          // Keep blocking for a moment to ensure no flash
+          setTimeout(() => {
+            console.log('[handleNext] Unblocking overlay');
+            setPendingStep3(false);
+            // Small delay before unblocking to ensure animation state is ready
+            setTimeout(() => {
+              setBlockOverlay(false);
+            }, 100);
+          }, 300);
+        }, 0);
+      } else {
+        nextStep();
+      }
     }
   };
 
@@ -399,6 +474,28 @@ export default function TutorialView() {
 
   // Map tutorial steps to game states
   const getStoreOverrides = (): any => {
+    console.log('[getStoreOverrides] currentStep:', currentStep, 'pendingStep3:', pendingStep3, 'blockOverlay:', blockOverlay, 'step3AnimationPhase:', step3AnimationPhase);
+    
+    // During transition from step 2 to 3, always show safe state
+    if ((currentStep === 3 && (pendingStep3 || blockOverlay)) || (currentStep === 3 && step3AnimationPhase === "idle" && !isAnimatingStep3)) {
+      console.log('[getStoreOverrides] Forcing safe state during transition');
+      return {
+        currentState: "guessing" as const,
+        gameState: mockGameState,
+        config: {
+          numPlayers: 1,
+          numRounds: 1,
+          currentRound: 1,
+        },
+        selectedTiles: [0], // Only tile A selected
+        foundEquations: [],
+        mainTimer: 180,
+        guessingPlayerId: "tutorial",
+        guessTimer: 10,
+        players: [tutorialPlayer],
+      };
+    }
+    
     // If tutorial is completed, show the completion state
     if (tutorialCompleted) {
       return {
@@ -439,18 +536,26 @@ export default function TutorialView() {
     switch (currentStep) {
       case 2:
         // Handle animation phases for step 2
-        if (step2AnimationPhase === "pressing" || step2AnimationPhase === "selecting") {
+        if (step2AnimationPhase === "pressing") {
           return {
             ...baseOverrides,
-            selectedTiles: step2AnimationPhase === "selecting" ? [0] : [],
-            currentState: step2AnimationPhase === "selecting" ? "guessing" as const : "game" as const,
-            guessingPlayerId: step2AnimationPhase === "selecting" ? "tutorial" : undefined,
+            selectedTiles: [],
+            currentState: "game" as const,
+            guessingPlayerId: undefined,
+            guessTimer: 10,
+          };
+        } else if (step2AnimationPhase === "selecting") {
+          return {
+            ...baseOverrides,
+            selectedTiles: [], // Keep empty until user clicks
+            currentState: "guessing" as const,
+            guessingPlayerId: "tutorial",
             guessTimer: 10,
           };
         }
         return {
           ...baseOverrides,
-          selectedTiles: [0], // Tile A selected
+          selectedTiles: [0], // Tile A selected after animation
           currentState: "guessing" as const,
           guessingPlayerId: "tutorial",
           guessTimer: 10,
@@ -460,7 +565,7 @@ export default function TutorialView() {
         if (step3AnimationPhase === "selecting2") {
           return {
             ...baseOverrides,
-            selectedTiles: [0, 8], // Tiles A and I selected
+            selectedTiles: [0], // Only tile A selected, waiting for user to click I
             currentState: "guessing" as const,
             guessingPlayerId: "tutorial",
             guessTimer: 10,
@@ -468,7 +573,7 @@ export default function TutorialView() {
         } else if (step3AnimationPhase === "selecting3") {
           return {
             ...baseOverrides,
-            selectedTiles: [0, 8, 9], // Tiles A, I, and J selected
+            selectedTiles: [0, 8], // Tiles A and I selected, waiting for user to click J
             currentState: "guessing" as const,
             guessingPlayerId: "tutorial",
             guessTimer: 10,
@@ -483,13 +588,13 @@ export default function TutorialView() {
             guessingPlayerId: "tutorial",
           };
         }
+        // Default state for step 3 - only show tile A selected
         return {
           ...baseOverrides,
-          selectedTiles: [0, 8, 9], // A, I, J
-          currentState: "showingResult" as const,
-          currentEquationResult: 10,
-          isCurrentEquationCorrect: true,
+          selectedTiles: [0], // Only tile A selected by default
+          currentState: "guessing" as const,
           guessingPlayerId: "tutorial",
+          guessTimer: 10,
         };
       case 4:
         // Step 4 is now the scoring rules (previous step 5)
@@ -538,7 +643,16 @@ export default function TutorialView() {
       </div>
 
       {/* Tutorial Overlay with highlighting */}
-      {showOverlay && (
+      {console.log('[Render] showOverlay:', showOverlay, 'blockOverlay:', blockOverlay, 'currentStep:', currentStep, 'pendingStep3:', pendingStep3, 'step3AnimationPhase:', step3AnimationPhase)}
+      {showOverlay && !blockOverlay && currentStep !== 3 && (
+        <TutorialOverlay
+          currentStep={currentStep}
+          onNext={handleNext}
+          onPrevious={handlePrevious}
+          onExit={handleExit}
+        />
+      )}
+      {showOverlay && !blockOverlay && currentStep === 3 && !pendingStep3 && (
         <TutorialOverlay
           currentStep={currentStep}
           onNext={handleNext}
@@ -549,12 +663,32 @@ export default function TutorialView() {
 
       {/* Animation indicators for step 2 */}
       {isAnimatingStep2 && (
-        <AnimationOverlay phase={step2AnimationPhase} step={2} onPhaseComplete={handleStep2PhaseComplete} />
+        <AnimationOverlay 
+          phase={step2AnimationPhase} 
+          step={2} 
+          onPhaseComplete={handleStep2PhaseComplete}
+          onTileClick={(index) => {
+            // Add tile to selected tiles if not already selected
+            if (!animationSelectedTiles.includes(index)) {
+              setAnimationSelectedTiles([...animationSelectedTiles, index]);
+            }
+          }}
+        />
       )}
       
       {/* Animation indicators for step 3 */}
       {isAnimatingStep3 && (
-        <AnimationOverlay phase={step3AnimationPhase} step={3} onPhaseComplete={handleStep3PhaseComplete} />
+        <AnimationOverlay 
+          phase={step3AnimationPhase} 
+          step={3} 
+          onPhaseComplete={handleStep3PhaseComplete}
+          onTileClick={(index) => {
+            // Add tile to selected tiles if not already selected
+            if (!animationSelectedTiles.includes(index)) {
+              setAnimationSelectedTiles([...animationSelectedTiles, index]);
+            }
+          }}
+        />
       )}
       
       {/* Floating button when tutorial is completed */}
