@@ -30,10 +30,10 @@ const tutorialSteps: TutorialStep[] = [
     id: 3,
     content: "Solve × and ÷ come before + and -",
     showTiles: true,
-    selectedTiles: [0, 1, 2], // Show tiles A, I, J selected
+    selectedTiles: [0, 8, 9], // Show tiles A, I, J selected
     showResult: true,
-    resultValue: 10,
-    showEquation: "1 + 1 + 1",
+    resultValue: 11,
+    showEquation: "1 + 2 × 5",
   },
   {
     id: 4,

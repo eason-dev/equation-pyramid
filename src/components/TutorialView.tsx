@@ -248,7 +248,7 @@ function AnimationOverlay({ phase, step, onPhaseComplete, onTileClick }: { phase
               }}
             >
               <div className="text-white text-4xl font-bold animate-bounce">
-                = 10 ✓
+                = 11 ✓
               </div>
               <div className="text-white text-sm mt-2 text-center">
                 Click to continue
@@ -264,15 +264,15 @@ function AnimationOverlay({ phase, step, onPhaseComplete, onTileClick }: { phase
 // Mock tutorial data
 const tutorialTiles: TileType[] = [
   { operator: "+", number: 1, label: "A" },
-  { operator: "+", number: 1, label: "B" },
-  { operator: "+", number: 1, label: "C" },
-  { operator: "+", number: 1, label: "D" },
-  { operator: "+", number: 1, label: "E" },
-  { operator: "+", number: 1, label: "F" },
-  { operator: "+", number: 1, label: "G" },
-  { operator: "+", number: 1, label: "H" },
-  { operator: "+", number: 1, label: "I" },
-  { operator: "+", number: 1, label: "J" },
+  { operator: "+", number: 3, label: "B" },
+  { operator: "-", number: 4, label: "C" },
+  { operator: "+", number: 6, label: "D" },
+  { operator: "-", number: 7, label: "E" },
+  { operator: "+", number: 8, label: "F" },
+  { operator: "-", number: 9, label: "G" },
+  { operator: "+", number: 10, label: "H" },
+  { operator: "+", number: 2, label: "I" },
+  { operator: "*", number: 5, label: "J" },
 ];
 
 const tutorialPlayer: Player = {
@@ -283,9 +283,9 @@ const tutorialPlayer: Player = {
 
 const mockGameState = {
   tiles: tutorialTiles,
-  targetNumber: 10,
+  targetNumber: 11,
   validEquations: [
-    { tiles: [tutorialTiles[7], tutorialTiles[6], tutorialTiles[9]], result: 10 }
+    { tiles: [tutorialTiles[0], tutorialTiles[8], tutorialTiles[9]], result: 11 } // A, I, J: 1 + 2 × 5 = 11
   ],
 };
 
@@ -508,7 +508,7 @@ export default function TutorialView() {
         },
         selectedTiles: [],
         foundEquations: [
-          { key: "0,8,9", foundBy: "tutorial" }, // A, I, J
+          { key: "0,8,9", foundBy: "tutorial" }, // A, I, J - the correct answer we found
         ],
         mainTimer: 0,
         guessingPlayerId: null,
@@ -583,7 +583,7 @@ export default function TutorialView() {
             ...baseOverrides,
             selectedTiles: [0, 8, 9], // A, I, J
             currentState: "showingResult" as const,
-            currentEquationResult: 10,
+            currentEquationResult: 11,
             isCurrentEquationCorrect: true,
             guessingPlayerId: "tutorial",
           };
@@ -609,7 +609,8 @@ export default function TutorialView() {
         // Step 5 is now the bonus tip (previous step 6)
         return {
           ...baseOverrides,
-          foundEquations: [{ key: "7,6,9", foundBy: "tutorial" }], // H, G, J
+          foundEquations: [{ key: "0,8,9", foundBy: "tutorial" }], // A, I, J
+          players: [{ ...tutorialPlayer, score: 1 }], // Keep score at 1
         };
       default:
         return baseOverrides;
