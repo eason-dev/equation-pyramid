@@ -294,6 +294,7 @@ export default function TutorialView() {
   const { isActive, currentStep, nextStep, previousStep, exitTutorial, exitTutorialWithoutCompletion } = useTutorialStore();
   const prevStepRef = useRef(currentStep);
   const [pendingStep3, setPendingStep3] = useState(false);
+  const [pendingStep2, setPendingStep2] = useState(false);
   const [isAnimatingStep2, setIsAnimatingStep2] = useState(false);
   const [step2AnimationPhase, setStep2AnimationPhase] = useState<"idle" | "pressing" | "selecting" | "done">("idle");
   const [isAnimatingStep3, setIsAnimatingStep3] = useState(false);
@@ -306,14 +307,14 @@ export default function TutorialView() {
 
   useEffect(() => {
     // When entering step 2, start the animation sequence (but not when navigating back)
-    if (currentStep === 2 && step2AnimationPhase === "idle" && !isNavigatingBack) {
+    if (currentStep === 2 && step2AnimationPhase === "idle" && !isNavigatingBack && !pendingStep2 && !blockOverlay) {
       setIsAnimatingStep2(true);
       setShowOverlay(false);
       setStep2AnimationPhase("pressing");
       // Clear any previous selections
       setAnimationSelectedTiles([]);
     }
-  }, [currentStep, step2AnimationPhase, isNavigatingBack]);
+  }, [currentStep, step2AnimationPhase, isNavigatingBack, pendingStep2, blockOverlay]);
   
   // Handle step 2 phase progression
   const handleStep2PhaseComplete = () => {
@@ -360,14 +361,17 @@ export default function TutorialView() {
   // Reset animation states when changing steps
   useEffect(() => {
     const previousStep = prevStepRef.current;
-    console.log('[useEffect] Step changed:', previousStep, '->', currentStep, 'blockOverlay:', blockOverlay);
+    console.log('[useEffect] Step changed:', previousStep, '->', currentStep, 'blockOverlay:', blockOverlay, 'step2AnimationPhase:', step2AnimationPhase, 'step3AnimationPhase:', step3AnimationPhase);
     
     if (currentStep !== 2) {
+      console.log('[useEffect] Resetting step2AnimationPhase to idle');
       setStep2AnimationPhase("idle");
     }
     if (currentStep !== 3) {
+      console.log('[useEffect] Resetting step3AnimationPhase to idle');
       setStep3AnimationPhase("idle");
     } else if (currentStep === 3 && previousStep === 2 && blockOverlay) {
+      console.log('[useEffect] Ensuring step 3 animation doesnt start early');
       // Ensure step 3 animation doesn't start until we're ready
       setStep3AnimationPhase("idle");
       setIsAnimatingStep3(false);
@@ -424,27 +428,53 @@ export default function TutorialView() {
       setTutorialCompleted(true);
       setShowOverlay(false);
     } else {
-      if (currentStep === 2) {
-        console.log('[handleNext] Transitioning from step 2 to 3');
+      if (currentStep === 1) {
+        console.log('[handleNext] Transitioning from step 1 to 2');
         // Block overlay completely during transition
         setBlockOverlay(true);
         setShowOverlay(false);
-        setPendingStep3(true);
+        setPendingStep2(true);
         // Use setTimeout to ensure state updates are batched
         setTimeout(() => {
           nextStep();
-          // Ensure step 3 starts with only tile A selected
-          setAnimationSelectedTiles([0]);
           // Keep blocking for a moment to ensure no flash
           setTimeout(() => {
-            console.log('[handleNext] Unblocking overlay');
-            setPendingStep3(false);
+            console.log('[handleNext] Unblocking overlay for step 2');
+            setPendingStep2(false);
             // Small delay before unblocking to ensure animation state is ready
             setTimeout(() => {
               setBlockOverlay(false);
             }, 100);
           }, 300);
         }, 0);
+      } else if (currentStep === 2) {
+        console.log('[handleNext] Transitioning from step 2 to 3');
+        console.log('[handleNext] step2AnimationPhase before:', step2AnimationPhase);
+        // First set the pending flag to ensure getStoreOverrides returns safe state
+        setPendingStep3(true);
+        // Immediately reset step 2 state to prevent answer button from being active
+        setStep2AnimationPhase("done");
+        setIsAnimatingStep2(false);
+        setAnimationSelectedTiles([0]);
+        console.log('[handleNext] States set, blocking overlay');
+        // Block overlay completely during transition
+        setBlockOverlay(true);
+        setShowOverlay(false);
+        // Force a re-render with the safe state before advancing
+        requestAnimationFrame(() => {
+          console.log('[handleNext] Advancing to next step');
+          nextStep();
+          // Keep blocking for a moment to ensure no flash
+          setTimeout(() => {
+            console.log('[handleNext] Unblocking overlay');
+            setPendingStep3(false);
+            // Small delay before unblocking to ensure animation state is ready
+            setTimeout(() => {
+              console.log('[handleNext] Final unblock');
+              setBlockOverlay(false);
+            }, 100);
+          }, 300);
+        });
       } else {
         nextStep();
       }
@@ -474,11 +504,52 @@ export default function TutorialView() {
 
   // Map tutorial steps to game states
   const getStoreOverrides = (): any => {
-    console.log('[getStoreOverrides] currentStep:', currentStep, 'pendingStep3:', pendingStep3, 'blockOverlay:', blockOverlay, 'step3AnimationPhase:', step3AnimationPhase);
+    console.log('[getStoreOverrides] currentStep:', currentStep, 'pendingStep2:', pendingStep2, 'pendingStep3:', pendingStep3, 'blockOverlay:', blockOverlay, 'step2AnimationPhase:', step2AnimationPhase, 'step3AnimationPhase:', step3AnimationPhase);
+    
+    // Special handling for step 2 to 3 transition - show guessing state with tile A selected
+    // Check this FIRST before other step 2 conditions
+    if (currentStep === 2 && pendingStep3) {
+      console.log('[getStoreOverrides] Maintaining state during step 2->3 transition - showing guessing state with tile A');
+      return {
+        currentState: "guessing" as const,
+        gameState: mockGameState,
+        config: {
+          numPlayers: 1,
+          numRounds: 1,
+          currentRound: 1,
+        },
+        selectedTiles: [0], // Keep tile A selected to prevent answer button
+        foundEquations: [],
+        mainTimer: 180,
+        guessingPlayerId: "tutorial",
+        guessTimer: 10,
+        players: [tutorialPlayer],
+      };
+    }
+    
+    // During transition from step 1 to 2, show safe state
+    if ((currentStep === 2 && pendingStep2 && blockOverlay) || (currentStep === 2 && step2AnimationPhase === "idle" && !isAnimatingStep2)) {
+      console.log('[getStoreOverrides] Forcing safe state during step 1->2 transition');
+      return {
+        currentState: "game" as const,
+        gameState: mockGameState,
+        config: {
+          numPlayers: 1,
+          numRounds: 1,
+          currentRound: 1,
+        },
+        selectedTiles: [],
+        foundEquations: [],
+        mainTimer: 180,
+        guessingPlayerId: null,
+        guessTimer: 0,
+        players: [tutorialPlayer],
+      };
+    }
     
     // During transition from step 2 to 3, always show safe state
     if ((currentStep === 3 && (pendingStep3 || blockOverlay)) || (currentStep === 3 && step3AnimationPhase === "idle" && !isAnimatingStep3)) {
-      console.log('[getStoreOverrides] Forcing safe state during transition');
+      console.log('[getStoreOverrides] Forcing safe state during step 2->3 transition');
       return {
         currentState: "guessing" as const,
         gameState: mockGameState,
@@ -547,7 +618,15 @@ export default function TutorialView() {
         } else if (step2AnimationPhase === "selecting") {
           return {
             ...baseOverrides,
-            selectedTiles: [], // Keep empty until user clicks
+            selectedTiles: animationSelectedTiles, // Use animation selected tiles
+            currentState: "guessing" as const,
+            guessingPlayerId: "tutorial",
+            guessTimer: 10,
+          };
+        } else if (step2AnimationPhase === "done") {
+          return {
+            ...baseOverrides,
+            selectedTiles: [0], // Tile A selected
             currentState: "guessing" as const,
             guessingPlayerId: "tutorial",
             guessTimer: 10,
@@ -630,6 +709,7 @@ export default function TutorialView() {
 
         {/* Game view */}
         <div>
+          {console.log('[GamePlayingView Render] storeOverrides:', getStoreOverrides(), 'pendingStep3:', pendingStep3)}
           <GamePlayingView
             tiles={tutorialTiles}
             players={tutorialCompleted ? getStoreOverrides().players : [tutorialPlayer]}
@@ -644,7 +724,7 @@ export default function TutorialView() {
       </div>
 
       {/* Tutorial Overlay with highlighting */}
-      {console.log('[Render] showOverlay:', showOverlay, 'blockOverlay:', blockOverlay, 'currentStep:', currentStep, 'pendingStep3:', pendingStep3, 'step3AnimationPhase:', step3AnimationPhase)}
+      {console.log('[Render] showOverlay:', showOverlay, 'blockOverlay:', blockOverlay, 'currentStep:', currentStep, 'pendingStep2:', pendingStep2, 'pendingStep3:', pendingStep3, 'step2AnimationPhase:', step2AnimationPhase, 'step3AnimationPhase:', step3AnimationPhase)}
       {showOverlay && !blockOverlay && currentStep !== 3 && (
         <TutorialOverlay
           currentStep={currentStep}
