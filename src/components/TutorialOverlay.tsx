@@ -280,10 +280,10 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
             }}
             whileDrag={{ cursor: "grabbing" }}
           >
-            <div className="bg-gray-900 rounded-lg shadow-2xl border border-gray-700 select-none">
+            <div className="rounded-lg shadow-2xl border border-gray-700 select-none" style={{ backgroundColor: "#0E0E12" }}>
               {/* Drag handle */}
-              <div className="bg-gray-800 rounded-t-lg px-6 py-2 flex justify-center items-center">
-                <div className="w-12 h-1 bg-gray-600 rounded-full" />
+              <div className="rounded-t-lg px-6 py-2 flex justify-center items-center" style={{ backgroundColor: "#17171A" }}>
+                <div className="w-12 h-1 rounded-full" style={{ backgroundColor: "#D9D9D9" }} />
               </div>
               
               <div className="p-6">
