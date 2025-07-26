@@ -124,3 +124,8 @@ html {
 .animate-slideUp {
   animation: slideUp 0.4s ease-out;
 }
+
+/* Fade in animation for notifications */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}

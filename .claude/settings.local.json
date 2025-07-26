@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(mkdir:*)",
-      "Bash(pnpm add:*)"
+      "Bash(pnpm add:*)",
+      "Bash(git checkout:*)",
+      "Bash(pnpm remove:*)"
     ],
     "deny": []
   }

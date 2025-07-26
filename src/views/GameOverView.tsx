@@ -38,6 +38,9 @@ export function GameOverView({
 
   // Mobile pagination state
   const [mobileView, setMobileView] = useState<"score" | "answers">("score");
+  
+  // Copy to clipboard state
+  const [showCopiedMessage, setShowCopiedMessage] = useState(false);
 
   // State to track which round is currently being viewed
   // Always start with the most recent round that actually exists in history
@@ -81,6 +84,20 @@ export function GameOverView({
 
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
   const isSinglePlayer = players.length === 1;
+  
+  // Copy to clipboard function
+  const handleShare = async () => {
+    const score = sortedPlayers[0].score;
+    const shareText = `I got ${score} score on Equation Pyramid game, let's play it together! ${window.location.origin}`;
+    
+    try {
+      await navigator.clipboard.writeText(shareText);
+      setShowCopiedMessage(true);
+      setTimeout(() => setShowCopiedMessage(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
 
   // Determine crown logic for multiplayer
   const shouldShowCrown = (player: Player) => {
@@ -211,7 +228,7 @@ export function GameOverView({
               <Button variant="primary" onClick={onNewGame} className="flex-1">
                 Again
               </Button>
-              <Button variant="primary" onClick={() => {}} className="flex-1">
+              <Button variant="primary" onClick={handleShare} className="flex-1">
                 Share
               </Button>
             </div>
@@ -352,11 +369,18 @@ export function GameOverView({
           <Button variant="primary" onClick={onNewGame}>
             Again
           </Button>
-          <Button variant="primary" onClick={() => {}}>
+          <Button variant="primary" onClick={handleShare}>
             Share
           </Button>
         </div>
       </div>
+      
+      {/* Copied to clipboard notification */}
+      {showCopiedMessage && (
+        <div className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-none text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in">
+          Copied to clipboard
+        </div>
+      )}
     </div>
   );
 }
