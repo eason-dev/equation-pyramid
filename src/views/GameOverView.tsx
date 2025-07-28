@@ -245,6 +245,7 @@ export function GameOverView({
                     totalRounds={config.numRounds}
                     selectedRound={selectedRound}
                     onRoundClick={setSelectedRound}
+                    showLabels={true}
                   />
                 )}
 
@@ -334,6 +335,7 @@ export function GameOverView({
                 totalRounds={config.numRounds}
                 selectedRound={selectedRound}
                 onRoundClick={setSelectedRound}
+                showLabels={true}
               />
             )}
 

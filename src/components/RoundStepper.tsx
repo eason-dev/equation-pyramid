@@ -5,6 +5,7 @@ interface RoundStepperProps {
   totalRounds: number;
   onRoundClick?: (round: number) => void;
   selectedRound?: number;
+  showLabels?: boolean;
 }
 
 export function RoundStepper({
@@ -12,6 +13,7 @@ export function RoundStepper({
   totalRounds,
   onRoundClick,
   selectedRound,
+  showLabels = false,
 }: RoundStepperProps) {
   return (
     <div className="flex items-center justify-center">
@@ -20,24 +22,45 @@ export function RoundStepper({
           <button
             type="button"
             className={cn(
+              "relative",
               onRoundClick && "cursor-pointer",
-              // Add touch-friendly tap target size
-              "p-1 md:p-0.5 -m-1 md:-m-0.5",
             )}
             onClick={() => onRoundClick?.(round)}
             disabled={!onRoundClick}
           >
-            <div
-              className={cn(
-                "w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-colors",
-                round === (selectedRound || currentRound)
-                  ? "bg-white/60"
-                  : "bg-white/20",
-              )}
-            />
+            {showLabels ? (
+              <div
+                className={cn(
+                  "w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all",
+                  round === (selectedRound || currentRound)
+                    ? "border-white/80 bg-white/10"
+                    : "border-white/40 bg-transparent",
+                )}
+              >
+                <span
+                  className={cn(
+                    "text-sm font-medium transition-colors",
+                    round === (selectedRound || currentRound)
+                      ? "text-white/90"
+                      : "text-white/50",
+                  )}
+                >
+                  R{round}
+                </span>
+              </div>
+            ) : (
+              <div
+                className={cn(
+                  "w-2 h-2 rounded-full transition-colors",
+                  round === (selectedRound || currentRound)
+                    ? "bg-white/60"
+                    : "bg-white/20",
+                )}
+              />
+            )}
           </button>
           {round < totalRounds && (
-            <div className="w-4 md:w-5 lg:w-6 h-0 border-t-1 border-white/20" />
+            <div className={showLabels ? "w-8 h-0 border-t-2 border-white/30" : "w-6 h-0 border-t-1 border-white/20"} />
           )}
         </div>
       ))}
