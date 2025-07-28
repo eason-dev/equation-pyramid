@@ -57,7 +57,7 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
     <button
       type="button"
       onClick={handleToggle}
-      className="w-12 h-12 flex items-center justify-center rounded hover:opacity-80 transition-opacity"
+      className="w-12 h-12 flex items-center justify-center rounded hover:opacity-80 transition-opacity cursor-pointer"
       title={getTooltip()}
     >
       <Image

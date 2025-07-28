@@ -1,12 +1,47 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Block } from "@/components/Block";
 import { Typography } from "@/components/Typography";
+import { useButtonSound } from "@/hooks/useButtonSound";
 
 export default function AboutPage() {
+  const router = useRouter();
+  const { playButtonSound } = useButtonSound();
+
+  const handleCancelClick = () => {
+    playButtonSound();
+    router.back();
+  };
+
   return (
     <div className="h-full flex flex-col items-center justify-start px-6 pt-2 pb-4 relative">
+      {/* Cancel Button */}
+      <button
+        onClick={handleCancelClick}
+        className="fixed top-4 md:top-6 right-4 md:right-6 z-50 w-12 h-12 flex items-center justify-center rounded hover:opacity-80 transition-opacity cursor-pointer"
+        title="Go back"
+        aria-label="Cancel"
+      >
+        <svg
+          width="48"
+          height="48"
+          viewBox="0 0 48 48"
+          fill="none"
+          className="w-12 h-12"
+        >
+          <circle cx="24" cy="24" r="24" fill="white" fillOpacity="0.1"/>
+          <path 
+            d="M30 18L18 30M18 18L30 30" 
+            stroke="white" 
+            strokeWidth="3" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+
       {/* Content */}
       <div className="flex flex-col items-center gap-10 max-w-4xl w-full">
         {/* Title */}

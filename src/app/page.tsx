@@ -434,6 +434,12 @@ export default function AppPage() {
         <Footer
           audioControls={activeAudioControls}
           trackType={activeMusicType}
+          hideAboutButton={
+            displayState === "game" ||
+            displayState === "guessing" ||
+            displayState === "showingResult" ||
+            displayState === "roundOver"
+          }
         />
       </div>
 

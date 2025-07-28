@@ -10,9 +10,10 @@ import { Typography } from "./Typography";
 interface FooterProps {
   audioControls?: AudioControls;
   trackType?: "main" | "game";
+  hideAboutButton?: boolean;
 }
 
-export function Footer({ audioControls, trackType }: FooterProps) {
+export function Footer({ audioControls, trackType, hideAboutButton = false }: FooterProps) {
   const { playButtonSound } = useButtonSound();
   const pathname = usePathname();
 
@@ -20,8 +21,8 @@ export function Footer({ audioControls, trackType }: FooterProps) {
     playButtonSound();
   };
 
-  // Show about button on homepage and tutorial page
-  const showAboutButton = pathname === "/" || pathname === "/tutorial";
+  // Show about button only when not explicitly hidden
+  const showAboutButton = !hideAboutButton;
 
   return (
     <footer className="relative md:fixed md:bottom-0 md:right-0">

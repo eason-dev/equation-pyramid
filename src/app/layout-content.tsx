@@ -52,7 +52,11 @@ export default function LayoutContent({
 
         <main className="flex-1 pt-16 md:pt-20">{children}</main>
 
-        <Footer audioControls={mainAudioControls} trackType="main" />
+        <Footer 
+          audioControls={mainAudioControls} 
+          trackType="main" 
+          hideAboutButton={pathname === "/tutorial" || pathname === "/about"}
+        />
       </div>
     </>
   );
