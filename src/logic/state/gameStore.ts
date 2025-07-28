@@ -65,6 +65,7 @@ interface GameData {
   // Result display data
   currentEquationResult: number | null;
   isCurrentEquationCorrect: boolean | null;
+  shouldShowCompletionAfterAnimation: boolean;
 
   // Timers
   mainTimerInterval: NodeJS.Timeout | null;
@@ -133,6 +134,7 @@ const initialState: GameData = {
   roundHistory: [],
   currentEquationResult: null,
   isCurrentEquationCorrect: null,
+  shouldShowCompletionAfterAnimation: false,
   mainTimerInterval: null,
   guessTimerInterval: null,
   resultDelayInterval: null,
@@ -281,10 +283,16 @@ export const useGameStore = create<GameStoreState>()(
             // Keep the current guessTimer value instead of resetting
           });
 
-          // Auto-submit after 5 seconds to give more time to see the result
+          // Auto-submit after 2.5 seconds to give time to see the result
           setTimeout(() => {
-            const { submitEquation } = get();
+            const { submitEquation, transitionToRoundOver } = get();
             submitEquation();
+            
+            // Check the state AFTER submitEquation
+            const updatedState = get();
+            if (updatedState.shouldShowCompletionAfterAnimation) {
+              transitionToRoundOver();
+            }
           }, 2500);
         }
       }
@@ -375,8 +383,10 @@ export const useGameStore = create<GameStoreState>()(
         currentState.foundEquations.length >=
           currentState.gameState.validEquations.length
       ) {
-        // All answers completed - transition to round over
-        transitionToRoundOver();
+        // All answers completed - set flag to show completion after animation
+        set((state) => {
+          state.shouldShowCompletionAfterAnimation = true;
+        });
       } else {
         // Continue the round
         startMainTimer();
@@ -496,6 +506,7 @@ export const useGameStore = create<GameStoreState>()(
         }
 
         state.currentState = "roundOver";
+        state.shouldShowCompletionAfterAnimation = false;
       });
     },
 
@@ -538,6 +549,8 @@ export const useGameStore = create<GameStoreState>()(
 
           // Auto-transition back to game after showing wrong effect
           setTimeout(() => {
+            const { transitionToRoundOver, startMainTimer } = get();
+            
             set((state) => {
               state.currentState = "game";
               state.guessingPlayerId = null;
@@ -545,7 +558,14 @@ export const useGameStore = create<GameStoreState>()(
               state.currentEquationResult = null;
               state.isCurrentEquationCorrect = null;
             });
-            startMainTimer();
+            
+            // Check the state AFTER the state update
+            const updatedState = get();
+            if (updatedState.shouldShowCompletionAfterAnimation) {
+              transitionToRoundOver();
+            } else {
+              startMainTimer();
+            }
           }, 2500); // Same delay as normal equation submission
         }
       }, 1000);
@@ -608,6 +628,7 @@ export const useGameStore = create<GameStoreState>()(
         state.roundHistory = [];
         state.currentEquationResult = null;
         state.isCurrentEquationCorrect = null;
+        state.shouldShowCompletionAfterAnimation = false;
       });
     },
 

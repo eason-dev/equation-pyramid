@@ -69,7 +69,7 @@ export function GamePlayingView({
   const allEquationsFound = gameState
     ? foundEquations.length >= gameState.validEquations.length
     : false;
-  const shouldShowCompletion = !!isOver || allEquationsFound;
+  const shouldShowCompletion = !!isOver;
 
   // Calculate progress for the floating button
   // const timeProgress = 1 - timeRemaining / ROUND_DURATION;
