@@ -60,7 +60,7 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
     <button
       type="button"
       onClick={handleToggle}
-      className="w-12 h-12 flex items-center justify-center rounded hover:opacity-80 transition-opacity cursor-pointer"
+      className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center rounded hover:opacity-80 transition-opacity cursor-pointer"
       title={getTooltip()}
     >
       <Image
@@ -68,7 +68,7 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
         alt={isShowingAsOn ? "Mute audio" : "Unmute audio"}
         width={48}
         height={48}
-        className="w-12 h-12"
+        className="w-8 h-8 md:w-12 md:h-12"
       />
     </button>
   );

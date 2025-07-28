@@ -42,7 +42,7 @@ export function GameSettingsView({
           >
             Number of Player
           </Typography>
-          <div className="flex items-center justify-center gap-8 md:gap-12 lg:gap-[72px]">
+          <div className="flex items-center justify-center gap-6 md:gap-12 lg:gap-[72px]">
             {PLAYERS_OPTIONS.map((option) => (
               <RoundButton
                 key={option}
@@ -50,7 +50,7 @@ export function GameSettingsView({
                 isActive={numPlayers === option}
               >
                 <span className="flex items-end justify-center gap-1">
-                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none">
+                  <span className="text-xl md:text-3xl lg:text-4xl font-bold leading-none">
                     {option}
                   </span>
                   <span className="hidden md:inline text-sm md:text-base lg:text-lg leading-none pb-[2px]">
@@ -70,7 +70,7 @@ export function GameSettingsView({
           >
             Number of Round
           </Typography>
-          <div className="flex items-center justify-center gap-8 md:gap-12 lg:gap-[72px] p-2.5">
+          <div className="flex items-center justify-center gap-6 md:gap-12 lg:gap-[72px] p-2.5">
             {ROUNDS_OPTIONS.map((option) => (
               <RoundButton
                 key={option}
@@ -78,7 +78,7 @@ export function GameSettingsView({
                 isActive={numRounds === option}
               >
                 <span className="flex items-end justify-center gap-1">
-                  <span className="text-2xl md:text-3xl lg:text-4xl font-bold leading-none">
+                  <span className="text-xl md:text-3xl lg:text-4xl font-bold leading-none">
                     {option}
                   </span>
                   <span className="hidden md:inline text-sm md:text-base lg:text-lg leading-none pb-[2px]">
