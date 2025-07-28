@@ -94,40 +94,15 @@ export function GamePlayingView({
       <div className="flex-1 flex flex-col items-center gap-6 md:gap-10 lg:gap-14 w-full mt-8 md:mt-10 lg:mt-12">
         {/* Mobile/Tablet: Show compact answer badges at top */}
         <div className="md:hidden flex justify-center w-full">
-          {gameState && foundEquations && foundEquations.length > 0 && (
-            <div className="flex items-center gap-2 overflow-x-auto max-w-full px-4">
-              {foundEquations.map((foundEq) => {
-                // Parse the key to get tile indices
-                const tileIndices = foundEq.key.split(",").map(Number);
-                // Get the actual equation from validEquations
-                const equation = gameState.validEquations.find((eq) => {
-                  const eqIndices = eq.tiles.map((eqTile) =>
-                    tiles.findIndex(
-                      (tile) =>
-                        tile.number === eqTile.number &&
-                        tile.label === eqTile.label
-                    )
-                  );
-                  return eqIndices.join(",") === foundEq.key;
-                });
-
-                if (!equation) return null;
-                const equationText = tileIndices
-                  .map((i) => tiles[i]?.label || "")
-                  .join(" ");
-
-                return (
-                  <div
-                    key={foundEq.key}
-                    className="flex items-center justify-center w-[60px] h-8 sm:min-w-[98px] sm:h-10 border border-white/20 rounded-lg bg-black/20 px-1 sm:px-3"
-                  >
-                    <span className="text-xs sm:text-sm font-semibold text-white/90 whitespace-nowrap">
-                      v {equationText}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+          {gameState && (foundEquations.length > 0 || shouldShowCompletion) && (
+            <AnswersTile
+              foundEquations={foundEquations}
+              validEquations={gameState.validEquations}
+              tiles={tiles}
+              players={players}
+              showAllAnswers={shouldShowCompletion}
+              compact={true}
+            />
           )}
         </div>
 
@@ -182,8 +157,8 @@ export function GamePlayingView({
                     ? isCurrentEquationCorrect === true
                       ? "correct"
                       : isCurrentEquationCorrect === false
-                      ? "wrong"
-                      : "guessing"
+                        ? "wrong"
+                        : "guessing"
                     : "guessing"
                 }
                 calculatedResult={

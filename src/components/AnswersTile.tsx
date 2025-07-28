@@ -10,6 +10,7 @@ interface AnswersTileProps {
   tiles: Tile[];
   players?: Player[];
   showAllAnswers?: boolean;
+  compact?: boolean;
 }
 
 export function AnswersTile({
@@ -18,6 +19,7 @@ export function AnswersTile({
   tiles,
   players,
   showAllAnswers = false,
+  compact = false,
 }: AnswersTileProps) {
   const isSinglePlayer = players ? players.length === 1 : true;
 
@@ -38,6 +40,72 @@ export function AnswersTile({
     const index = players.findIndex((p) => p.id === playerId);
     return index >= 0 ? index + 1 : 1;
   };
+
+  // Compact mode for mobile/tablet
+  if (compact) {
+    if (showAllAnswers) {
+      // Show all equations in compact format
+      const foundEquationMap = new Map<string, FoundEquation>();
+      foundEquations.forEach((eq) => {
+        foundEquationMap.set(eq.key, eq);
+      });
+
+      return (
+        <div className="flex flex-wrap items-center gap-2 max-w-full px-4 justify-center">
+          {validEquations.map((equation) => {
+            const equationKey = createEquationKey(equation);
+            const foundEquation = foundEquationMap.get(equationKey);
+            const equationText = equation.tiles.map((t) => t.label).join(" ");
+            const isFound = !!foundEquation;
+
+            return (
+              <div
+                key={equationKey}
+                className="flex items-center justify-center min-w-[60px] h-8 sm:min-w-[98px] sm:h-10 border border-white/20 rounded-lg px-1 sm:px-3"
+                style={{
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  background: "rgba(11, 11, 11, 0.6)",
+                }}
+              >
+                <span className="text-xs sm:text-sm font-semibold text-white/90 whitespace-nowrap">
+                  {isFound ? "✓" : "✗"} {equationText}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    } else {
+      // Show only found equations in compact format
+      return (
+        <div className="flex flex-wrap items-center gap-2 max-w-full px-4 justify-center">
+          {foundEquations.map((foundEq) => {
+            const tileIndices = foundEq.key.split(",").map(Number);
+            const equationText = tileIndices
+              .map((i) => tiles[i]?.label || "")
+              .join(" ");
+
+            return (
+              <div
+                key={foundEq.key}
+                className="flex items-center justify-center min-w-[60px] h-8 sm:min-w-[98px] sm:h-10 border border-white/20 rounded-lg px-1 sm:px-3"
+                style={{
+                  backdropFilter: "blur(24px)",
+                  WebkitBackdropFilter: "blur(24px)",
+                  background: "rgba(11, 11, 11, 0.6)",
+                }}
+              >
+                <span className="text-xs sm:text-sm font-semibold text-white/90 whitespace-nowrap">
+                  ✓ {equationText}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+  }
 
   if (showAllAnswers) {
     // For GameOverView: Show all valid equations with indicators
