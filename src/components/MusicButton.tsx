@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { AudioControls } from "@/hooks/useAudio";
 import { useButtonSound } from "@/hooks/useButtonSound";
 import { useGameStore } from "@/logic/state/gameStore";
@@ -16,10 +16,12 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
   const isAudioEnabled = useGameStore((state) => state.isAudioEnabled);
   const toggleAudio = useGameStore((state) => state.toggleAudio);
   const hydrateAudioState = useGameStore((state) => state.hydrateAudioState);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Hydrate audio state from localStorage on mount
   useEffect(() => {
     hydrateAudioState();
+    setIsHydrated(true);
   }, [hydrateAudioState]);
 
   const handleToggle = () => {
@@ -51,7 +53,8 @@ export function MusicButton({ audioControls, trackType }: MusicButtonProps) {
   };
 
   // Show the music button state based on global audio state
-  const isShowingAsOn = isAudioEnabled;
+  // Use false during SSR to ensure consistent rendering
+  const isShowingAsOn = isHydrated ? isAudioEnabled : false;
 
   return (
     <button
