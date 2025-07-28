@@ -2,7 +2,6 @@
 
 import { shaderMaterial } from "@react-three/drei";
 import { Canvas, extend, useFrame } from "@react-three/fiber";
-import { Leva, useControls } from "leva";
 import { useRef } from "react";
 import * as THREE from "three";
 
@@ -65,10 +64,8 @@ function FullscreenShader({ externalColor }: { externalColor?: string }) {
   const currentColorRef = useRef(new THREE.Color("#242b3e"));
   const timeOffsetRef = useRef(Math.random() * 100);
 
-  const { strength, color } = useControls({
-    strength: { value: 0.6, min: 0.1, max: 2.0, step: 0.1 },
-    color: "#242b3e",
-  });
+  const strength = 0.6;
+  const color = "#242b3e";
 
   useFrame(({ clock, size }) => {
     if (ref.current) {
@@ -112,7 +109,6 @@ export function ShaderBackground({
 
   return (
     <>
-      {shouldShowControls && <Leva collapsed={true} />}
       <div className={className}>
         <Canvas orthographic camera={{ zoom: 1, position: [0, 0, 1] }}>
           <FullscreenShader externalColor={color} />

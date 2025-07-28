@@ -5,7 +5,8 @@
       "Bash(pnpm add:*)",
       "Bash(git checkout:*)",
       "Bash(pnpm remove:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(pnpm install:*)"
     ],
     "deny": []
   }
