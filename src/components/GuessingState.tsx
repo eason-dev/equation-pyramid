@@ -47,7 +47,7 @@ export function GuessingState({
       data-tutorial="guessing-state"
     >
       {/* Main horizontal layout */}
-      <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 lg:gap-10 min-h-[80px] md:min-h-[100px] lg:min-h-[120px]">
+      <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 lg:gap-10 min-h-[80px] md:min-h-[100px] lg:min-h-[120px]">
         {/* Timer - centered when no tiles selected, left when tiles selected */}
         {!hideTimer && (
           <div
@@ -68,7 +68,7 @@ export function GuessingState({
         {hasSelectedTiles && (
           <div className="order-2">
             {/* Responsive container for tiles */}
-            <div className="flex items-center gap-2 md:gap-2.5 w-full md:w-[280px] lg:w-[326px] h-[80px] md:h-[90px] lg:h-[102px] justify-center">
+            <div className="flex items-center gap-6 md:gap-7 lg:gap-8 w-full md:w-[220px] lg:w-[256px] h-[56px] md:h-[64px] lg:h-[72px] justify-center">
               {/* Render selected tiles, left-aligned */}
               {selectedTiles.map((tileIndex, arrayIndex) => {
                 const tile = tiles[tileIndex];
@@ -76,7 +76,7 @@ export function GuessingState({
                 return (
                   <div
                     key={tileIndex}
-                    className="w-[70px] md:w-[85px] lg:w-[102px]"
+                    className="w-[56px] md:w-[64px] lg:w-[72px]"
                   >
                     <Tile
                       tile={tile}
