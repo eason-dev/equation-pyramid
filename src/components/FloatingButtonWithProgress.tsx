@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { RoundButton } from "./RoundButton";
 import { Typography } from "./Typography";
+import { Button } from "@/components/Button";
 
 interface FloatingButtonWithProgressProps {
   onClick: () => void;
@@ -112,64 +113,16 @@ export function FloatingButtonWithProgress({
   // Mobile/Touch device layout
   if (isTouchDevice) {
     return (
-      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
-        <div className="relative">
-          {/* Progress Ring - Smaller for mobile */}
-          {!showCompletionText && (
-            <svg
-              className="absolute inset-0 -rotate-90"
-              width={160}
-              height={160}
-              style={{
-                left: "-30px",
-                top: "-30px",
-                filter: "drop-shadow(0 0 10px rgba(169, 199, 255, 0.5))",
-              }}
-              aria-label="Progress indicator"
-            >
-              <title>Progress indicator</title>
-              {/* Background circle */}
-              <circle
-                stroke="rgba(169, 199, 255, 0.2)"
-                fill="transparent"
-                strokeWidth={3}
-                r={70}
-                cx={80}
-                cy={80}
-              />
-              {/* Progress circle */}
-              <circle
-                stroke="rgba(169, 199, 255, 0.8)"
-                fill="transparent"
-                strokeWidth={3}
-                strokeDasharray={`${440} ${440}`}
-                style={{
-                  strokeDashoffset: 440 - progress * 440,
-                  transition: "stroke-dashoffset 0.5s ease-in-out",
-                }}
-                r={70}
-                cx={80}
-                cy={80}
-              />
-            </svg>
-          )}
+      <div className="flex flex-col items-center gap-8 mt-12">
+        {/* Completion Text - Static for mobile */}
+        {showCompletionText && (
+          <Typography variant="h1">{completionText}</Typography>
+        )}
 
-          {/* Completion Text - Static for mobile */}
-          {showCompletionText && (
-            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-              <Typography variant="p2" className="text-[#A9C7FF] text-sm">
-                {completionText}
-              </Typography>
-            </div>
-          )}
-
-          {/* Button Container */}
-          <div className="pointer-events-auto">
-            <RoundButton onClick={onClick} disabled={disabled}>
-              {children}
-            </RoundButton>
-          </div>
-        </div>
+        {/* Button Container */}
+        <Button onClick={onClick} disabled={disabled}>
+          {children}
+        </Button>
       </div>
     );
   }
@@ -180,8 +133,12 @@ export function FloatingButtonWithProgress({
       ref={floatingButtonRef}
       className="fixed pointer-events-none z-50"
       style={{
-        left: isInitialized ? `${buttonPos.current.x - 150}px` : "calc(50vw - 150px)",
-        top: isInitialized ? `${buttonPos.current.y - 150}px` : "calc(50vh - 150px)",
+        left: isInitialized
+          ? `${buttonPos.current.x - 150}px`
+          : "calc(50vw - 150px)",
+        top: isInitialized
+          ? `${buttonPos.current.y - 150}px`
+          : "calc(50vh - 150px)",
         transform: "translate3d(0, 0, 0)", // Enable hardware acceleration
       }}
     >

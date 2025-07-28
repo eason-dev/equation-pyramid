@@ -73,7 +73,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
         type="button"
         disabled={isDisabled}
         data-tutorial="answer-button"
-        onClick={(_e) => {
+        onClick={() => {
           if (!isDisabled) {
             playButtonSound();
             onClick();
@@ -85,7 +85,7 @@ export const AnswerButton = forwardRef<HTMLButtonElement, AnswerButtonProps>(
           "rounded-xl transition-all duration-200",
           "gap-3 p-4 md:gap-3.5 md:p-4.5 lg:gap-4 lg:p-5",
           // Responsive sizing
-          "min-w-full md:min-w-[180px] lg:min-w-[200px]",
+          "min-w-[180px] md:min-w-[180px] lg:min-w-[200px]",
           "min-h-[140px] md:min-h-[170px] lg:min-h-[200px]",
           isDisabled ? "cursor-not-allowed" : "cursor-pointer",
           className,
