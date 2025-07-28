@@ -342,29 +342,35 @@ export function GameOverView({
               />
             )}
 
-            {/* Game Content */}
-            <div className="flex items-start gap-4 md:gap-5 lg:gap-6 h-[300px] md:h-[330px] lg:h-[360px]">
-              {/* Answers - show content from selected round */}
-              <AnswersTile
-                foundEquations={displayFoundEquations}
-                validEquations={displayGameState.validEquations}
-                tiles={displayGameState.tiles}
-                players={players}
-                showAllAnswers={true}
-              />
-
-              {/* Pyramid - show tiles from selected round */}
-              <div className="scale-[0.65] md:scale-[0.7] lg:scale-75 origin-center">
-                <TileList
+            {/* Game Content - 3 column layout with equal side widths */}
+            <div className="flex items-start justify-center gap-4 md:gap-5 lg:gap-6 h-[300px] md:h-[330px] lg:h-[360px] w-full max-w-[1100px]">
+              {/* Left Column: Answers - fixed width matching GamePlayingView */}
+              <div className="flex-shrink-0 md:w-[160px] lg:w-[200px]">
+                <AnswersTile
+                  foundEquations={displayFoundEquations}
+                  validEquations={displayGameState.validEquations}
                   tiles={displayGameState.tiles}
-                  selectedTiles={[]}
-                  onTileClick={() => {}}
-                  isGuessing={false}
+                  players={players}
+                  showAllAnswers={true}
                 />
               </div>
 
-              {/* Target - show target number from selected round */}
-              <TargetTile targetNumber={displayGameState.targetNumber} />
+              {/* Center Column: Pyramid */}
+              <div className="flex-1 flex justify-center items-center">
+                <div className="scale-[0.65] md:scale-[0.7] lg:scale-75 origin-center">
+                  <TileList
+                    tiles={displayGameState.tiles}
+                    selectedTiles={[]}
+                    onTileClick={() => {}}
+                    isGuessing={false}
+                  />
+                </div>
+              </div>
+
+              {/* Right Column: Target - fixed width matching GamePlayingView */}
+              <div className="flex-shrink-0 md:w-[160px] lg:w-[200px] flex justify-end">
+                <TargetTile targetNumber={displayGameState.targetNumber} />
+              </div>
             </div>
           </div>
         )}
