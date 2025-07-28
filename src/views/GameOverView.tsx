@@ -249,28 +249,31 @@ export function GameOverView({
                   />
                 )}
 
-                {/* Target and Pyramid */}
-                <div className="flex flex-col items-center gap-4">
-                  <TargetTile targetNumber={displayGameState.targetNumber} />
-                  <div className="scale-75">
-                    <TileList
-                      tiles={displayGameState.tiles}
-                      selectedTiles={[]}
-                      onTileClick={() => {}}
-                      isGuessing={false}
-                    />
-                  </div>
-                </div>
-
-                {/* Answers List */}
-                <div className="w-full max-w-sm">
+                {/* Compact answer badges at top - same as GamePlayingView */}
+                <div className="flex justify-center w-full">
                   <AnswersTile
                     foundEquations={displayFoundEquations}
                     validEquations={displayGameState.validEquations}
                     tiles={displayGameState.tiles}
                     players={players}
                     showAllAnswers={true}
+                    compact={true}
                   />
+                </div>
+
+                {/* Tile Pyramid with Target - same layout as GamePlayingView */}
+                <div className="relative inline-block">
+                  <TileList
+                    tiles={displayGameState.tiles}
+                    selectedTiles={[]}
+                    onTileClick={() => {}}
+                    isGuessing={false}
+                  />
+
+                  {/* Target tile positioned at right top corner - same as GamePlayingView */}
+                  <div className="absolute top-0 right-0 sm:-top-2 sm:-right-24">
+                    <TargetTile targetNumber={displayGameState.targetNumber} />
+                  </div>
                 </div>
 
                 {/* Back to Score Button */}
