@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { GamePlayingView } from "@/views/GamePlayingView";
 import { TutorialOverlay } from "@/components/TutorialOverlay";
 import type { Player, Tile as TileType } from "@/logic/game/types";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { FloatingButtonWithProgress } from "@/components/FloatingButtonWithProgress";
 
 // Animation overlay component
@@ -304,17 +304,53 @@ export default function TutorialView() {
   const [isNavigatingBack, setIsNavigatingBack] = useState(false);
   const [animationSelectedTiles, setAnimationSelectedTiles] = useState<number[]>([]);
   const [blockOverlay, setBlockOverlay] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile/tablet screen
+  const [isMobileBackground, setIsMobileBackground] = useState(false);
+  
+  // Fixed end state for mobile background - memoized to prevent recreating
+  // MUST be called before any conditional returns to follow Rules of Hooks
+  const mobileEndState = useMemo(() => ({
+    currentState: "roundOver" as const,
+    gameState: mockGameState,
+    config: {
+      numPlayers: 1,
+      numRounds: 1,
+      currentRound: 1,
+    },
+    selectedTiles: [],
+    foundEquations: [
+      { key: "0,8,9", foundBy: "tutorial" }, // A, I, J - the correct answer
+    ],
+    mainTimer: 0,
+    guessingPlayerId: null,
+    guessTimer: 0,
+    players: [{ ...tutorialPlayer, score: 1 }],
+  }), []);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // Include tablets for UI
+      setIsMobileBackground(window.innerWidth < 768); // Mobile only for background
+    };
+    
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     // When entering step 2, start the animation sequence (but not when navigating back)
-    if (currentStep === 2 && step2AnimationPhase === "idle" && !isNavigatingBack && !pendingStep2 && !blockOverlay) {
+    // Skip animations on mobile (both UI and background)
+    if (currentStep === 2 && step2AnimationPhase === "idle" && !isNavigatingBack && !pendingStep2 && !blockOverlay && !isMobile && !isMobileBackground) {
       setIsAnimatingStep2(true);
       setShowOverlay(false);
       setStep2AnimationPhase("pressing");
       // Clear any previous selections
       setAnimationSelectedTiles([]);
     }
-  }, [currentStep, step2AnimationPhase, isNavigatingBack, pendingStep2, blockOverlay]);
+  }, [currentStep, step2AnimationPhase, isNavigatingBack, pendingStep2, blockOverlay, isMobile, isMobileBackground]);
   
   // Handle step 2 phase progression
   const handleStep2PhaseComplete = () => {
@@ -331,7 +367,8 @@ export default function TutorialView() {
 
   // Animation for step 3 (now showing the equation result)
   useEffect(() => {
-    if (currentStep === 3 && step3AnimationPhase === "idle" && !isNavigatingBack && !pendingStep3 && !blockOverlay) {
+    // Skip animations on mobile (both UI and background)
+    if (currentStep === 3 && step3AnimationPhase === "idle" && !isNavigatingBack && !pendingStep3 && !blockOverlay && !isMobile && !isMobileBackground) {
       // Immediately start animation without showing overlay
       setShowOverlay(false);
       setIsAnimatingStep3(true);
@@ -339,7 +376,7 @@ export default function TutorialView() {
       // Start with tile A already selected from step 2
       setAnimationSelectedTiles([0]);
     }
-  }, [currentStep, step3AnimationPhase, isNavigatingBack, pendingStep3, blockOverlay]);
+  }, [currentStep, step3AnimationPhase, isNavigatingBack, pendingStep3, blockOverlay, isMobile, isMobileBackground]);
   
   // Handle step 3 phase progression
   const handleStep3PhaseComplete = () => {
@@ -372,32 +409,41 @@ export default function TutorialView() {
     }
     
     // Handle overlay visibility
-    if (blockOverlay) {
-      // Don't change overlay state while blocked
+    if (blockOverlay && !isMobile) {
+      // Don't change overlay state while blocked (but on mobile, always show)
       prevStepRef.current = currentStep;
       return;
     }
     
-    if (currentStep === 3 && previousStep === 2) {
-      // Never show overlay when going from step 2 to 3
-      setShowOverlay(false);
-    } else if (currentStep === 2 && step2AnimationPhase === "idle" && !isNavigatingBack) {
-      // Hide overlay for step 2 animation
-      setShowOverlay(false);
-    } else if (currentStep === 3 && step3AnimationPhase === "idle" && !isNavigatingBack) {
-      // Hide overlay for step 3 animation
-      setShowOverlay(false);
-    } else if (
-      (currentStep === 2 && step2AnimationPhase === "done") ||
-      (currentStep === 3 && step3AnimationPhase === "done") ||
-      (currentStep !== 2 && currentStep !== 3)
-    ) {
-      // Show overlay in other cases
+    // On mobile/tablet UI, always show overlay (no animations to wait for)
+    if (isMobile && !isMobileBackground) {
       setShowOverlay(true);
+    } else if (isMobileBackground) {
+      // On mobile background screens, always show overlay
+      setShowOverlay(true);
+    } else {
+      // Desktop logic for animations
+      if (currentStep === 3 && previousStep === 2) {
+        // Never show overlay when going from step 2 to 3
+        setShowOverlay(false);
+      } else if (currentStep === 2 && step2AnimationPhase === "idle" && !isNavigatingBack) {
+        // Hide overlay for step 2 animation
+        setShowOverlay(false);
+      } else if (currentStep === 3 && step3AnimationPhase === "idle" && !isNavigatingBack) {
+        // Hide overlay for step 3 animation
+        setShowOverlay(false);
+      } else if (
+        (currentStep === 2 && step2AnimationPhase === "done") ||
+        (currentStep === 3 && step3AnimationPhase === "done") ||
+        (currentStep !== 2 && currentStep !== 3)
+      ) {
+        // Show overlay in other cases
+        setShowOverlay(true);
+      }
     }
     
     prevStepRef.current = currentStep;
-  }, [currentStep, step2AnimationPhase, step3AnimationPhase, isNavigatingBack, blockOverlay]);
+  }, [currentStep, step2AnimationPhase, step3AnimationPhase, isNavigatingBack, blockOverlay, isMobile]);
 
   if (!isActive && !tutorialCompleted) return null;
 
@@ -418,8 +464,15 @@ export default function TutorialView() {
       setTutorialCompleted(true);
       setShowOverlay(false);
     } else {
-      if (currentStep === 1) {
-        // Block overlay completely during transition
+      // On mobile, just advance to next step without any animation logic
+      if (isMobile) {
+        if (currentStep === 2 && !isMobileBackground) {
+          // For step 2 on mobile/tablet UI (not mobile background), set up the state for step 3
+          setAnimationSelectedTiles([0]); // Show tile A selected
+        }
+        nextStep();
+      } else if (currentStep === 1) {
+        // Desktop: Block overlay completely during transition
         setBlockOverlay(true);
         setShowOverlay(false);
         setPendingStep2(true);
@@ -464,7 +517,13 @@ export default function TutorialView() {
   };
 
   const handlePrevious = () => {
-    // Set flag to prevent animation auto-start when navigating back
+    // On mobile, just go back without animation concerns
+    if (isMobile) {
+      previousStep();
+      return;
+    }
+    
+    // Desktop: Set flag to prevent animation auto-start when navigating back
     setIsNavigatingBack(true);
     
     // Reset ALL animation states before navigating
@@ -486,6 +545,11 @@ export default function TutorialView() {
 
   // Map tutorial steps to game states
   const getStoreOverrides = (): any => {
+    // On mobile screens < 768px, always return the fixed end state
+    if (isMobileBackground && !tutorialCompleted) {
+      return mobileEndState;
+    }
+
     // Special handling for step 2 to 3 transition - show guessing state with tile A selected
     // Check this FIRST before other step 2 conditions
     if (currentStep === 2 && pendingStep3) {
@@ -507,7 +571,7 @@ export default function TutorialView() {
     }
     
     // During transition from step 1 to 2, show safe state
-    if ((currentStep === 2 && pendingStep2 && blockOverlay) || (currentStep === 2 && step2AnimationPhase === "idle" && !isAnimatingStep2)) {
+    if ((currentStep === 2 && pendingStep2 && blockOverlay) || (currentStep === 2 && step2AnimationPhase === "idle" && !isAnimatingStep2 && !isMobile)) {
       return {
         currentState: "game" as const,
         gameState: mockGameState,
@@ -526,7 +590,7 @@ export default function TutorialView() {
     }
     
     // During transition from step 2 to 3, always show safe state
-    if ((currentStep === 3 && (pendingStep3 || blockOverlay)) || (currentStep === 3 && step3AnimationPhase === "idle" && !isAnimatingStep3)) {
+    if ((currentStep === 3 && (pendingStep3 || blockOverlay)) || (currentStep === 3 && step3AnimationPhase === "idle" && !isAnimatingStep3 && !isMobile)) {
       return {
         currentState: "guessing" as const,
         gameState: mockGameState,
@@ -583,6 +647,16 @@ export default function TutorialView() {
     // Customize based on step
     switch (currentStep) {
       case 2:
+        // On mobile, show simple state for step 2
+        if (isMobile) {
+          return {
+            ...baseOverrides,
+            selectedTiles: [0], // Show tile A selected
+            currentState: "guessing" as const,
+            guessingPlayerId: "tutorial",
+            guessTimer: 10,
+          };
+        }
         // Handle animation phases for step 2
         if (step2AnimationPhase === "pressing") {
           return {
@@ -617,6 +691,16 @@ export default function TutorialView() {
           guessTimer: 10,
         };
       case 3:
+        // On mobile, show simple state for step 3
+        if (isMobile) {
+          return {
+            ...baseOverrides,
+            selectedTiles: animationSelectedTiles.length > 0 ? animationSelectedTiles : [0], // Show selected tiles from step 2
+            currentState: "guessing" as const,
+            guessingPlayerId: "tutorial",
+            guessTimer: 10,
+          };
+        }
         // Handle animation phases for step 3 (equation result)
         if (step3AnimationPhase === "selecting2") {
           return {
@@ -673,6 +757,21 @@ export default function TutorialView() {
     }
   };
 
+  // Use fixed end state for mobile background
+  const shouldShowMobileEndState = isMobileBackground && !tutorialCompleted;
+  const storeOverrides = shouldShowMobileEndState ? mobileEndState : getStoreOverrides();
+  
+  const gameViewProps = {
+    tiles: tutorialTiles,
+    players: shouldShowMobileEndState ? [{ ...tutorialPlayer, score: 1 }] : (tutorialCompleted ? storeOverrides.players : [tutorialPlayer]),
+    selectedPlayerId: shouldShowMobileEndState ? null : (storeOverrides.guessingPlayerId || null),
+    timeRemaining: shouldShowMobileEndState ? 0 : (tutorialCompleted ? 0 : 180),
+    onTileClick: () => {},
+    storeOverrides: storeOverrides,
+    isTutorial: true,
+    isOver: shouldShowMobileEndState ? true : tutorialCompleted,
+  };
+
   return (
     <>
       {/* Add wrapper div with tutorial data attributes */}
@@ -686,29 +785,12 @@ export default function TutorialView() {
 
         {/* Game view */}
         <div>
-          <GamePlayingView
-            tiles={tutorialTiles}
-            players={tutorialCompleted ? getStoreOverrides().players : [tutorialPlayer]}
-            selectedPlayerId={getStoreOverrides().guessingPlayerId || null}
-            timeRemaining={tutorialCompleted ? 0 : 180}
-            onTileClick={() => {}}
-            storeOverrides={getStoreOverrides()}
-            isTutorial={true}
-            isOver={tutorialCompleted}
-          />
+          <GamePlayingView {...gameViewProps} />
         </div>
       </div>
 
       {/* Tutorial Overlay with highlighting */}
-      {showOverlay && !blockOverlay && currentStep !== 3 && (
-        <TutorialOverlay
-          currentStep={currentStep}
-          onNext={handleNext}
-          onPrevious={handlePrevious}
-          onExit={handleExit}
-        />
-      )}
-      {showOverlay && !blockOverlay && currentStep === 3 && !pendingStep3 && (
+      {(isMobile ? showOverlay : (showOverlay && !blockOverlay && (currentStep !== 3 || !pendingStep3))) && (
         <TutorialOverlay
           currentStep={currentStep}
           onNext={handleNext}

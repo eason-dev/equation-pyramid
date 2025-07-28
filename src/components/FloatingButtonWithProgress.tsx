@@ -26,6 +26,7 @@ export function FloatingButtonWithProgress({
   const mousePos = useRef({ x: 0, y: 0 });
   const buttonPos = useRef({ x: 0, y: 0 });
   const animationRef = useRef<number | undefined>(undefined);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Detect if device has touch capabilities
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -53,6 +54,15 @@ export function FloatingButtonWithProgress({
   useEffect(() => {
     // Only enable mouse tracking on non-touch devices
     if (isTouchDevice) return;
+
+    // Initialize button position to center of screen on first render
+    if (!isInitialized) {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      mousePos.current = { x: centerX, y: centerY };
+      buttonPos.current = { x: centerX, y: centerY };
+      setIsInitialized(true);
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
@@ -90,7 +100,7 @@ export function FloatingButtonWithProgress({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isTouchDevice]);
+  }, [isTouchDevice, isInitialized]);
 
   // Calculate the SVG path for the progress arc
   const radius = 90;
@@ -170,8 +180,8 @@ export function FloatingButtonWithProgress({
       ref={floatingButtonRef}
       className="fixed pointer-events-none z-50"
       style={{
-        left: "0px",
-        top: "0px",
+        left: isInitialized ? `${buttonPos.current.x - 150}px` : "calc(50vw - 150px)",
+        top: isInitialized ? `${buttonPos.current.y - 150}px` : "calc(50vh - 150px)",
         transform: "translate3d(0, 0, 0)", // Enable hardware acceleration
       }}
     >

@@ -25,11 +25,29 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
   const currentStepData = tutorialSteps[currentStep - 1];
   const isLastStep = currentStep === tutorialSteps.length;
   const isFirstStep = currentStep === 1;
+
+  // Safety check
+  if (!currentStepData) {
+    console.error(`Tutorial step ${currentStep} not found`);
+    return null;
+  }
+
+  // Detect mobile/tablet screen
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // Include tablets for consistent popup width
+    };
+    
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Reset drag offset when step changes
   useEffect(() => {
@@ -39,6 +57,18 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
   // Calculate highlight position based on step
   useEffect(() => {
     const calculatePosition = () => {
+      // On mobile/tablet, always center the popup and skip highlights
+      if (isMobile) {
+        setHighlightPositions([]);
+        // Fixed width only
+        const popupWidth = 380; // Fixed width
+        setTooltipPosition({
+          top: window.innerHeight / 2 - 200, // Center vertically (approximate)
+          left: Math.max(20, (window.innerWidth - popupWidth) / 2), // Center horizontally with padding
+        });
+        return;
+      }
+
       let selector = "";
       
       switch (currentStep) {
@@ -193,51 +223,55 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
       clearTimeout(timeout2);
       clearTimeout(timeout3);
     };
-  }, [currentStep]);
+  }, [currentStep, isMobile]);
 
   return (
     <AnimatePresence>
       <motion.div
         ref={overlayRef}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[9999] pointer-events-none overflow-y-auto"
+        initial={isMobile ? undefined : { opacity: 0 }}
+        animate={isMobile ? undefined : { opacity: 1 }}
+        exit={isMobile ? undefined : { opacity: 0 }}
+        className="fixed inset-0 z-[9999] pointer-events-none"
       >
-        {/* Dark overlay with cutout */}
-        <div className="fixed inset-0 pointer-events-auto">
-          <svg className="w-full h-full">
-            <defs>
-              <mask id="highlight-mask">
-                <rect x="0" y="0" width="100%" height="100%" fill="white" />
-                {highlightPositions.map((pos, index) => (
-                  <motion.rect
-                    key={index}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    x={pos.left}
-                    y={pos.top}
-                    width={pos.width}
-                    height={pos.height}
-                    rx="8"
-                    fill="black"
-                  />
-                ))}
-              </mask>
-            </defs>
-            <rect
-              x="0"
-              y="0"
-              width="100%"
-              height="100%"
-              fill="rgba(0, 0, 0, 0.5)"
-              mask="url(#highlight-mask)"
-            />
-          </svg>
-        </div>
+        {/* Dark overlay with cutout - simplified for mobile */}
+        {isMobile ? (
+          <div className="fixed inset-0 bg-black/80 pointer-events-auto" />
+        ) : (
+          <div className="fixed inset-0 pointer-events-auto">
+            <svg className="w-full h-full">
+              <defs>
+                <mask id="highlight-mask">
+                  <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                  {highlightPositions.map((pos, index) => (
+                    <motion.rect
+                      key={index}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      x={pos.left}
+                      y={pos.top}
+                      width={pos.width}
+                      height={pos.height}
+                      rx="8"
+                      fill="black"
+                    />
+                  ))}
+                </mask>
+              </defs>
+              <rect
+                x="0"
+                y="0"
+                width="100%"
+                height="100%"
+                fill="rgba(0, 0, 0, 0.8)"
+                mask="url(#highlight-mask)"
+              />
+            </svg>
+          </div>
+        )}
 
-        {/* Highlight borders */}
-        {highlightPositions.map((pos, index) => (
+        {/* Highlight borders - hide on mobile */}
+        {!isMobile && highlightPositions.map((pos, index) => (
           <motion.div
             key={index}
             initial={{ opacity: 0, scale: 1.1 }}
@@ -256,35 +290,49 @@ export function TutorialOverlay({ currentStep, onNext, onPrevious, onExit }: Tut
         {/* Tutorial tooltip */}
         <FocusTrap active={true}>
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ 
+            initial={isMobile ? undefined : { opacity: 0 }}
+            animate={isMobile ? {
+              x: tooltipPosition.left,
+              y: tooltipPosition.top
+            } : { 
               opacity: 1,
               x: tooltipPosition.left + dragOffset.x,
               y: tooltipPosition.top + dragOffset.y
             }}
-            drag
+            drag={!isMobile}
             dragMomentum={false}
             dragElastic={0}
             onDragEnd={(event, info) => {
-              setDragOffset((prev) => ({
-                x: prev.x + info.offset.x,
-                y: prev.y + info.offset.y,
-              }));
+              if (!isMobile) {
+                setDragOffset((prev) => ({
+                  x: prev.x + info.offset.x,
+                  y: prev.y + info.offset.y,
+                }));
+              }
             }}
             className="fixed pointer-events-auto"
             style={{
               top: 0,
               left: 0,
-              maxWidth: "min(400px, 90vw)",
-              cursor: "grab",
+              width: isMobile ? "380px" : "auto",
+              maxWidth: isMobile ? "calc(100vw - 40px)" : "min(400px, 90vw)",
+              cursor: isMobile ? "default" : "grab",
+              zIndex: 10000, // Ensure it's on top
             }}
-            whileDrag={{ cursor: "grabbing" }}
+            whileDrag={{ cursor: isMobile ? "default" : "grabbing" }}
           >
-            <div className="rounded-lg shadow-2xl border border-gray-700 select-none" style={{ backgroundColor: "#0E0E12" }}>
-              {/* Drag handle */}
-              <div className="rounded-t-lg px-6 py-2 flex justify-center items-center" style={{ backgroundColor: "#17171A" }}>
-                <div className="w-12 h-1 rounded-full" style={{ backgroundColor: "#D9D9D9" }} />
-              </div>
+            <div 
+              className="rounded-lg shadow-2xl border border-gray-700 select-none" 
+              style={{ 
+                backgroundColor: "#0E0E12"
+              }}
+            >
+              {/* Drag handle - hide on mobile */}
+              {!isMobile && (
+                <div className="rounded-t-lg px-6 py-2 flex justify-center items-center" style={{ backgroundColor: "#17171A" }}>
+                  <div className="w-12 h-1 rounded-full" style={{ backgroundColor: "#D9D9D9" }} />
+                </div>
+              )}
               
               <div className="p-6">
                 {/* Step title - only for steps 4 & 5 */}
